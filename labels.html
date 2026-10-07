@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Print labels | Brenda's Homestead Kitchen</title>
-  <link rel="stylesheet" href="/css/styles.css?v=goals-v13" />
+  <link rel="stylesheet" href="css/styles.css?v=goals-v131" />
   <style>
     .label-sheet {
       display: grid;
@@ -47,12 +47,12 @@
 <body>
   <header class="site-header no-print">
     <div class="container nav-row">
-      <a class="brand" href="/index.html">
+      <a class="brand" href="index.html">
         <span class="brand-script">Homestead</span>
         <span class="brand-name">Brenda's Homestead Kitchen</span>
       </a>
       <nav class="nav-links">
-        <a href="/admin/">Admin</a>
+        <a href="admin/">Admin</a>
         <button class="btn btn-primary btn-small" type="button" onclick="window.print()">Print labels</button>
       </nav>
     </div>
@@ -66,14 +66,14 @@
         <p class="muted">Print these, cut them out, and stick on jars/bags. Confirm the wording with Ohio Dept. of Agriculture — this is a helper, not legal advice. Soap bars can use the ingredient lines without the cottage-food sentence if you market them only as soap.</p>
         <div class="actions">
           <button class="btn btn-primary" type="button" onclick="window.print()">Print</button>
-          <a class="btn btn-ghost" href="/admin/">Back to admin</a>
+          <a class="btn btn-ghost" href="admin/">Back to admin</a>
         </div>
       </div>
       <div id="labelSheet" class="label-sheet"></div>
     </div>
   </main>
 
-  <script src="/js/store.js?v=goals-v13"></script>
+  <script src="js/store.js?v=goals-v131"></script>
   <script>
     (function () {
       const s = BHK.getStore().settings;
