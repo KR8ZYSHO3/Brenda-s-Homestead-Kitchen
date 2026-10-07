@@ -108,3 +108,6 @@ Then open:
 ## Legal note
 
 The cottage-law pages are a plain-English learning aid, not legal advice. Ohio rules can change; verify with the Ohio Department of Agriculture / current Ohio Revised Code and Administrative Code when needed.
+
+<!-- netlify trigger 2026-10-07 18:50 -->
+
