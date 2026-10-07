@@ -76,12 +76,12 @@
     { id: "other", label: "Other", short: "Other" },
   ];
 
-  const LIVE_SITE_URL = "https://transcendent-piroshki-e5e6d7.netlify.app";
+  const LIVE_SITE_URL = "https://kr8zysho3.github.io/Brenda-s-Homestead-Kitchen";
 
   /** Bump these when deploying so Brenda can confirm the live site updated */
-  const SITE_VERSION = "1.3.0";
-  const SITE_UPDATED_ISO = "2026-10-07T18:30:00-04:00";
-  const SITE_UPDATED_LABEL = "Oct 7, 2026 · 6:30 PM ET";
+  const SITE_VERSION = "1.3.1";
+  const SITE_UPDATED_ISO = "2026-10-07T19:20:00-04:00";
+  const SITE_UPDATED_LABEL = "Oct 7, 2026 · 7:20 PM ET";
 
   const SAMPLE_PRODUCTS = [
     {
