@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Market flyer | Brenda's Homestead Kitchen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Great+Vibes&family=Outfit:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css?v=goals-v13" />
+  <style>
+    .flyer {
+      max-width: 8.5in;
+      margin: 0 auto;
+      background: #fffdf8;
+      border: 2px solid #c4a35a;
+      border-radius: 18px;
+      padding: 1.6rem 1.8rem 1.4rem;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+    .flyer::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border: 1px solid rgba(196, 163, 90, 0.4);
+      border-radius: 12px;
+      pointer-events: none;
+    }
+    .flyer-top {
+      display: grid;
+      grid-template-columns: 1.4fr 0.8fr;
+      gap: 1rem;
+      align-items: center;
+    }
+    .flyer h1 {
+      font-size: 2.6rem;
+      margin: 0.2rem 0 0.4rem;
+      line-height: 1.05;
+    }
+    .flyer-qr {
+      text-align: center;
+      background: #1c2a1f;
+      color: #f4eee3;
+      border-radius: 14px;
+      padding: 0.9rem;
+    }
+    .flyer-qr img {
+      width: 160px;
+      height: 160px;
+      background: #fff;
+      border-radius: 8px;
+      padding: 6px;
+    }
+    .flyer-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem 1.2rem;
+      margin: 1.1rem 0;
+    }
+    .flyer-list li {
+      margin: 0.2rem 0;
+    }
+    .flyer-foot {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      border-top: 1px solid rgba(28, 42, 31, 0.15);
+      padding-top: 0.9rem;
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+    }
+    @media print {
+      .no-print, .site-header { display: none !important; }
+      body { background: #fff; }
+      .flyer { box-shadow: none; margin: 0; }
+    }
+    @media (max-width: 700px) {
+      .flyer-top, .flyer-list { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header no-print">
+    <div class="container nav-row">
+      <a class="brand" href="/index.html">
+        <span class="brand-script">Homestead</span>
+        <span class="brand-name">Brenda's Homestead Kitchen</span>
+      </a>
+      <nav class="nav-links">
+        <a href="/admin/">Admin</a>
+        <button class="btn btn-primary btn-small" type="button" onclick="window.print()">Print flyer</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <div class="no-print" style="margin-bottom:1rem;">
+        <span class="eyebrow">Local marketing</span>
+        <h1 class="page-title">Market &amp; church flyer</h1>
+        <p class="muted">Print a few copies for the farmers market table, library board, or church bulletin wall. QR code opens the live website.</p>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" onclick="window.print()">Print</button>
+          <a class="btn btn-ghost" href="/admin/">Back to admin</a>
+        </div>
+      </div>
+
+      <article class="flyer" id="flyer">
+        <div class="flyer-top">
+          <div>
+            <div class="brand-script" style="font-size:2.4rem;">Homestead</div>
+            <h1 id="flyerName">Brenda's Homestead Kitchen</h1>
+            <p id="flyerTag" class="lead" style="margin:0;font-size:1.15rem;"></p>
+            <p class="muted" style="margin:.6rem 0 0;">McArthur, Ohio · Cottage foods &amp; handmade soap · Local pickup</p>
+          </div>
+          <div class="flyer-qr">
+            <img id="flyerQr" alt="QR code to order online" width="160" height="160" />
+            <div style="margin-top:.55rem;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;">Scan to order</div>
+            <div id="flyerUrl" style="font-size:.72rem;word-break:break-all;opacity:.85;margin-top:.25rem;"></div>
+          </div>
+        </div>
+        <ul class="flyer-list" id="flyerProducts"></ul>
+        <div class="flyer-foot">
+          <div>
+            <strong>How to order</strong><br />
+            Scan the code or visit the site · Brenda confirms pickup
+          </div>
+          <div>
+            <strong>Pay your way</strong><br />
+            <span id="flyerPay">Venmo, Cash App, PayPal, Zelle, or cash</span>
+          </div>
+          <div>
+            <strong>Cottage foods</strong><br />
+            Labeled: This product is home produced.
+          </div>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <script src="/js/store.js?v=goals-v13"></script>
+  <script>
+    (function () {
+      const s = BHK.getStore().settings;
+      const url = BHK.LIVE_SITE_URL;
+      document.getElementById("flyerName").textContent = s.businessName || "Brenda's Homestead Kitchen";
+      document.getElementById("flyerTag").textContent =
+        s.tagline || "Homemade cottage foods and handcrafted soaps";
+      document.getElementById("flyerUrl").textContent = url.replace(/^https?:\/\//, "");
+      document.getElementById("flyerQr").src =
+        "https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=8&data=" +
+        encodeURIComponent(url);
+
+      const pay = [];
+      if (s.venmo) pay.push("Venmo " + s.venmo);
+      if (s.cashapp) pay.push("Cash App " + s.cashapp);
+      if (s.paypal) pay.push("PayPal");
+      if (s.zelle) pay.push("Zelle");
+      document.getElementById("flyerPay").textContent = pay.length
+        ? pay.join(" · ")
+        : "Venmo, Cash App, PayPal, Zelle, or cash at pickup";
+
+      const products = BHK.listProducts({ availableOnly: true }).slice(0, 8);
+      const list = document.getElementById("flyerProducts");
+      list.innerHTML = products.length
+        ? products
+            .map(
+              (p) =>
+                `<li><strong>${escapeHtml(p.name)}</strong> — ${BHK.money(p.price)}${p.unit ? " / " + escapeHtml(p.unit) : ""}</li>`
+            )
+            .join("")
+        : "<li>Fresh cottage foods &amp; handmade soap — see the website for this week’s list</li>";
+
+      function escapeHtml(str) {
+        return String(str || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+    })();
+  </script>
+</body>
+</html>

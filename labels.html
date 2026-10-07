@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Print labels | Brenda's Homestead Kitchen</title>
+  <link rel="stylesheet" href="/css/styles.css?v=goals-v13" />
+  <style>
+    .label-sheet {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .food-label {
+      border: 1.5px solid #1a1612;
+      border-radius: 8px;
+      padding: 0.75rem 0.85rem;
+      background: #fff;
+      font-size: 0.82rem;
+      line-height: 1.35;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .food-label h3 {
+      margin: 0 0 0.25rem;
+      font-size: 1.05rem;
+      font-family: var(--font-display);
+    }
+    .food-label .home-line {
+      font-weight: 700;
+      font-size: 0.78rem;
+      margin: 0.35rem 0;
+    }
+    .no-print { margin-bottom: 1rem; }
+    @media print {
+      .no-print, .site-header, .footer { display: none !important; }
+      body { background: #fff; }
+      .label-sheet { gap: 0.4rem; }
+      .food-label { box-shadow: none; }
+    }
+    @media (max-width: 700px) {
+      .label-sheet { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header no-print">
+    <div class="container nav-row">
+      <a class="brand" href="/index.html">
+        <span class="brand-script">Homestead</span>
+        <span class="brand-name">Brenda's Homestead Kitchen</span>
+      </a>
+      <nav class="nav-links">
+        <a href="/admin/">Admin</a>
+        <button class="btn btn-primary btn-small" type="button" onclick="window.print()">Print labels</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <div class="no-print">
+        <span class="eyebrow">Compliance helper</span>
+        <h1 class="page-title">Cottage food labels</h1>
+        <p class="muted">Print these, cut them out, and stick on jars/bags. Confirm the wording with Ohio Dept. of Agriculture — this is a helper, not legal advice. Soap bars can use the ingredient lines without the cottage-food sentence if you market them only as soap.</p>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" onclick="window.print()">Print</button>
+          <a class="btn btn-ghost" href="/admin/">Back to admin</a>
+        </div>
+      </div>
+      <div id="labelSheet" class="label-sheet"></div>
+    </div>
+  </main>
+
+  <script src="/js/store.js?v=goals-v13"></script>
+  <script>
+    (function () {
+      const s = BHK.getStore().settings;
+      const products = BHK.listProducts().filter((p) => p.available);
+      const addr = [s.address, s.city, s.state, s.zip].filter(Boolean).join(", ");
+      const maker = (s.ownerName || "Brenda Shoemaker") + (addr ? " · " + addr : " · McArthur, OH");
+      const sheet = document.getElementById("labelSheet");
+      if (!products.length) {
+        sheet.innerHTML = '<div class="panel">Add products in Admin first, then refresh this page.</div>';
+        return;
+      }
+      sheet.innerHTML = products
+        .map((p) => {
+          const isSoap = BHK.normalizeCategory(p.category) === "soap";
+          const homeLine = isSoap
+            ? ""
+            : '<div class="home-line">This product is home produced.</div>';
+          return `<article class="food-label">
+            <h3>${escapeHtml(p.name)}</h3>
+            <div><strong>${escapeHtml(s.businessName || "Brenda's Homestead Kitchen")}</strong></div>
+            <div>${escapeHtml(maker)}</div>
+            ${homeLine}
+            <div><strong>Net:</strong> ${escapeHtml(p.unit || "see package")}</div>
+            <div><strong>Ingredients:</strong> ${escapeHtml(p.ingredients || "See package / ask Brenda")}</div>
+            <div><strong>${isSoap ? "Notes" : "Allergens"}:</strong> ${escapeHtml(p.allergens || "Ask if unsure")}</div>
+          </article>`;
+        })
+        .join("");
+
+      function escapeHtml(str) {
+        return String(str || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+    })();
+  </script>
+</body>
+</html>

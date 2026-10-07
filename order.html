@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Order | Brenda's Homestead Kitchen</title>
+  <meta name="description" content="Place a pickup order for homemade cottage foods and soaps from Brenda's Homestead Kitchen in McArthur, Ohio." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css?v=goals-v13" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-row">
+      <a class="brand" href="index.html">
+        <span class="brand-script">Homestead</span>
+        <span class="brand-name">Brenda's Homestead Kitchen</span>
+      </a>
+      <button class="mobile-nav-toggle" type="button" id="navToggle" aria-label="Open menu">Menu</button>
+      <nav class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="products.html">Products</a>
+        <a class="active" href="order.html">Order</a>
+        <a href="admin/index.html">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container order-layout">
+      <div class="panel stack">
+        <div>
+          <span class="eyebrow">Pickup order</span>
+          <h1 class="page-title">Place your order</h1>
+          <div class="ornament" style="justify-content:flex-start;margin:.35rem 0 1rem;">McArthur · Pickup</div>
+          <p class="muted" id="orderIntro">Choose foods, soaps, and quantities. Brenda will confirm pickup in McArthur, Ohio.</p>
+        </div>
+
+        <!-- Google Form embed (preferred when configured in Admin) -->
+        <div id="googleFormWrap" style="display:none;">
+          <div class="notice" style="margin-bottom:1rem;">
+            This secure Google Form sends your order straight to Brenda’s email / spreadsheet.
+          </div>
+          <div class="google-form-frame-wrap">
+            <iframe
+              id="googleFormFrame"
+              title="Order form"
+              src="about:blank"
+              loading="lazy"
+              frameborder="0"
+              marginheight="0"
+              marginwidth="0"
+            >Loading…</iframe>
+          </div>
+          <p class="muted" style="margin-top:.75rem;font-size:.9rem;">
+            Form not loading?
+            <a id="googleFormOpenTab" href="#" target="_blank" rel="noopener">Open the order form in a new tab</a>
+          </p>
+        </div>
+
+        <!-- Built-in fallback form (used until Google Form URL is saved) -->
+        <div id="builtinOrderWrap">
+          <div class="notice notice-warn" id="setupHint">
+            Brenda is finishing the Google Order Form setup. You can still order with the form below, or check back soon.
+          </div>
+
+          <form name="cottage-order" netlify netlify-honeypot="bot-field" hidden>
+            <input type="text" name="bot-field" />
+            <input type="text" name="customerName" />
+            <input type="text" name="customerPhone" />
+            <input type="email" name="customerEmail" />
+            <input type="text" name="paymentMethod" />
+            <input type="text" name="items" />
+            <input type="text" name="total" />
+            <textarea name="notes"></textarea>
+          </form>
+
+          <form id="orderForm" class="form-grid">
+            <div class="form-row">
+              <label>Your name
+                <input id="customerName" name="customerName" required placeholder="First and last name" />
+              </label>
+              <label>Phone
+                <input id="customerPhone" name="customerPhone" type="tel" required placeholder="(740) 555-0123" />
+              </label>
+            </div>
+            <label>Email (optional)
+              <input id="customerEmail" name="customerEmail" type="email" placeholder="you@email.com" />
+            </label>
+
+            <div>
+              <strong>Items</strong>
+              <div id="orderItems" class="stack" style="margin-top:.6rem;"></div>
+              <button type="button" class="btn btn-ghost btn-small" id="addItemBtn" style="margin-top:.7rem;">+ Add another item</button>
+            </div>
+
+            <div class="total-box">
+              <span>Order total</span>
+              <span id="orderTotal">$0.00</span>
+            </div>
+
+            <label>How will you pay?
+              <select name="paymentMethod" id="paymentMethod">
+                <option value="venmo">Venmo</option>
+                <option value="cashapp">Cash App</option>
+                <option value="paypal">PayPal</option>
+                <option value="zelle">Zelle</option>
+                <option value="cash">Cash at pickup</option>
+              </select>
+            </label>
+
+            <div class="notice" id="payHint">Brenda will share payment details when she confirms your order.</div>
+
+            <label>Notes for Brenda
+              <textarea name="notes" placeholder="Preferred pickup day, allergies to double-check, etc."></textarea>
+            </label>
+
+            <button class="btn btn-primary" type="submit">Send Order</button>
+            <p class="muted" style="margin:0;font-size:.9rem;">Ohio customers only. Cottage foods: This product is home produced.</p>
+          </form>
+
+          <div id="successBox" class="notice" style="display:none;"></div>
+        </div>
+      </div>
+
+      <aside class="stack">
+        <div class="panel">
+          <h2 style="font-size:1.3rem;">Pickup &amp; payment</h2>
+          <p class="muted" id="pickupNotes"></p>
+          <div id="payDetails" class="stack" style="margin-top:.8rem;"></div>
+        </div>
+        <div class="panel">
+          <h2 style="font-size:1.3rem;">What happens next?</h2>
+          <ol style="margin:0;padding-left:1.2rem;color:var(--ink-soft);">
+            <li>Send your order on the form.</li>
+            <li>Brenda confirms quantity and pickup time.</li>
+            <li>You pay with your chosen method.</li>
+            <li>Pick up your homemade treats in McArthur.</li>
+          </ol>
+          <p style="margin-top:1rem;"><a href="products.html">Browse products first →</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="footer footer--ink">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand-script">Homestead</div>
+        <strong class="footer-brand">Brenda's Homestead Kitchen</strong>
+        <p>Brenda Shoemaker · McArthur, Ohio</p>
+      </div>
+      <div>
+        <h3>Visit</h3>
+        <p>Local pickup in McArthur, OH</p>
+      </div>
+      <div>
+        <h3>Quick links</h3>
+        <p><a href="index.html">Home</a></p>
+        <p><a href="products.html">Products</a></p>
+        <p><a href="admin/index.html">Owner admin</a></p>
+      </div>
+    </div>
+    <div class="container disclaimer">
+      Cottage foods: This product is home produced. Ohio cottage food sales are for in-state customers. Soap is offered separately from cottage food rules.
+    </div>
+  </footer>
+
+  <script src="js/store.js?v=goals-v13"></script>
+  <script>
+    document.getElementById("navToggle").addEventListener("click", () => {
+      document.getElementById("navLinks").classList.toggle("open");
+    });
+
+    BHK.ensureSoapSamples();
+    const settings = BHK.getStore().settings;
+
+    document.getElementById("pickupNotes").textContent =
+      settings.pickupNotes || "Local pickup in McArthur, Ohio.";
+
+    const payDetails = [];
+    if (settings.venmo) payDetails.push(["Venmo", settings.venmo]);
+    if (settings.cashapp) payDetails.push(["Cash App", settings.cashapp]);
+    if (settings.paypal) payDetails.push(["PayPal", settings.paypal]);
+    if (settings.zelle) payDetails.push(["Zelle", settings.zelle]);
+    document.getElementById("payDetails").innerHTML = payDetails.length
+      ? payDetails.map(([k, v]) => `<div><strong>${k}:</strong> ${escapeHtml(v)}</div>`).join("")
+      : '<p class="muted">Payment handles will show here after Brenda adds them in Admin → Settings.</p>';
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    const embedUrl = BHK.toGoogleFormEmbedUrl(settings.googleFormEmbedUrl);
+    const useGoogle = settings.useGoogleForm !== false && !!embedUrl && !/\/forms\/d\/[^/]+\/edit/i.test(embedUrl);
+
+    if (useGoogle) {
+      document.getElementById("orderIntro").textContent =
+        "Fill out Brenda’s Google Order Form below. She gets your answers by email and in a spreadsheet.";
+      document.getElementById("googleFormWrap").style.display = "block";
+      document.getElementById("builtinOrderWrap").style.display = "none";
+      document.getElementById("googleFormFrame").src = embedUrl;
+      const viewUrl = BHK.toGoogleFormViewUrl(embedUrl);
+      const openTab = document.getElementById("googleFormOpenTab");
+      openTab.href = viewUrl || embedUrl;
+    } else {
+      // Built-in fallback
+      const products = BHK.listProducts({ availableOnly: true });
+      const itemsBox = document.getElementById("orderItems");
+      const totalEl = document.getElementById("orderTotal");
+      const params = new URLSearchParams(location.search);
+      const preselect = params.get("product");
+      const waitlistId = params.get("waitlist");
+      if (waitlistId) {
+        const sold = BHK.getProduct(waitlistId);
+        document.getElementById("orderIntro").textContent = sold
+          ? `${sold.name} is sold out right now. Send a note below and Brenda can hold you a spot on the next batch.`
+          : "That item is sold out. Send a note below and Brenda can hold you a spot on the next batch.";
+        const notes = document.querySelector('#orderForm textarea[name="notes"]');
+        if (notes && sold) {
+          notes.value = `Waitlist please: ${sold.name}`;
+        }
+      }
+
+      function productOptions(selectedId) {
+        if (!products.length) return '<option value="">No products available</option>';
+        return BHK.CATEGORIES.map((cat) => {
+          const items = products.filter((p) => BHK.normalizeCategory(p.category) === cat.id);
+          if (!items.length) return "";
+          return `<optgroup label="${escapeHtml(cat.label)}">${items
+            .map((p) => {
+              const selected = p.id === selectedId ? "selected" : "";
+              return `<option value="${p.id}" ${selected}>${escapeHtml(p.name)} — ${BHK.money(p.price)} / ${escapeHtml(p.unit || "each")} (qty ${p.quantityOnHand})</option>`;
+            })
+            .join("")}</optgroup>`;
+        }).join("");
+      }
+
+      function addItemRow(selectedId) {
+        const row = document.createElement("div");
+        row.className = "order-item-row";
+        row.innerHTML = `
+          <label>Product
+            <select class="item-product" required>${productOptions(selectedId)}</select>
+          </label>
+          <label>Qty
+            <input class="item-qty" type="number" min="1" value="1" required />
+          </label>
+          <label>Line
+            <input class="item-line" readonly value="$0.00" />
+          </label>
+          <button type="button" class="btn btn-ghost btn-small remove-item">Remove</button>
+        `;
+        itemsBox.appendChild(row);
+        row.querySelector(".item-product").addEventListener("change", updateTotals);
+        row.querySelector(".item-qty").addEventListener("input", updateTotals);
+        row.querySelector(".remove-item").addEventListener("click", () => {
+          if (itemsBox.children.length === 1) return;
+          row.remove();
+          updateTotals();
+        });
+        updateTotals();
+      }
+
+      function updateTotals() {
+        let total = 0;
+        itemsBox.querySelectorAll(".order-item-row").forEach((row) => {
+          const id = row.querySelector(".item-product").value;
+          const qty = Math.max(1, Number(row.querySelector(".item-qty").value) || 1);
+          const product = products.find((p) => p.id === id);
+          const line = product ? product.price * qty : 0;
+          row.querySelector(".item-line").value = BHK.money(line);
+          total += line;
+        });
+        totalEl.textContent = BHK.money(total);
+      }
+
+      document.getElementById("addItemBtn").addEventListener("click", () => addItemRow());
+      addItemRow(preselect || (products[0] && products[0].id));
+
+      document.getElementById("orderForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (!products.length) {
+          alert("No products are available to order yet.");
+          return;
+        }
+        const form = e.target;
+        const items = [];
+        let stockOk = true;
+        itemsBox.querySelectorAll(".order-item-row").forEach((row) => {
+          const productId = row.querySelector(".item-product").value;
+          const qty = Math.max(1, Number(row.querySelector(".item-qty").value) || 1);
+          const product = products.find((p) => p.id === productId);
+          if (product && qty > Number(product.quantityOnHand)) {
+            stockOk = false;
+            alert(`${product.name} only has ${product.quantityOnHand} available.`);
+          }
+          items.push({ productId, qty });
+        });
+        if (!stockOk) return;
+
+        try {
+          const order = BHK.createOrder({
+            customerName: form.customerName.value,
+            customerPhone: form.customerPhone.value,
+            customerEmail: form.customerEmail.value,
+            notes: form.notes.value,
+            paymentMethod: form.paymentMethod.value,
+            items,
+            status: "new",
+            paymentReceived: false,
+            source: "website",
+          });
+
+          const itemSummary = order.items
+            .map((i) => `${i.name} x${i.qty} (${BHK.money(i.lineTotal)})`)
+            .join("; ");
+          const body = new URLSearchParams({
+            "form-name": "cottage-order",
+            customerName: order.customerName,
+            customerPhone: order.customerPhone || "",
+            customerEmail: order.customerEmail || "",
+            paymentMethod: order.paymentMethod || "",
+            items: itemSummary,
+            total: BHK.money(order.total),
+            notes: order.notes || "",
+            orderId: order.id,
+          });
+          fetch("/", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body,
+          }).catch(() => {});
+
+          form.style.display = "none";
+          document.getElementById("setupHint").style.display = "none";
+          const box = document.getElementById("successBox");
+          box.style.display = "block";
+          box.innerHTML = `
+            <strong>Order received!</strong>
+            <p>Thanks, ${escapeHtml(order.customerName)}. Your order total is <strong>${BHK.money(order.total)}</strong>.</p>
+            <p>Order ID: <code>${escapeHtml(order.id)}</code></p>
+            <p>Brenda will confirm pickup. Preferred payment: <strong>${escapeHtml(order.paymentMethod)}</strong>.</p>
+            <p><a href="products.html">Back to products</a> · <a href="order.html">Place another order</a></p>
+          `;
+        } catch (err) {
+          alert(err.message || "Could not save order.");
+        }
+      });
+    }
+  </script>
+</body>
+</html>

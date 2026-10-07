@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Hub | Brenda's Homestead Kitchen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css?v=goals-v13" />
+</head>
+<body>
+  <div id="loginView" class="login-wrap">
+    <div class="panel login-card stack">
+      <div>
+        <div class="brand-script">Homestead</div>
+        <h1>Admin login</h1>
+        <p class="muted">For Brenda Shoemaker — your cottage food learning and business hub.</p>
+      </div>
+      <form id="loginForm" class="form-grid">
+        <label>Username
+          <input name="username" value="Brenda" required autocomplete="username" />
+        </label>
+        <label>Password
+          <input name="password" type="password" value="HomesteadKitchen" required autocomplete="current-password" />
+        </label>
+        <button class="btn btn-primary" type="submit">Sign in</button>
+      </form>
+      <div class="notice">
+        Default login: <strong>Brenda</strong> / <strong>HomesteadKitchen</strong><br />
+        Change this later under Settings.
+      </div>
+      <a href="../index.html">← Back to website</a>
+    </div>
+  </div>
+
+  <div id="adminView" class="admin-shell" style="display:none;">
+    <aside class="admin-sidebar">
+      <div class="brand">
+        <span class="brand-script">Homestead</span>
+        <span class="brand-name">Admin Hub</span>
+      </div>
+      <p style="color:#d7e3d4;font-size:.92rem;margin:.8rem 0 0;">Hi Brenda — everything you need is here.</p>
+      <nav class="admin-nav" id="adminNav">
+        <button type="button" data-tab="dashboard" class="active">Home dashboard</button>
+        <button type="button" data-tab="goals">Goals walkthrough</button>
+        <button type="button" data-tab="learn">Learn rules</button>
+        <button type="button" data-tab="products">Products &amp; photos</button>
+        <button type="button" data-tab="orders">Orders &amp; quantities</button>
+        <button type="button" data-tab="gform">Google Order Form</button>
+        <button type="button" data-tab="taxes">Taxes &amp; expenses</button>
+        <button type="button" data-tab="howto">How to use this site</button>
+        <button type="button" data-tab="settings">Settings</button>
+      </nav>
+      <div style="margin-top:1.5rem;display:grid;gap:.5rem;">
+        <a class="btn btn-ghost btn-small" style="color:#fff;border-color:rgba(255,255,255,.25);" href="../index.html">View public site</a>
+        <button type="button" class="btn btn-ghost btn-small" style="color:#fff;border-color:rgba(255,255,255,.25);" id="logoutBtn">Log out</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <section id="tab-dashboard" class="tabs-hidden active">
+        <div class="admin-top">
+          <div>
+            <span class="eyebrow">Welcome</span>
+            <h1>Your kitchen hub</h1>
+            <p class="muted">Track products, orders, and tax-ready totals in one place.</p>
+          </div>
+        </div>
+        <div class="stats" id="dashStats"></div>
+        <div class="stack" style="margin-top:1.2rem;">
+          <div class="panel" id="launchPanel">
+            <h2 style="font-size:1.25rem;">Your progress</h2>
+            <p class="muted" id="launchProgress" style="margin:.4rem 0 .6rem;"></p>
+            <div class="goal-progress-track" aria-hidden="true">
+              <div class="goal-progress-fill" id="launchProgressFill"></div>
+            </div>
+            <p class="goal-next muted" id="launchNextHint" style="margin:.75rem 0 .5rem;"></p>
+            <ul class="checklist" id="launchChecklist" style="margin-top:.4rem;"></ul>
+            <div class="actions" style="margin-top:1rem;flex-wrap:wrap;">
+              <button type="button" class="btn btn-primary btn-small" data-goto-tab="goals">Open full goals walkthrough</button>
+              <a class="btn btn-secondary btn-small" href="/labels.html" target="_blank" rel="noopener">Print food labels</a>
+              <a class="btn btn-ghost btn-small" href="/flyer.html" target="_blank" rel="noopener">Print market flyer</a>
+            </div>
+          </div>
+          <div class="panel">
+            <h2 style="font-size:1.25rem;">Quick start for today</h2>
+            <ul class="checklist" style="margin-top:.8rem;">
+              <li><span class="box"></span><span>Tick off a goal on the <strong>Goals walkthrough</strong> tab</span></li>
+              <li><span class="box"></span><span>Update “this week” note in Settings so the homepage stays fresh</span></li>
+              <li><span class="box"></span><span>Add or update foods, soaps, and gift bundles with prices and photos</span></li>
+              <li><span class="box"></span><span>Log market/phone sales under Orders and mark them paid</span></li>
+              <li><span class="box"></span><span>Download a backup after big changes (Settings)</span></li>
+            </ul>
+          </div>
+          <div class="panel">
+            <h2 style="font-size:1.25rem;">Newest orders</h2>
+            <div id="dashOrders"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-goals" class="tabs-hidden">
+        <div class="admin-top">
+          <div>
+            <span class="eyebrow">Step by step</span>
+            <h1>Business goals walkthrough</h1>
+            <p class="muted">A clear path from first setup to steady local sales. Auto steps light up when the site is ready; check off the real-world steps yourself.</p>
+          </div>
+        </div>
+        <div class="panel goal-summary-panel" style="margin-bottom:1rem;">
+          <p class="muted" id="goalsProgressLabel" style="margin:0 0 .6rem;"></p>
+          <div class="goal-progress-track" aria-hidden="true">
+            <div class="goal-progress-fill" id="goalsProgressFill"></div>
+          </div>
+          <p class="goal-next" id="goalsNextHint" style="margin:.75rem 0 0;"></p>
+          <p class="notice" id="goalsLaunchReady" style="display:none;margin-top:.9rem;">
+            Setup and Stock look ready. Focus on <strong>Sell</strong> and <strong>Grow</strong> — print a flyer, share your link, and log those first sales.
+          </p>
+        </div>
+        <div id="goalsPhases" class="goals-phases"></div>
+      </section>
+
+      <section id="tab-learn" class="tabs-hidden">
+        <div class="admin-top">
+          <div>
+            <span class="eyebrow">Ohio guide</span>
+            <h1>Foods &amp; soap rules basics</h1>
+            <p class="muted">Plain-English overview for Brenda. This is educational, not legal advice — check Ohio Department of Agriculture / FDA guidance if unsure.</p>
+          </div>
+        </div>
+        <div class="guide-grid">
+          <article class="panel guide-card">
+            <h3>Two product types on this site</h3>
+            <ul>
+              <li><strong>Baked goods &amp; foods</strong> — follow Ohio cottage food rules (labels, shelf-stable list, Ohio sales).</li>
+              <li><strong>Soap</strong> — not covered by cottage food law. True handmade soap (oils + lye, sold only as soap) is usually treated differently from cosmetics.</li>
+              <li>In Admin → Products, pick a <strong>category</strong> for each item so shoppers can filter Foods vs Soap.</li>
+              <li>Both types are fully editable: name, price, quantity, photo, ingredients list, and availability.</li>
+            </ul>
+          </article>
+
+          <article class="panel guide-card">
+            <h3>Soap notes (important)</h3>
+            <ul>
+              <li>Soap is <strong>not</strong> an Ohio cottage food product.</li>
+              <li>If a bar is mainly oils + lye (alkali salts of fatty acids) and you market it only as soap for washing, it often falls outside FDA cosmetic rules (CPSC territory for true soap).</li>
+              <li>If you claim moisturizing, anti-aging, acne treatment, germ-killing, etc., or use synthetic detergent bases, it may be regulated as a <strong>cosmetic</strong> (or even a drug).</li>
+              <li>Ohio notes that cosmetics made at home are generally exempt from ODA inspection, but must be properly labeled and not adulterated. Commercial cosmetic sites may need ODA inspection.</li>
+              <li>Keep ingredient lists for every soap. Avoid disease/treatment claims on labels or the website.</li>
+            </ul>
+          </article>
+
+          <article class="panel guide-card">
+            <h3>The good news (cottage foods)</h3>
+            <ul>
+              <li>Ohio lets you sell many shelf-stable homemade foods from your home kitchen.</li>
+              <li>For standard cottage foods: <strong>no state license, no inspection, and no sales dollar cap</strong>.</li>
+              <li>You can sell direct to customers in Ohio (markets, pickup, local events, and often retail within Ohio when properly labeled).</li>
+              <li>Your town is McArthur, Ohio — keep sales <strong>inside Ohio</strong>.</li>
+            </ul>
+          </article>
+
+          <article class="panel guide-card">
+            <h3>What you can sell (examples)</h3>
+            <ul>
+              <li>Baked goods that do not need refrigeration (cookies, breads, many cakes/pies that are shelf-stable)</li>
+              <li>Jams, jellies, fruit butters</li>
+              <li>Candy, granola, popcorn, dry mixes</li>
+              <li>Only non-potentially-hazardous (shelf-stable) foods on Ohio’s approved list</li>
+            </ul>
+            <p class="muted"><strong>Not allowed under cottage food:</strong> foods that need fridge/freezer to stay safe, acidified/low-acid canned foods, and other potentially hazardous foods.</p>
+          </article>
+
+          <article class="panel guide-card">
+            <h3>Every label must include</h3>
+            <ul>
+              <li>Business / producer name and physical address</li>
+              <li>Product name</li>
+              <li>Ingredients in order by weight</li>
+              <li>Net weight (U.S. and metric is safest)</li>
+              <li>Major allergens (milk, eggs, wheat, peanuts, tree nuts, soy, fish, shellfish, sesame, etc.)</li>
+              <li>Exact statement in at least 10-point type: <strong>This product is home produced.</strong></li>
+            </ul>
+          </article>
+
+          <article class="panel guide-card">
+            <h3>Do you pay taxes? Yes.</h3>
+            <ul>
+              <li>Your cottage food income is <strong>taxable</strong>. Cottage law removes food-license hurdles — it does not remove income tax.</li>
+              <li>Report profit on federal <strong>Schedule C</strong> (sole proprietor).</li>
+              <li>If net self-employment income is over about <strong>$400</strong>, self-employment tax usually applies.</li>
+              <li>Ohio income tax can apply; most take-home cottage foods are not charged Ohio sales tax when sold for off-premises eating.</li>
+              <li>Use the <strong>Taxes &amp; expenses</strong> tab to track income and costs for your accountant or tax software.</li>
+            </ul>
+          </article>
+
+          <article class="panel guide-card">
+            <h3>Practical checklist before selling</h3>
+            <ul class="checklist">
+              <li><span class="box"></span><span>Confirm each recipe is an approved shelf-stable cottage food</span></li>
+              <li><span class="box"></span><span>Print compliant labels for every package</span></li>
+              <li><span class="box"></span><span>Sell only within Ohio</span></li>
+              <li><span class="box"></span><span>Set Venmo / Cash App / PayPal / Zelle handles in Settings</span></li>
+              <li><span class="box"></span><span>Keep order and expense records for tax time</span></li>
+              <li><span class="box"></span><span>Ask Vinton County zoning/local rules if selling from home raises questions</span></li>
+            </ul>
+          </article>
+
+          <article class="panel guide-card">
+            <h3>Helpful official places</h3>
+            <ul>
+              <li>Ohio Revised Code cottage food sections (around ORC 3715.01 / 3715.023 / 3715.025)</li>
+              <li>Ohio Administrative Code 901:3-20 (cottage food rules / allowed foods)</li>
+              <li>Ohio Department of Agriculture — Food Safety</li>
+            </ul>
+            <p class="muted">When in doubt, call ODA food safety or a local advisor before selling a new product type.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="tab-products" class="tabs-hidden">
+        <div class="admin-top">
+          <div>
+            <span class="eyebrow">Catalog</span>
+            <h1>Products &amp; photos</h1>
+            <p class="muted">Add baked goods, soaps, and more. Everything here shows on the public Products and Order pages.</p>
+          </div>
+          <button class="btn btn-primary" type="button" id="addProductBtn">+ Add product</button>
+        </div>
+        <div class="actions" style="margin-bottom:1rem;">
+          <button type="button" class="btn btn-ghost btn-small category-filter active" data-admin-cat="all">All</button>
+          <button type="button" class="btn btn-ghost btn-small category-filter" data-admin-cat="baked">Foods</button>
+          <button type="button" class="btn btn-ghost btn-small category-filter" data-admin-cat="soap">Soap</button>
+          <button type="button" class="btn btn-ghost btn-small category-filter" data-admin-cat="bundle">Bundles</button>
+          <button type="button" class="btn btn-ghost btn-small category-filter" data-admin-cat="other">Other</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Photo</th>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Qty on hand</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="productsTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="tab-orders" class="tabs-hidden">
+        <div class="admin-top">
+          <div>
+            <span class="eyebrow">Sales</span>
+            <h1>Orders &amp; quantities</h1>
+            <p class="muted">Use this for market/phone orders and stock tracking. Google Form replies also go to your Gmail/Sheets (see Google Order Form tab).</p>
+          </div>
+          <div class="actions">
+            <button class="btn btn-secondary" type="button" id="manualOrderBtn">+ Manual order</button>
+            <button class="btn btn-ghost" type="button" id="exportOrdersBtn">Export orders CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Payment</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="tab-gform" class="tabs-hidden">
+        <div class="admin-top">
+          <div>
+            <span class="eyebrow">Easy ordering</span>
+            <h1>Google Order Form</h1>
+            <p class="muted">Customers order with a simple Google Form. You edit questions in Google, and paste the links here so the website stays in sync.</p>
+          </div>
+          <div class="actions">
+            <a class="btn btn-secondary" href="https://forms.google.com/create" target="_blank" rel="noopener">Create new Google Form</a>
+            <a class="btn btn-ghost" id="openFormEditorBtn" href="#" target="_blank" rel="noopener" style="display:none;">Edit my form in Google</a>
+          </div>
+        </div>
+
+        <div class="stack">
+          <form id="googleFormSettings" class="panel form-grid">
+            <label>Use Google Form on the public Order page?
+              <select name="useGoogleForm">
+                <option value="true">Yes — embed Google Form (recommended)</option>
+                <option value="false">No — use the built-in website form</option>
+              </select>
+            </label>
+            <label>Google Form link or embed URL
+              <input name="googleFormEmbedUrl" id="googleFormEmbedUrl" placeholder="Paste the link from Google Forms → Send → Link (or Embed src=...)" />
+            </label>
+            <p class="muted" style="margin:0;">Tip: In Google Forms click <strong>Send</strong> → link icon, copy the link. Or Send → &lt;&gt; embed and copy the <code>src="..."</code> URL. Either works.</p>
+            <label>Edit link (so you can change questions later)
+              <input name="googleFormEditUrl" id="googleFormEditUrl" placeholder="https://docs.google.com/forms/d/XXXX/edit" />
+            </label>
+            <label>Responses spreadsheet link (optional)
+              <input name="googleFormResponsesUrl" id="googleFormResponsesUrl" placeholder="Link from Responses → Google Sheets" />
+            </label>
+            <div class="actions">
+              <button class="btn btn-primary" type="submit">Save Google Form links</button>
+              <a class="btn btn-ghost" href="../order.html" target="_blank" rel="noopener">Preview Order page</a>
+            </div>
+            <div id="gformSaveNotice" class="notice" style="display:none;">Saved. The public Order page will use this form.</div>
+          </form>
+
+          <div class="panel">
+            <h2 style="font-size:1.25rem;margin:0 0 .6rem;">Basic order form to create (copy these questions)</h2>
+            <p class="muted" id="gformTemplateTitle"></p>
+            <ol class="template-list" id="gformTemplateList"></ol>
+            <div class="notice" style="margin-top:1rem;">
+              <strong>2-minute setup:</strong>
+              1) Click <em>Create new Google Form</em> ·
+              2) Add the questions above ·
+              3) Responses tab → turn on email notifications ·
+              4) Send → copy Link ·
+              5) Paste it above and Save ·
+              6) Optional: Responses → Link to Sheets for a spreadsheet of every order
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="admin-top" style="margin-bottom:.8rem;">
+              <div>
+                <h2 style="font-size:1.25rem;margin:0;">Live form preview</h2>
+                <p class="muted" style="margin:.35rem 0 0;">This is the same form shoppers see on the Order page. Change questions with <strong>Edit my form in Google</strong>, then refresh.</p>
+              </div>
+            </div>
+            <div id="gformPreviewEmpty" class="notice notice-warn">
+              No Google Form link saved yet. Create the form with the question list above, paste the link, and click Save — the embed will appear here and on the public Order page.
+            </div>
+            <div id="gformPreviewWrap" class="google-form-frame-wrap" style="display:none;">
+              <iframe id="gformPreviewFrame" title="Google Order Form preview" src="about:blank" loading="lazy"></iframe>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-taxes" class="tabs-hidden">
+        <div class="admin-top">
+          <div>
+            <span class="eyebrow">Records</span>
+            <h1>Taxes &amp; expenses</h1>
+            <p class="muted">Yes — cottage food income is still taxable. Track sales and costs here, then export for tax time.</p>
+          </div>
+          <div class="actions">
+            <label style="font-weight:700;">Year
+              <select id="taxYear"></select>
+            </label>
+            <button class="btn btn-ghost" type="button" id="exportTaxBtn">Export tax CSV</button>
+          </div>
+        </div>
+        <div class="stats" id="taxStats"></div>
+        <div class="panel" style="margin-top:1.2rem;">
+          <h2 style="font-size:1.2rem;">Add an expense</h2>
+          <form id="expenseForm" class="form-row" style="margin-top:.8rem;align-items:end;">
+            <label>Date
+              <input type="date" name="date" required />
+            </label>
+            <label>Category
+              <select name="category">
+                <option>Ingredients</option>
+                <option>Packaging</option>
+                <option>Labels</option>
+                <option>Market fees</option>
+                <option>Equipment</option>
+                <option>Mileage / travel</option>
+                <option>Other</option>
+              </select>
+            </label>
+            <label>Description
+              <input name="description" required placeholder="Flour, jars, booth fee..." />
+            </label>
+            <label>Amount ($)
+              <input name="amount" type="number" min="0" step="0.01" required />
+            </label>
+            <button class="btn btn-secondary" type="submit">Save expense</button>
+          </form>
+        </div>
+        <div class="table-wrap" style="margin-top:1rem;">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="expensesTable"></tbody>
+          </table>
+        </div>
+        <div class="notice notice-warn" style="margin-top:1rem;">
+          This tracker helps you organize numbers. A tax pro or tax software should still prepare your return. Keep receipts.
+        </div>
+      </section>
+
+      <section id="tab-howto" class="tabs-hidden">
+        <div class="admin-top">
+          <div>
+            <span class="eyebrow">Simple instructions</span>
+            <h1>How to use this website</h1>
+          </div>
+        </div>
+        <div class="guide-grid">
+          <article class="panel guide-card">
+            <h3>Products</h3>
+            <p>Go to <strong>Products &amp; photos</strong>. Click Add product. Choose category <strong>Baked goods &amp; foods</strong> or <strong>Soap</strong>. Fill in name, price, quantity on hand, ingredients, allergens/sensitivities, and upload a picture. Turn Available on so shoppers can order it. Edit anytime — soaps work the same way as baked goods.</p>
+          </article>
+          <article class="panel guide-card">
+            <h3>Google Order Form</h3>
+            <p>Go to <strong>Google Order Form</strong>. Create the form in Google with the starter questions, paste the share link, and Save. Customers then order on the website through that Google Form. Edit questions anytime in Google — use the Edit link saved here.</p>
+          </article>
+          <article class="panel guide-card">
+            <h3>Orders (manual / market)</h3>
+            <p>For phone, text, or market sales, use <strong>Orders &amp; quantities</strong> → Manual order so stock and tax totals stay accurate. Mark “Paid” when Venmo/Cash App money arrives. Google Form replies also arrive in your Gmail / Sheets.</p>
+          </article>
+          <article class="panel guide-card">
+            <h3>Payments</h3>
+            <p>In <strong>Settings</strong>, enter your Venmo, Cash App, PayPal, and Zelle handles. They appear on the order page so customers know where to send money.</p>
+          </article>
+          <article class="panel guide-card">
+            <h3>Taxes</h3>
+            <p>Log expenses when you buy supplies. At tax time, pick the year and export CSV. Your sales totals and expenses are ready to hand to whoever does your taxes.</p>
+          </article>
+          <article class="panel guide-card">
+            <h3>Backup</h3>
+            <p>In Settings, click <strong>Download backup</strong> every week or after a busy market day. This saves your products, orders, and expenses as a file on your computer.</p>
+          </article>
+          <article class="panel guide-card">
+            <h3>Important note about this free version</h3>
+            <p>Data is stored in this browser on this computer/phone. Use the same browser for admin work, and download backups. If you later want phone + laptop sharing in the cloud, we can upgrade hosting.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="tab-settings" class="tabs-hidden">
+        <div class="admin-top">
+          <div>
+            <span class="eyebrow">Business</span>
+            <h1>Settings</h1>
+          </div>
+        </div>
+        <form id="settingsForm" class="panel form-grid">
+          <div class="form-row">
+            <label>Business name
+              <input name="businessName" />
+            </label>
+            <label>Owner name
+              <input name="ownerName" />
+            </label>
+          </div>
+          <div class="form-row">
+            <label>Street address (for labels)
+              <input name="address" placeholder="123 Main St" />
+            </label>
+            <label>City
+              <input name="city" />
+            </label>
+          </div>
+          <div class="form-row">
+            <label>State
+              <input name="state" />
+            </label>
+            <label>ZIP
+              <input name="zip" />
+            </label>
+          </div>
+          <div class="form-row">
+            <label>Phone
+              <input name="phone" />
+            </label>
+            <label>Email
+              <input name="email" type="email" />
+            </label>
+          </div>
+          <div class="form-row">
+            <label>Venmo handle
+              <input name="venmo" placeholder="@Brenda-Example" />
+            </label>
+            <label>Cash App
+              <input name="cashapp" placeholder="$BrendaExample" />
+            </label>
+          </div>
+          <div class="form-row">
+            <label>PayPal
+              <input name="paypal" placeholder="email or @handle" />
+            </label>
+            <label>Zelle
+              <input name="zelle" placeholder="phone or email" />
+            </label>
+          </div>
+          <label>Website tagline
+            <input name="tagline" />
+          </label>
+          <label>About text on homepage
+            <textarea name="about"></textarea>
+          </label>
+          <label>Pickup / payment notes shown to customers
+            <textarea name="pickupNotes"></textarea>
+          </label>
+          <div class="form-row">
+            <label>Homepage feature title
+              <input name="featuredTitle" placeholder="This week from the kitchen" />
+            </label>
+            <label>Homepage feature note
+              <input name="featuredNote" placeholder="Saturday: fresh jam + lavender soap ready for pickup" />
+            </label>
+          </div>
+          <div class="form-row">
+            <label>Admin username
+              <input name="adminUsername" />
+            </label>
+            <label>Admin password
+              <input name="adminPassword" type="text" />
+            </label>
+          </div>
+          <p class="notice notice-warn" id="defaultPasswordWarn" style="display:none;">
+            You’re still using the default password. Change it before sharing the admin link.
+          </p>
+          <button class="btn btn-primary" type="submit">Save settings</button>
+        </form>
+        <div class="panel stack" style="margin-top:1rem;">
+          <h2 style="font-size:1.2rem;">Backup &amp; restore</h2>
+          <div class="actions">
+            <button class="btn btn-secondary" type="button" id="backupBtn">Download backup</button>
+            <label class="btn btn-ghost" style="cursor:pointer;">
+              Restore backup
+              <input type="file" id="restoreInput" accept="application/json" hidden />
+            </label>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Product modal -->
+  <div class="modal-backdrop" id="productModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h2 id="productModalTitle" style="margin:0;font-size:1.4rem;">Product</h2>
+        <button class="btn btn-ghost btn-small" type="button" data-close="productModal">Close</button>
+      </div>
+      <form id="productForm" class="form-grid">
+        <input type="hidden" name="id" />
+        <label>Product name
+          <input name="name" required placeholder="Cinnamon Sugar Cookies or Lavender Soap" />
+        </label>
+        <label>Category
+          <select name="category" id="productCategory" required>
+            <option value="baked">Baked goods &amp; foods</option>
+            <option value="soap">Soap</option>
+            <option value="bundle">Gift box / bundle</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+        <label>Description
+          <textarea name="description" placeholder="What makes it special?"></textarea>
+        </label>
+        <div class="form-row">
+          <label>Price ($)
+            <input name="price" type="number" min="0" step="0.01" required />
+          </label>
+          <label>Unit
+            <input name="unit" id="productUnit" placeholder="dozen, loaf, bar, 8 oz jar" />
+          </label>
+        </div>
+        <div class="form-row">
+          <label>Quantity on hand
+            <input name="quantityOnHand" type="number" min="0" step="1" required />
+          </label>
+          <label>Available on website?
+            <select name="available">
+              <option value="true">Yes — show for sale</option>
+              <option value="false">No — hide for now</option>
+            </select>
+          </label>
+        </div>
+        <label><span id="ingredientsLabelText">Ingredients (for your labels)</span>
+          <textarea name="ingredients" id="productIngredients" placeholder="Flour, sugar, butter..."></textarea>
+        </label>
+        <label><span id="allergensLabelText">Allergens</span>
+          <input name="allergens" id="productAllergens" placeholder="Wheat, eggs, milk" />
+        </label>
+        <label>Photo
+          <input name="imageFile" type="file" accept="image/*" />
+        </label>
+        <img id="productImagePreview" class="image-preview" alt="Product preview" style="display:none;" />
+        <input type="hidden" name="image" />
+        <div class="actions">
+          <button class="btn btn-primary" type="submit">Save product</button>
+          <button class="btn btn-ghost" type="button" data-close="productModal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Manual order modal -->
+  <div class="modal-backdrop" id="orderModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h2 style="margin:0;font-size:1.4rem;">Manual order</h2>
+        <button class="btn btn-ghost btn-small" type="button" data-close="orderModal">Close</button>
+      </div>
+      <form id="manualOrderForm" class="form-grid">
+        <div class="form-row">
+          <label>Customer name
+            <input name="customerName" required />
+          </label>
+          <label>Phone
+            <input name="customerPhone" />
+          </label>
+        </div>
+        <label>Product
+          <select name="productId" id="manualProductSelect" required></select>
+        </label>
+        <div class="form-row">
+          <label>Quantity
+            <input name="qty" type="number" min="1" value="1" required />
+          </label>
+          <label>Payment method
+            <select name="paymentMethod">
+              <option value="cash">Cash</option>
+              <option value="venmo">Venmo</option>
+              <option value="cashapp">Cash App</option>
+              <option value="paypal">PayPal</option>
+              <option value="zelle">Zelle</option>
+            </select>
+          </label>
+        </div>
+        <label><span style="display:flex;gap:.5rem;align-items:center;font-weight:650;"><input type="checkbox" name="paymentReceived" style="width:auto;" /> Already paid</span></label>
+        <label>Notes
+          <textarea name="notes"></textarea>
+        </label>
+        <button class="btn btn-primary" type="submit">Save order</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/store.js?v=goals-v13"></script>
+  <script src="/js/admin.js?v=goals-v13"></script>
+</body>
+</html>

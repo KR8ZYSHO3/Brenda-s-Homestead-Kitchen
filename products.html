@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Products | Brenda's Homestead Kitchen</title>
+  <meta name="description" content="Browse homemade cottage foods and handcrafted soaps from Brenda's Homestead Kitchen in McArthur, Ohio." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css?v=goals-v13" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-row">
+      <a class="brand" href="index.html">
+        <span class="brand-script">Homestead</span>
+        <span class="brand-name">Brenda's Homestead Kitchen</span>
+      </a>
+      <button class="mobile-nav-toggle" type="button" id="navToggle" aria-label="Open menu">Menu</button>
+      <nav class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a class="active" href="products.html">Products</a>
+        <a href="order.html">Order</a>
+        <a href="admin/index.html">Admin</a>
+        <a class="btn btn-primary btn-small" href="order.html">Place an Order</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Shop</span>
+          <h1 style="font-size:clamp(2.4rem,5vw,3.4rem);margin-top:.4rem;">The pantry &amp; soap shelf</h1>
+          <p class="muted">Cottage foods and handmade soaps. Prices and availability are managed by Brenda.</p>
+        </div>
+      </div>
+      <div class="ornament">Baked · Jarred · Poured</div>
+      <div class="category-filters" id="categoryFilters">
+        <button type="button" class="btn btn-ghost btn-small active" data-cat="all">All</button>
+        <button type="button" class="btn btn-ghost btn-small" data-cat="baked">Foods</button>
+        <button type="button" class="btn btn-ghost btn-small" data-cat="soap">Soap</button>
+        <button type="button" class="btn btn-ghost btn-small" data-cat="bundle">Bundles</button>
+        <button type="button" class="btn btn-ghost btn-small" data-cat="other">Other</button>
+      </div>
+      <div id="productSections"></div>
+    </div>
+  </main>
+
+  <footer class="footer footer--ink">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand-script">Homestead</div>
+        <strong class="footer-brand">Brenda's Homestead Kitchen</strong>
+        <p>Brenda Shoemaker · McArthur, Ohio</p>
+      </div>
+      <div>
+        <h3>Visit</h3>
+        <p>Local pickup in McArthur, OH</p>
+      </div>
+      <div>
+        <h3>Quick links</h3>
+        <p><a href="index.html">Home</a></p>
+        <p><a href="order.html">Order</a></p>
+        <p><a href="admin/index.html">Owner admin</a></p>
+      </div>
+    </div>
+    <div class="container disclaimer">
+      Cottage foods are labeled <strong>This product is home produced.</strong> Soap is sold separately from cottage food rules — ask Brenda about ingredients if you have sensitivities.
+    </div>
+  </footer>
+
+  <script src="js/store.js?v=goals-v13"></script>
+  <script>
+    document.getElementById("navToggle").addEventListener("click", () => {
+      document.getElementById("navLinks").classList.toggle("open");
+    });
+
+    BHK.ensureSoapSamples();
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    let activeCat = "all";
+    const params = new URLSearchParams(location.search);
+    if (["baked", "soap", "bundle", "other"].includes(params.get("cat"))) {
+      activeCat = params.get("cat");
+    }
+
+    function productCard(p) {
+      const low = Number(p.quantityOnHand) <= 2;
+      const out = Number(p.quantityOnHand) <= 0;
+      return `
+        <article class="product-card">
+          <div class="product-image">${p.image ? `<img src="${p.image}" alt="${escapeHtml(p.name)}" />` : escapeHtml(BHK.categoryShort(p.category))}</div>
+          <div class="product-body">
+            <div style="display:flex;justify-content:space-between;gap:.5rem;align-items:start;">
+              <h2 style="margin:0;font-size:1.25rem;">${escapeHtml(p.name)}</h2>
+              <span class="badge">${escapeHtml(p.unit || "each")}</span>
+            </div>
+            <div><span class="badge">${escapeHtml(BHK.categoryShort(p.category))}</span></div>
+            <p class="muted" style="margin:0;">${escapeHtml(p.description || "")}</p>
+            ${p.allergens ? `<p style="margin:0;font-size:.9rem;"><strong>${BHK.normalizeCategory(p.category) === "soap" ? "Notes:" : "Allergens:"}</strong> ${escapeHtml(p.allergens)}</p>` : ""}
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:.75rem;margin-top:auto;">
+              <div>
+                <div class="price">${BHK.money(p.price)}</div>
+                <div class="muted" style="font-size:.85rem;">
+                  ${out ? '<span class="badge badge-danger">Sold out</span>' : low ? '<span class="badge badge-warn">Only a few left</span>' : '<span class="qty-pill">' + Number(p.quantityOnHand) + ' ready</span>'}
+                </div>
+              </div>
+              ${out
+                ? `<a class="btn btn-ghost btn-small" href="order.html?waitlist=${encodeURIComponent(p.id)}">Ask for next batch</a>`
+                : `<a class="btn btn-secondary btn-small" href="order.html?product=${encodeURIComponent(p.id)}">Order</a>`}
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function render() {
+      document.querySelectorAll("#categoryFilters [data-cat]").forEach((btn) => {
+        btn.classList.toggle("active", btn.getAttribute("data-cat") === activeCat);
+      });
+
+      const products = BHK.listProducts({
+        category: activeCat === "all" ? undefined : activeCat,
+      }).filter((p) => p.available);
+
+      const root = document.getElementById("productSections");
+      if (!products.length) {
+        root.innerHTML = '<div class="empty-state panel">No products in this category yet. Brenda can add them from Admin → Products.</div>';
+        return;
+      }
+
+      if (activeCat !== "all") {
+        root.innerHTML = `<div class="product-grid">${products.map(productCard).join("")}</div>`;
+        return;
+      }
+
+      const groups = [
+        { id: "baked", title: "Baked goods & foods" },
+        { id: "soap", title: "Handmade soap" },
+        { id: "bundle", title: "Gift boxes & bundles" },
+        { id: "other", title: "Other" },
+      ];
+      root.innerHTML = groups
+        .map((g) => {
+          const items = products.filter((p) => BHK.normalizeCategory(p.category) === g.id);
+          if (!items.length) return "";
+          return `<h2 class="category-section-title">${g.title}</h2><div class="product-grid">${items.map(productCard).join("")}</div>`;
+        })
+        .join("");
+    }
+
+    document.getElementById("categoryFilters").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-cat]");
+      if (!btn) return;
+      activeCat = btn.getAttribute("data-cat");
+      const url = new URL(location.href);
+      if (activeCat === "all") url.searchParams.delete("cat");
+      else url.searchParams.set("cat", activeCat);
+      history.replaceState({}, "", url);
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

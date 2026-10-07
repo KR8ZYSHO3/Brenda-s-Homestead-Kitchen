@@ -1,0 +1,14 @@
+# Dependencies / local tooling
+node_modules/
+package-lock.json
+package.json
+
+# Netlify local link state
+.netlify/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log

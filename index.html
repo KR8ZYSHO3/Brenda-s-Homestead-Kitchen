@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Brenda's Homestead Kitchen | McArthur, Ohio Cottage Foods</title>
+  <meta name="description" content="Homemade cottage foods and handcrafted soaps from Brenda Shoemaker in McArthur, Ohio." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css?v=goals-v13" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-row">
+      <a class="brand" href="index.html">
+        <span class="brand-script">Homestead</span>
+        <span class="brand-name">Brenda's Homestead Kitchen</span>
+      </a>
+      <button class="mobile-nav-toggle" type="button" id="navToggle" aria-label="Open menu">Menu</button>
+      <nav class="nav-links" id="navLinks">
+        <a class="active" href="index.html">Home</a>
+        <a href="products.html">Products</a>
+        <a href="order.html">Order</a>
+        <a href="admin/index.html">Admin</a>
+        <a class="btn btn-primary btn-small" href="order.html">Place an Order</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="marquee-band" aria-hidden="true">
+    <div class="marquee-track">
+      <span>McArthur, Ohio</span>
+      <span>Cottage Foods</span>
+      <span>Handmade Soap</span>
+      <span>Local Pickup</span>
+      <span>This product is home produced</span>
+      <span>McArthur, Ohio</span>
+      <span>Cottage Foods</span>
+      <span>Handmade Soap</span>
+      <span>Local Pickup</span>
+      <span>This product is home produced</span>
+    </div>
+  </div>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-card">
+          <span class="eyebrow">McArthur, Ohio · Foods &amp; Soap</span>
+          <h1>From the hearth to your hands</h1>
+          <p class="lead" id="tagline">
+            Homemade cottage foods and handcrafted soaps — baked, jarred, and poured with quiet care in the hills of southeastern Ohio.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="products.html">See What's Fresh</a>
+            <a class="btn btn-ghost" href="products.html?cat=soap">Shop Soap</a>
+            <a class="btn btn-ghost" href="order.html">Order for Pickup</a>
+          </div>
+          <p class="muted" style="margin-top:1.35rem;font-size:0.95rem;">
+            Cottage foods are labeled: <strong>“This product is home produced.”</strong>
+          </p>
+        </div>
+        <div class="hero-side">
+          <div class="hero-photo-card">
+            <img src="assets/homestead-hills.jpg?v=farmhouse-202610071643" alt="Rolling hills and pasture near McArthur, Ohio — the homestead landscape" width="2048" height="1542" />
+          </div>
+          <div class="panel side-card side-card--ink">
+            <h3>Meet Brenda</h3>
+            <p id="aboutText">
+              Hello! I'm Brenda Shoemaker. I bake approved Ohio cottage foods and craft handmade soaps right here at home in McArthur.
+            </p>
+          </div>
+          <div class="panel side-card">
+            <h3>Easy ordering</h3>
+            <p class="muted">Browse the kitchen, send a simple Google Form order, and pay with Venmo, Cash App, PayPal, Zelle, or cash at pickup.</p>
+            <p id="paymentHints" class="muted"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="feature-strip">
+          <article>
+            <strong>Ohio cottage foods</strong>
+            <span class="muted">Approved shelf-stable recipes, labeled the right way.</span>
+          </article>
+          <article>
+            <strong>Handmade soap</strong>
+            <span class="muted">Bars poured at home — ingredients listed for every scent.</span>
+          </article>
+          <article>
+            <strong>Pickup in McArthur</strong>
+            <span class="muted">Local only. Friendly, simple, no fuss.</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="quote-band" aria-label="Kitchen note">
+      <div class="container quote-band-inner">
+        <p class="quote-mark" aria-hidden="true">“</p>
+        <blockquote>
+          Quiet care from the hills of southeastern Ohio — baked, jarred, and poured the old way.
+        </blockquote>
+        <cite>— Brenda's Homestead Kitchen</cite>
+      </div>
+    </section>
+
+    <section class="section" id="featuredSection" style="display:none;">
+      <div class="container">
+        <div class="featured-drop panel">
+          <div>
+            <span class="eyebrow">Fresh this week</span>
+            <h2 id="featuredTitle">This week from the kitchen</h2>
+            <p class="lead" id="featuredNote" style="margin:0;"></p>
+          </div>
+          <a class="btn btn-primary" href="order.html">Order for pickup</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">From the kitchen</span>
+            <h2>Ready to order</h2>
+          </div>
+          <a href="products.html">View all products →</a>
+        </div>
+        <div class="ornament">Homemade · Honest · Local</div>
+        <div class="product-grid" id="homeProducts"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">How it works</span>
+            <h2>Three easy steps</h2>
+          </div>
+        </div>
+        <div class="steps-grid">
+          <div class="info-card panel">
+            <div class="step-num">01</div>
+            <h3>Pick your treats</h3>
+            <p class="muted">Browse foods and soaps — prices and stock are always up to date.</p>
+          </div>
+          <div class="info-card panel">
+            <div class="step-num">02</div>
+            <h3>Send your order</h3>
+            <p class="muted">Use the simple order form. Brenda gets it by email.</p>
+          </div>
+          <div class="info-card panel">
+            <div class="step-num">03</div>
+            <h3>Pay &amp; pick up</h3>
+            <p class="muted">Pay your way, then pick up fresh from McArthur.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer footer--ink">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand-script">Homestead</div>
+        <strong class="footer-brand">Brenda's Homestead Kitchen</strong>
+        <p>Brenda Shoemaker · McArthur, Ohio</p>
+      </div>
+      <div>
+        <h3>Visit</h3>
+        <p id="footerContact">Local pickup in McArthur, OH</p>
+      </div>
+      <div>
+        <h3>Quick links</h3>
+        <p><a href="products.html">Products</a></p>
+        <p><a href="order.html">Order</a></p>
+        <p><a href="admin/index.html">Owner admin</a></p>
+      </div>
+    </div>
+    <div class="container disclaimer">
+      Cottage foods: This product is home produced. Ohio cottage food sales are for in-state customers. Soap is offered separately from cottage food rules. Income from sales is taxable — Brenda tracks orders and expenses in her admin hub.
+    </div>
+  </footer>
+
+  <script src="js/store.js?v=goals-v13"></script>
+  <script>
+    (function () {
+      BHK.ensureSoapSamples();
+      const navToggle = document.getElementById("navToggle");
+      const navLinks = document.getElementById("navLinks");
+      navToggle.addEventListener("click", () => navLinks.classList.toggle("open"));
+
+      const settings = BHK.getStore().settings;
+      document.getElementById("tagline").textContent = settings.tagline || document.getElementById("tagline").textContent;
+      document.getElementById("aboutText").textContent = settings.about || document.getElementById("aboutText").textContent;
+
+      if (settings.featuredNote && String(settings.featuredNote).trim()) {
+        document.getElementById("featuredSection").style.display = "block";
+        document.getElementById("featuredTitle").textContent =
+          settings.featuredTitle || "This week from the kitchen";
+        document.getElementById("featuredNote").textContent = settings.featuredNote;
+      }
+
+      const pays = [];
+      if (settings.venmo) pays.push("Venmo: " + settings.venmo);
+      if (settings.cashapp) pays.push("Cash App: " + settings.cashapp);
+      if (settings.paypal) pays.push("PayPal: " + settings.paypal);
+      if (settings.zelle) pays.push("Zelle: " + settings.zelle);
+      document.getElementById("paymentHints").textContent = pays.length
+        ? pays.join(" · ")
+        : "Payment handles appear here once Brenda adds them in Admin → Settings.";
+
+      const contactBits = [];
+      if (settings.phone) contactBits.push(settings.phone);
+      if (settings.email) contactBits.push(settings.email);
+      document.getElementById("footerContact").textContent =
+        (contactBits.join(" · ") || "Local pickup in McArthur, OH") +
+        (settings.pickupNotes ? " — " + settings.pickupNotes : "");
+
+      const products = BHK.listProducts({ availableOnly: true }).slice(0, 3);
+      const grid = document.getElementById("homeProducts");
+      if (!products.length) {
+        grid.innerHTML = '<div class="empty-state panel">Products will show here after Brenda adds them in the admin page.</div>';
+        return;
+      }
+      grid.innerHTML = products.map((p) => `
+        <article class="product-card">
+          <div class="product-image">${p.image ? `<img src="${p.image}" alt="${escapeHtml(p.name)}" />` : escapeHtml(BHK.categoryShort(p.category))}</div>
+          <div class="product-body">
+            <div style="display:flex;justify-content:space-between;gap:.5rem;align-items:start;">
+              <h3 style="margin:0;font-size:1.45rem;">${escapeHtml(p.name)}</h3>
+              <span class="badge">${escapeHtml(BHK.categoryShort(p.category))}</span>
+            </div>
+            <p class="muted" style="margin:0;flex:1;">${escapeHtml(p.description || "")}</p>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:.75rem;margin-top:.4rem;">
+              <div class="price">${BHK.money(p.price)}</div>
+              <a class="btn btn-secondary btn-small" href="order.html?product=${encodeURIComponent(p.id)}">Order</a>
+            </div>
+          </div>
+        </article>
+      `).join("");
+
+      function escapeHtml(str) {
+        return String(str || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+    })();
+  </script>
+</body>
+</html>
