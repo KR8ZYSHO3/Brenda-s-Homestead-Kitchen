@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../css/styles.css?v=goals-v131" />
+  <link rel="stylesheet" href="../css/styles.css?v=goals-v132" />
 </head>
 <body>
   <div id="loginView" class="login-wrap">
@@ -44,6 +44,7 @@
       <nav class="admin-nav" id="adminNav">
         <button type="button" data-tab="dashboard" class="active">Home dashboard</button>
         <button type="button" data-tab="goals">Goals walkthrough</button>
+        <button type="button" data-tab="foodcosts">Food costs</button>
         <button type="button" data-tab="learn">Learn rules</button>
         <button type="button" data-tab="products">Products &amp; photos</button>
         <button type="button" data-tab="orders">Orders &amp; quantities</button>
@@ -119,6 +120,116 @@
           </p>
         </div>
         <div id="goalsPhases" class="goals-phases"></div>
+      </section>
+
+      <section id="tab-foodcosts" class="tabs-hidden">
+        <div class="admin-top">
+          <div>
+            <span class="eyebrow">Pricing basics</span>
+            <h1>Understand your food costs</h1>
+            <p class="muted">Know what a batch costs you before you pick a selling price. Read the example, then check each box when it makes sense.</p>
+          </div>
+        </div>
+
+        <div class="guide-grid">
+          <article class="panel guide-card">
+            <h3>Why this matters</h3>
+            <ul>
+              <li>If you only guess at prices, you can sell a lot and still lose money.</li>
+              <li><strong>Food cost</strong> is what the ingredients (and packaging for that batch) cost <em>you</em>.</li>
+              <li>Your selling price should cover food cost, a little for your time, and a bit of profit.</li>
+              <li>Soap works the same way — oils, lye, fragrance, and the wrapper all count.</li>
+            </ul>
+          </article>
+
+          <article class="panel guide-card">
+            <h3>Simple 3-step method</h3>
+            <ol class="foodcost-steps">
+              <li><strong>Batch cost</strong> — add up what you spent for this bake (or soap batch).</li>
+              <li><strong>Per-unit cost</strong> — divide batch cost by how many cookies, jars, loaves, or bars you got.</li>
+              <li><strong>Selling price</strong> — start around 2–3× the per-unit cost (or more if your time is high), then adjust for what neighbors will pay.</li>
+            </ol>
+            <p class="muted" style="margin-top:.8rem;">Rule of thumb only — McArthur market prices and your time matter too.</p>
+          </article>
+        </div>
+
+        <div class="panel cost-example" style="margin-top:1rem;">
+          <h2 style="font-size:1.25rem;">Example: one dozen cinnamon cookies</h2>
+          <p class="muted">Pretend numbers so the math is easy. Use your real receipt amounts when you price your own recipes.</p>
+          <div class="table-wrap" style="margin-top:.8rem;">
+            <table>
+              <thead>
+                <tr><th>What you used</th><th>What you paid</th><th>How much went into this batch</th><th>Cost in this batch</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Flour</td><td>$4.00 for a 5 lb bag</td><td>About 1/5 of the bag</td><td>$0.80</td></tr>
+                <tr><td>Butter</td><td>$4.50 per pound</td><td>Half a pound</td><td>$2.25</td></tr>
+                <tr><td>Sugar + cinnamon + eggs + vanilla</td><td>—</td><td>This batch</td><td>$1.45</td></tr>
+                <tr><td>Bag / twist ties</td><td>—</td><td>One dozen pack</td><td>$0.50</td></tr>
+                <tr><td colspan="3"><strong>Batch cost (12 cookies)</strong></td><td><strong>$5.00</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="cost-math" style="margin-top:1rem;">
+            <p><strong>Per cookie cost:</strong> $5.00 ÷ 12 = <strong>about $0.42 each</strong></p>
+            <p><strong>Per dozen cost:</strong> <strong>$5.00</strong></p>
+            <p><strong>Possible selling price:</strong> $8–$12 per dozen (covers ingredients, a little time, and profit). At $10/dozen you keep about $5 after food/packaging — that $5 is for your time and profit.</p>
+          </div>
+          <div class="notice" style="margin-top:1rem;">
+            Tip: when you buy flour or jars, log them under <strong>Taxes &amp; expenses</strong>. Then you can look back at real costs instead of guessing.
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:1rem;" id="foodCostUnderstandPanel">
+          <h2 style="font-size:1.25rem;">Check these when you understand</h2>
+          <p class="muted">These boxes save on this device. When all four are checked, your Goals walkthrough marks “Learn food costs” done.</p>
+          <ul class="understand-list" id="foodCostUnderstandList">
+            <li>
+              <label class="understand-check">
+                <input type="checkbox" data-goal-check="fc_know_batch" />
+                <span>
+                  <strong>I understand batch cost</strong>
+                  <span class="muted"> — add up the ingredients (and pack) used for one bake or soap batch.</span>
+                </span>
+              </label>
+            </li>
+            <li>
+              <label class="understand-check">
+                <input type="checkbox" data-goal-check="fc_know_unit" />
+                <span>
+                  <strong>I understand per-unit cost</strong>
+                  <span class="muted"> — divide batch cost by how many cookies, jars, loaves, or bars I made.</span>
+                </span>
+              </label>
+            </li>
+            <li>
+              <label class="understand-check">
+                <input type="checkbox" data-goal-check="fc_know_price" />
+                <span>
+                  <strong>I understand selling price</strong>
+                  <span class="muted"> — price should cover food cost, my time, and a little profit (often about 2–3× food cost as a starting point).</span>
+                </span>
+              </label>
+            </li>
+            <li>
+              <label class="understand-check">
+                <input type="checkbox" data-goal-check="fc_know_track" />
+                <span>
+                  <strong>I know where to track spending</strong>
+                  <span class="muted"> — log flour, jars, oils, and market fees under Taxes &amp; expenses.</span>
+                </span>
+              </label>
+            </li>
+          </ul>
+          <p class="notice" id="foodCostAllDone" style="display:none;margin-top:1rem;">
+            Nice work — food costs are checked off on your Goals walkthrough. Next, price a real product with your own numbers.
+          </p>
+          <div class="actions" style="margin-top:1rem;flex-wrap:wrap;">
+            <button type="button" class="btn btn-primary btn-small" data-goto-tab="goals">Back to Goals</button>
+            <button type="button" class="btn btn-secondary btn-small" data-goto-tab="taxes">Open Taxes &amp; expenses</button>
+            <button type="button" class="btn btn-ghost btn-small" data-goto-tab="products">Open Products</button>
+          </div>
+        </div>
       </section>
 
       <section id="tab-learn" class="tabs-hidden">
@@ -655,7 +766,7 @@
     </div>
   </div>
 
-  <script src="../js/store.js?v=goals-v131"></script>
-  <script src="../js/admin.js?v=goals-v131"></script>
+  <script src="../js/store.js?v=goals-v132"></script>
+  <script src="../js/admin.js?v=goals-v132"></script>
 </body>
 </html>

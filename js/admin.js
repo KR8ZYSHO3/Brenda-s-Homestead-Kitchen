@@ -94,6 +94,7 @@
     BHK.ensureSoapSamples();
     renderDashboard();
     renderGoals();
+    renderFoodCosts();
     renderProducts();
     renderOrders();
     renderTaxes();
@@ -237,9 +238,15 @@
     const next = goals.nextItem;
     const nextHint = document.getElementById("launchNextHint");
     if (nextHint) {
-      nextHint.innerHTML = next
-        ? "<strong>Next up:</strong> " + escapeHtml(next.label)
-        : "<strong>All goals checked.</strong> Keep updating stock and the weekly note.";
+      if (next) {
+        const go = next.href
+          ? `<a class="launch-link" href="${escapeHtml(next.href)}" target="_blank" rel="noopener">${escapeHtml(next.label)}</a>`
+          : `<button type="button" class="launch-link" data-goto-tab="${escapeHtml(next.tab || "goals")}">${escapeHtml(next.label)}</button>`;
+        nextHint.innerHTML = "<strong>Next up:</strong> " + go;
+      } else {
+        nextHint.innerHTML =
+          "<strong>All goals checked.</strong> Keep updating stock and the weekly note.";
+      }
     }
 
     // Dashboard shows next few incomplete goals only (full list lives on Goals tab)
@@ -249,7 +256,12 @@
           .map((c) => {
             const box = '<span class="box"></span>';
             const goTab = c.tab || "goals";
-            const label = `<button type="button" class="launch-link" data-goto-tab="${escapeHtml(goTab)}">${escapeHtml(c.label)}</button>`;
+            let label;
+            if (c.href) {
+              label = `<a class="launch-link" href="${escapeHtml(c.href)}" target="_blank" rel="noopener">${escapeHtml(c.label)}</a>`;
+            } else {
+              label = `<button type="button" class="launch-link" data-goto-tab="${escapeHtml(goTab)}">${escapeHtml(c.label)}</button>`;
+            }
             const kind =
               c.kind === "manual"
                 ? ' <span class="goal-kind">you check off</span>'
@@ -291,11 +303,15 @@
     const nextHint = document.getElementById("goalsNextHint");
     if (nextHint) {
       if (goals.nextItem) {
+        const n = goals.nextItem;
+        const go = n.href
+          ? `<a class="launch-link" href="${escapeHtml(n.href)}" target="_blank" rel="noopener">${escapeHtml(n.label)}</a>`
+          : `<button type="button" class="launch-link" data-goto-tab="${escapeHtml(n.tab || "goals")}">${escapeHtml(n.label)}</button>`;
         nextHint.innerHTML =
           "<strong>Next up:</strong> " +
-          escapeHtml(goals.nextItem.label) +
+          go +
           '<br /><span class="muted">' +
-          escapeHtml(goals.nextItem.why) +
+          escapeHtml(n.why) +
           "</span>";
       } else {
         nextHint.innerHTML =
@@ -329,10 +345,21 @@
               control = box;
             }
 
+            let titleHtml;
+            if (item.done) {
+              titleHtml = `<div class="goal-item-title">${escapeHtml(item.label)}</div>`;
+            } else if (item.href) {
+              titleHtml = `<a class="goal-item-title launch-link" href="${escapeHtml(item.href)}" target="_blank" rel="noopener">${escapeHtml(item.label)}</a>`;
+            } else if (item.tab) {
+              titleHtml = `<button type="button" class="goal-item-title launch-link" data-goto-tab="${escapeHtml(item.tab)}">${escapeHtml(item.label)}</button>`;
+            } else {
+              titleHtml = `<div class="goal-item-title">${escapeHtml(item.label)}</div>`;
+            }
+
             const actions = [];
             if (item.tab && !item.done) {
               actions.push(
-                `<button type="button" class="btn btn-ghost btn-small" data-goto-tab="${escapeHtml(item.tab)}">Open</button>`
+                `<button type="button" class="btn btn-primary btn-small" data-goto-tab="${escapeHtml(item.tab)}">Go there</button>`
               );
             }
             if (item.href) {
@@ -345,7 +372,7 @@
               <div class="goal-item-main">
                 <div class="goal-item-control">${control}</div>
                 <div class="goal-item-copy">
-                  <div class="goal-item-title">${escapeHtml(item.label)}</div>
+                  ${titleHtml}
                   <p class="muted goal-item-why">${escapeHtml(item.why)}</p>
                   ${actions.length ? `<div class="actions" style="margin-top:.45rem;">${actions.join("")}</div>` : ""}
                 </div>
@@ -372,6 +399,18 @@
       .join("");
   }
 
+  function renderFoodCosts() {
+    const list = document.getElementById("foodCostUnderstandList");
+    if (!list) return;
+    list.querySelectorAll("[data-goal-check]").forEach((input) => {
+      input.checked = BHK.isGoalChecked(input.getAttribute("data-goal-check"));
+    });
+    const keys = ["fc_know_batch", "fc_know_unit", "fc_know_price", "fc_know_track"];
+    const allDone = keys.every((k) => BHK.isGoalChecked(k));
+    const banner = document.getElementById("foodCostAllDone");
+    if (banner) banner.style.display = allDone ? "block" : "none";
+  }
+
   document.getElementById("launchPanel").addEventListener("click", (e) => {
     const btn = e.target.closest("[data-goto-tab]");
     if (!btn) return;
@@ -392,7 +431,34 @@
     BHK.setGoalChecked(input.getAttribute("data-goal-check"), input.checked);
     renderDashboard();
     renderGoals();
+    renderFoodCosts();
   });
+
+  const foodCostPanel = document.getElementById("foodCostUnderstandPanel");
+  if (foodCostPanel) {
+    foodCostPanel.addEventListener("change", (e) => {
+      const input = e.target.closest("[data-goal-check]");
+      if (!input) return;
+      BHK.setGoalChecked(input.getAttribute("data-goal-check"), input.checked);
+      renderFoodCosts();
+      renderDashboard();
+      renderGoals();
+    });
+    foodCostPanel.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-goto-tab]");
+      if (!btn) return;
+      activateTab(btn.getAttribute("data-goto-tab"));
+    });
+  }
+
+  const goalsSummary = document.querySelector(".goal-summary-panel");
+  if (goalsSummary) {
+    goalsSummary.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-goto-tab]");
+      if (!btn) return;
+      activateTab(btn.getAttribute("data-goto-tab"));
+    });
+  }
 
   function renderProducts() {
     const rows = BHK.listProducts({

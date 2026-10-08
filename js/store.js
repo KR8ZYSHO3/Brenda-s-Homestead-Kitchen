@@ -79,9 +79,9 @@
   const LIVE_SITE_URL = "https://kr8zysho3.github.io/Brenda-s-Homestead-Kitchen";
 
   /** Bump these when deploying so Brenda can confirm the live site updated */
-  const SITE_VERSION = "1.3.1";
-  const SITE_UPDATED_ISO = "2026-10-07T19:20:00-04:00";
-  const SITE_UPDATED_LABEL = "Oct 7, 2026 · 7:20 PM ET";
+  const SITE_VERSION = "1.3.2";
+  const SITE_UPDATED_ISO = "2026-10-07T20:05:00-04:00";
+  const SITE_UPDATED_LABEL = "Oct 7, 2026 · 8:05 PM ET";
 
   const SAMPLE_PRODUCTS = [
     {
@@ -215,19 +215,36 @@
     const hasAnyOrder = orders.length > 0;
     const hasExpense = expenses.length > 0;
 
-    function auto(id, done, label, why, tab) {
-      return { id, done: !!done, label, why, tab, kind: "auto" };
+    function auto(id, done, label, why, tab, href) {
+      return {
+        id,
+        done: !!done,
+        label,
+        why,
+        tab: tab || "",
+        href: href || "",
+        kind: "auto",
+      };
     }
-    function manual(id, label, why, href) {
+    function manual(id, label, why, tab, href) {
       return {
         id,
         done: isGoalChecked(id),
         label,
         why,
+        tab: tab || "",
         href: href || "",
         kind: "manual",
       };
     }
+
+    const foodCostLessonKeys = [
+      "fc_know_batch",
+      "fc_know_unit",
+      "fc_know_price",
+      "fc_know_track",
+    ];
+    const foodCostUnderstood = foodCostLessonKeys.every((key) => isGoalChecked(key));
 
     const phases = [
       {
@@ -301,7 +318,15 @@
           manual(
             "hide_samples",
             "Hide or delete sample products once your real ones are listed",
-            "Until you replace them, shoppers may think the demo items are for sale. In Products, hide or delete each sample."
+            "Until you replace them, shoppers may think the demo items are for sale. In Products, hide or delete each sample.",
+            "products"
+          ),
+          auto(
+            "understand_food_costs",
+            foodCostUnderstood,
+            "Learn food costs and check that you understand",
+            "Before you set prices, know what a batch costs you. Open Food costs, walk the example, and check each “I understand” box.",
+            "foodcosts"
           ),
         ],
       },
@@ -314,23 +339,27 @@
             "print_labels",
             "Print cottage-food labels with your address",
             "Every food package needs the required wording and your contact info. Use the Print food labels page.",
-            "/labels.html"
+            "",
+            "../labels.html"
           ),
           manual(
             "print_flyer",
             "Print a market flyer (with QR to your site)",
             "Tape one at the farmers market table, church board, or café. The flyer includes a QR code to your live site.",
-            "/flyer.html"
+            "",
+            "../flyer.html"
           ),
           manual(
             "share_link",
             "Text or email your site link to 5 local people",
-            "Friends, family, and coworkers are the easiest first customers. Ask them to share with one more person each."
+            "Friends, family, and coworkers are the easiest first customers. Ask them to share with one more person each.",
+            ""
           ),
           manual(
             "post_once",
             "Post once in a local Facebook / community group",
-            "Keep it simple: what you make, that it’s Ohio cottage food / handmade soap, pickup in McArthur, and your site link."
+            "Keep it simple: what you make, that it’s Ohio cottage food / handmade soap, pickup in McArthur, and your site link.",
+            ""
           ),
         ],
       },
@@ -356,12 +385,14 @@
           manual(
             "weekly_featured",
             "Update the homepage “this week” note after each new batch",
-            "A stale note makes the site feel closed. Fresh wording tells regulars there’s something new."
+            "A stale note makes the site feel closed. Fresh wording tells regulars there’s something new.",
+            "settings"
           ),
           manual(
             "ask_referral",
             "Ask one happy customer to tell a neighbor",
-            "Word of mouth in a small town beats ads. A simple “If you liked it, send a friend my way” works."
+            "Word of mouth in a small town beats ads. A simple “If you liked it, send a friend my way” works.",
+            "goals"
           ),
         ],
       },
@@ -380,18 +411,20 @@
           manual(
             "backup_once",
             "Download a backup after you add real products",
-            "Admin data lives in this browser. A backup file protects you if the phone clears storage or you switch devices."
+            "Admin data lives in this browser. A backup file protects you if the phone clears storage or you switch devices.",
+            "settings"
           ),
           manual(
             "read_learn",
             "Read the Learn rules tab once (foods + soap)",
             "Know what Ohio allows for cottage foods, what labels need, and that soap follows different rules than baked goods.",
-            ""
+            "learn"
           ),
           manual(
             "backup_habit",
             "Download a backup after every busy market weekend",
-            "Make it a habit: close the market table → open Admin → Download backup. Takes under a minute."
+            "Make it a habit: close the market table → open Admin → Download backup. Takes under a minute.",
+            "settings"
           ),
         ],
       },
@@ -403,15 +436,6 @@
         if (item.id === "hide_samples" && !sampleStillListed) {
           item.done = true;
           item.kind = "auto";
-        }
-        if (item.id === "read_learn") {
-          item.tab = "learn";
-        }
-        if (item.id === "backup_once" || item.id === "backup_habit") {
-          item.tab = "settings";
-        }
-        if (item.id === "weekly_featured") {
-          item.tab = "settings";
         }
       });
     });
