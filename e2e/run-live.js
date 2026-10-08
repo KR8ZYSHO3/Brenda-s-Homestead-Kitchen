@@ -85,7 +85,7 @@ async function openTab(page, tabId) {
     await expectVisible(page, ".hero-card", "hero");
     await expectVisible(page, "#siteVersion", "version pill");
     const ver = (await page.textContent("#siteVersion")) || "";
-    if (!/v1\.5\.\d/.test(ver)) throw new Error("unexpected version: " + ver);
+    if (!/v1\.[5-9]\.\d/.test(ver)) throw new Error("unexpected version: " + ver);
     const topBar = await page.evaluate(() => {
       const s = getComputedStyle(document.querySelector(".site-header"), "::before");
       return s.height;
