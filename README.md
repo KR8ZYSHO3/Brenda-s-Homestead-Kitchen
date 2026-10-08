@@ -34,6 +34,23 @@ Admin tools:
 5. Paste into Admin and Save — it embeds on `/order.html` and in the admin preview
 6. Keep the `/edit` link in the Edit field so Brenda can change questions anytime
 
+## End-to-end tests
+
+Live smoke suite (Playwright) against GitHub Pages:
+
+```bash
+cd C:\Projects\brenda-cottage
+node e2e/run-live.js
+```
+
+Optional base URL (local preview):
+
+```bash
+node e2e/run-live.js http://localhost:5173
+```
+
+Needs `playwright` installed once in this folder (`npm install playwright`). The suite uses a fresh browser profile, so it does not touch Brenda’s real admin data.
+
 ## Important: taxes
 
 Yes — cottage food income is still taxable.
