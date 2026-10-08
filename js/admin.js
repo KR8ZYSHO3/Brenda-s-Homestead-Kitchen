@@ -10,7 +10,7 @@
       .replace(/"/g, "&quot;");
   }
 
-  const MORE_TABS = { learn: true, taxes: true, howto: true };
+  const MORE_TABS = { learn: true, howto: true };
 
   function activateTab(tabId) {
     if (!tabId) return;
@@ -923,9 +923,11 @@
   initFoodCostExercise();
   initFoodCostCalculator();
 
-  document.getElementById("launchPanel").addEventListener("click", (e) => {
+  // One handler for every "go to tab" control (Home shortcuts, next card, Goals, etc.)
+  document.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-goto-tab]");
-    if (!btn) return;
+    if (!btn || btn.closest("#adminNav")) return;
+    e.preventDefault();
     activateTab(btn.getAttribute("data-goto-tab"));
   });
 
