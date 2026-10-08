@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../css/styles.css?v=goals-v163" />
+  <link rel="stylesheet" href="../css/styles.css?v=goals-v164" />
 </head>
 <body>
   <div id="loginView" class="login-wrap">
@@ -144,7 +144,7 @@
           <div>
             <span class="eyebrow">Pricing basics</span>
             <h1>Understand your food costs</h1>
-            <p class="muted">Know what a batch costs you before you pick a selling price. A kitchen scale makes this easy: weigh what went in, divide by what the whole package weighed, multiply by what you paid.</p>
+            <p class="muted">Know what a batch costs you before you pick a selling price. Save each recipe once, then next time you bake just update package prices or amounts — no starting from scratch.</p>
           </div>
         </div>
 
@@ -264,20 +264,33 @@
           </div>
         </div>
 
+        <div class="panel" style="margin-top:1rem;" id="savedRecipesPanel">
+          <span class="eyebrow">Recipe book</span>
+          <h2 style="font-size:1.25rem;margin:.2rem 0 0;">Saved recipes</h2>
+          <p class="muted">Open a recipe when you make that batch again. Change the package $ if the store price moved, tweak amounts if the batch was a little different, then recalculate and apply the new price.</p>
+          <div id="savedRecipesList" class="recipe-list" style="margin-top:.9rem;"></div>
+          <p class="muted" id="savedRecipesEmpty" style="margin-top:.75rem;">No saved recipes yet. Price a batch in the calculator below, give it a name, and click <strong>Save recipe</strong>.</p>
+        </div>
+
         <div class="panel" style="margin-top:1rem;" id="foodCostCalculatorPanel">
-          <span class="eyebrow">Your recipes</span>
-          <h2 style="font-size:1.25rem;margin:.2rem 0 0;">Price your own recipe</h2>
+          <span class="eyebrow">Calculator</span>
+          <h2 style="font-size:1.25rem;margin:.2rem 0 0;">Price a recipe</h2>
           <p class="muted">Default is <strong>by weight</strong>: package price, how big the package is, and how much the scale said you used. Switch to fraction only if you are estimating without a scale.</p>
 
+          <input type="hidden" id="fcCalcRecipeId" value="" />
           <div class="form-row" style="margin-top:.85rem;align-items:end;">
+            <label>Recipe name
+              <input type="text" id="fcCalcRecipeName" placeholder="e.g. Strawberry jam · dozen cinnamon cookies" />
+            </label>
             <label>How are you measuring?
               <select id="fcCalcMode">
                 <option value="weight" selected>By weight / count (recommended)</option>
                 <option value="fraction">By fraction of the package</option>
               </select>
             </label>
-            <p class="muted" id="fcCalcModeHint" style="margin:0 0 .35rem;">Use the same unit on each row for package size and amount used (usually oz).</p>
           </div>
+          <p class="muted" id="fcCalcModeHint" style="margin:.35rem 0 0;">Use the same unit on each row for package size and amount used (usually oz).</p>
+          <p class="notice" id="fcCalcEditingNotice" style="display:none;margin-top:.75rem;"></p>
 
           <div class="table-wrap" style="margin-top:.85rem;">
             <table class="foodcost-calc-table" id="fcCalcTable">
@@ -338,11 +351,14 @@
             </label>
           </div>
           <div class="actions" style="margin-top:.75rem;flex-wrap:wrap;">
+            <button type="button" class="btn btn-primary btn-small" id="fcCalcSaveRecipe">Save recipe</button>
+            <button type="button" class="btn btn-secondary btn-small" id="fcCalcSaveAsNew" hidden>Save as new recipe</button>
             <button type="button" class="btn btn-primary btn-small" id="fcCalcApply">Apply suggested price</button>
+            <button type="button" class="btn btn-ghost btn-small" id="fcCalcNewBlank">Clear / new recipe</button>
             <button type="button" class="btn btn-secondary btn-small" data-goto-tab="products">Open Products</button>
           </div>
           <p class="foodcost-ex-feedback" id="fcCalcFeedback" hidden></p>
-          <p class="muted" style="margin-top:.75rem;font-size:.9rem;">Tip: run this calculator once for each item you sell so every price covers ingredients, a little time, and profit.</p>
+          <p class="muted" style="margin-top:.75rem;font-size:.9rem;">Tip: save each recipe after you price it. Next market week, open it, update any new package prices, Save again, then Apply suggested price to the product.</p>
         </div>
 
         <div class="panel" style="margin-top:1rem;" id="foodCostUnderstandPanel">
@@ -740,6 +756,10 @@
             <p>Go to <strong>Products &amp; photos</strong>. Click Add product. Choose category <strong>Baked goods &amp; foods</strong> or <strong>Soap</strong>. Fill in name, price, quantity on hand, ingredients, allergens/sensitivities, and upload a picture. Turn Available on so shoppers can order it. Edit anytime — soaps work the same way as baked goods.</p>
           </article>
           <article class="panel guide-card">
+            <h3>Food costs &amp; saved recipes</h3>
+            <p>On <strong>Food costs</strong>, price a batch with the calculator, name it, and click <strong>Save recipe</strong>. Next time you make that item, open the saved recipe, update any new package prices or amounts, save again, and apply the suggested price to the product.</p>
+          </article>
+          <article class="panel guide-card">
             <h3>Google Order Form</h3>
             <p>Go to <strong>Google Order Form</strong>. Create the form in Google with the starter questions, paste the share link, and Save. Customers then order on the website through that Google Form. Edit questions anytime in Google — use the Edit link saved here.</p>
           </article>
@@ -757,7 +777,7 @@
           </article>
           <article class="panel guide-card">
             <h3>Backup</h3>
-            <p>In Settings, click <strong>Download backup</strong> every week or after a busy market day. This saves your products, orders, and expenses as a file on your computer.</p>
+            <p>In Settings, click <strong>Download backup</strong> every week or after a busy market day. This saves your products, orders, expenses, and saved recipes as a file on your computer.</p>
           </article>
           <article class="panel guide-card">
             <h3>Important note about this free version</h3>
@@ -1032,7 +1052,7 @@
     </div>
   </div>
 
-  <script src="../js/store.js?v=goals-v163"></script>
-  <script src="../js/admin.js?v=goals-v163"></script>
+  <script src="../js/store.js?v=goals-v164"></script>
+  <script src="../js/admin.js?v=goals-v164"></script>
 </body>
 </html>

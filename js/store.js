@@ -80,9 +80,9 @@
   const LIVE_SITE_URL = "https://kr8zysho3.github.io/Brenda-s-Homestead-Kitchen";
 
   /** Bump these when deploying so Brenda can confirm the live site updated */
-  const SITE_VERSION = "1.6.3";
-  const SITE_UPDATED_ISO = "2026-10-08T14:20:00-04:00";
-  const SITE_UPDATED_LABEL = "Oct 8, 2026 · 2:20 PM ET";
+  const SITE_VERSION = "1.6.4";
+  const SITE_UPDATED_ISO = "2026-10-08T17:55:00-04:00";
+  const SITE_UPDATED_LABEL = "Oct 8, 2026 · 5:55 PM ET";
 
   /**
    * Guided practice — strawberry jam priced by kitchen scale (ounces).
@@ -647,6 +647,7 @@
           products: SAMPLE_PRODUCTS.map((p) => ({ ...p })),
           orders: [],
           expenses: [],
+          recipes: [],
         };
         save(fresh);
         return fresh;
@@ -656,6 +657,7 @@
       data.products = (Array.isArray(data.products) ? data.products : []).map(normalizeProduct);
       data.orders = Array.isArray(data.orders) ? data.orders : [];
       data.expenses = Array.isArray(data.expenses) ? data.expenses : [];
+      data.recipes = (Array.isArray(data.recipes) ? data.recipes : []).map(normalizeRecipe);
       // Refresh stock marketing copy when Brenda still has the old defaults
       let marketingDirty = false;
       const legacyTaglines = [
@@ -683,6 +685,7 @@
         products: [],
         orders: [],
         expenses: [],
+        recipes: [],
       };
     }
   }
@@ -907,6 +910,73 @@
     save(data);
   }
 
+  function normalizeRecipe(recipe) {
+    const r = recipe || {};
+    const mode = r.mode === "fraction" ? "fraction" : "weight";
+    const lines = (Array.isArray(r.lines) ? r.lines : []).map((line) => ({
+      name: String((line && line.name) || "").trim(),
+      packageCost: Math.max(0, Number(line && line.packageCost) || 0),
+      packageSize: Math.max(0, Number(line && line.packageSize) || 0),
+      usedAmount: Math.max(0, Number(line && line.usedAmount) || 0),
+      unit: String((line && line.unit) || "oz"),
+      fraction: Math.max(0, Number(line && line.fraction) || 0),
+      mode,
+    }));
+    const packaging = Math.max(0, Number(r.packaging) || 0);
+    const yieldCount = Math.max(0, Number(r.yield) || 0);
+    const priced = calcFoodCost(lines, yieldCount, packaging);
+    return {
+      id: r.id || uid("recipe"),
+      name: String(r.name || "").trim() || "Untitled recipe",
+      mode,
+      lines,
+      packaging,
+      yield: yieldCount,
+      productId: r.productId ? String(r.productId) : "",
+      multiplier: [2, 2.5, 3].indexOf(Number(r.multiplier)) >= 0 ? Number(r.multiplier) : 2.5,
+      notes: String(r.notes || "").trim(),
+      batchCost: priced.batchCost,
+      perUnit: priced.perUnit,
+      createdAt: r.createdAt || Date.now(),
+      updatedAt: r.updatedAt || Date.now(),
+    };
+  }
+
+  function listRecipes() {
+    return load()
+      .recipes.slice()
+      .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+  }
+
+  function getRecipe(id) {
+    return listRecipes().find((r) => r.id === id) || null;
+  }
+
+  function upsertRecipe(recipe) {
+    const data = load();
+    if (!Array.isArray(data.recipes)) data.recipes = [];
+    const normalized = normalizeRecipe({
+      ...recipe,
+      updatedAt: Date.now(),
+      createdAt: recipe && recipe.createdAt ? recipe.createdAt : Date.now(),
+    });
+    const idx = data.recipes.findIndex((r) => r.id === normalized.id);
+    if (idx >= 0) {
+      normalized.createdAt = data.recipes[idx].createdAt || normalized.createdAt;
+      data.recipes[idx] = normalized;
+    } else {
+      data.recipes.unshift(normalized);
+    }
+    save(data);
+    return normalized;
+  }
+
+  function deleteRecipe(id) {
+    const data = load();
+    data.recipes = (data.recipes || []).filter((r) => r.id !== id);
+    save(data);
+  }
+
   function taxSummary(year) {
     const y = String(year || new Date().getFullYear());
     const orders = listOrders().filter((o) => {
@@ -1007,6 +1077,7 @@
             products: Array.isArray(data.products) ? data.products : [],
             orders: Array.isArray(data.orders) ? data.orders : [],
             expenses: Array.isArray(data.expenses) ? data.expenses : [],
+            recipes: (Array.isArray(data.recipes) ? data.recipes : []).map(normalizeRecipe),
           });
           resolve(true);
         } catch (e) {
@@ -1060,6 +1131,10 @@
     FOOD_COST_UNITS,
     calcFoodCost,
     lineCostFromWeight,
+    listRecipes,
+    getRecipe,
+    upsertRecipe,
+    deleteRecipe,
     moneyClose,
     LIVE_SITE_URL,
     SITE_VERSION,

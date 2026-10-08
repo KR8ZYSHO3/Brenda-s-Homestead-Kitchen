@@ -962,6 +962,177 @@
     if (current) select.value = current;
   }
 
+  function syncFcRecipeEditingUi() {
+    const id = document.getElementById("fcCalcRecipeId")?.value || "";
+    const notice = document.getElementById("fcCalcEditingNotice");
+    const saveAsNew = document.getElementById("fcCalcSaveAsNew");
+    const name = (document.getElementById("fcCalcRecipeName")?.value || "").trim();
+    if (notice) {
+      if (id) {
+        notice.style.display = "block";
+        notice.innerHTML =
+          "Editing saved recipe" +
+          (name ? ": <strong>" + escapeHtml(name) + "</strong>" : "") +
+          ". Change package prices or amounts, then <strong>Save recipe</strong> to update it.";
+      } else {
+        notice.style.display = "none";
+        notice.textContent = "";
+      }
+    }
+    if (saveAsNew) saveAsNew.hidden = !id;
+  }
+
+  function renderSavedRecipes() {
+    const list = document.getElementById("savedRecipesList");
+    const empty = document.getElementById("savedRecipesEmpty");
+    if (!list) return;
+    const recipes = BHK.listRecipes();
+    if (empty) empty.style.display = recipes.length ? "none" : "block";
+    if (!recipes.length) {
+      list.innerHTML = "";
+      return;
+    }
+    const activeId = document.getElementById("fcCalcRecipeId")?.value || "";
+    list.innerHTML = recipes
+      .map((r) => {
+        const product = r.productId ? BHK.getProduct(r.productId) : null;
+        const meta = [
+          r.lines.length + (r.lines.length === 1 ? " ingredient" : " ingredients"),
+          r.yield ? r.yield + " units" : null,
+          r.perUnit ? "≈ " + BHK.money(r.perUnit) + " food cost" : null,
+          product ? "→ " + product.name : null,
+        ]
+          .filter(Boolean)
+          .join(" · ");
+        const active = r.id === activeId ? " recipe-card--active" : "";
+        return `
+        <article class="recipe-card${active}" data-recipe-id="${escapeHtml(r.id)}">
+          <div class="recipe-card-body">
+            <h3>${escapeHtml(r.name)}</h3>
+            <p class="muted">${escapeHtml(meta)}</p>
+          </div>
+          <div class="recipe-card-actions">
+            <button type="button" class="btn btn-secondary btn-small" data-recipe-load="${escapeHtml(
+              r.id
+            )}">Open</button>
+            <button type="button" class="btn btn-ghost btn-small" data-recipe-delete="${escapeHtml(
+              r.id
+            )}">Delete</button>
+          </div>
+        </article>`;
+      })
+      .join("");
+  }
+
+  function loadRecipeIntoCalculator(recipeId) {
+    const recipe = BHK.getRecipe(recipeId);
+    if (!recipe) {
+      setFcFeedback("fcCalcFeedback", "That recipe was not found.", "bad");
+      return;
+    }
+    const modeEl = document.getElementById("fcCalcMode");
+    if (modeEl) modeEl.value = recipe.mode === "fraction" ? "fraction" : "weight";
+    document.getElementById("fcCalcRecipeId").value = recipe.id;
+    document.getElementById("fcCalcRecipeName").value = recipe.name || "";
+    document.getElementById("fcCalcPackaging").value = recipe.packaging || 0;
+    document.getElementById("fcCalcYield").value = recipe.yield || 1;
+    const mult = document.getElementById("fcCalcMultiplier");
+    if (mult) mult.value = String(recipe.multiplier || 2.5);
+    fillFcCalcProducts();
+    const productSelect = document.getElementById("fcCalcProduct");
+    if (productSelect) productSelect.value = recipe.productId || "";
+    const tbody = document.getElementById("fcCalcRows");
+    if (tbody) tbody.innerHTML = "";
+    syncFcCalcModeUi();
+    if (recipe.lines && recipe.lines.length) {
+      recipe.lines.forEach((line) => addFcCalcRow(line));
+    } else {
+      addFcCalcRow();
+    }
+    syncFcRecipeEditingUi();
+    renderSavedRecipes();
+    updateFcCalculator();
+    setFcFeedback(
+      "fcCalcFeedback",
+      "Opened “" +
+        recipe.name +
+        "”. Update any new package prices or amounts, Save recipe, then Apply suggested price if you want.",
+      "ok"
+    );
+    document.getElementById("foodCostCalculatorPanel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function clearFcCalculatorBlank() {
+    document.getElementById("fcCalcRecipeId").value = "";
+    document.getElementById("fcCalcRecipeName").value = "";
+    document.getElementById("fcCalcPackaging").value = "0";
+    document.getElementById("fcCalcYield").value = "12";
+    const modeEl = document.getElementById("fcCalcMode");
+    if (modeEl) modeEl.value = "weight";
+    const productSelect = document.getElementById("fcCalcProduct");
+    if (productSelect) productSelect.value = "";
+    const tbody = document.getElementById("fcCalcRows");
+    if (tbody) tbody.innerHTML = "";
+    syncFcCalcModeUi();
+    addFcCalcRow({ name: "", packageCost: "", packageSize: "", usedAmount: "", unit: "oz" });
+    syncFcRecipeEditingUi();
+    renderSavedRecipes();
+    updateFcCalculator();
+    setFcFeedback("fcCalcFeedback", "Calculator cleared. Enter a new batch, then Save recipe.", "ok");
+  }
+
+  function collectRecipeFromCalculator(forceNew) {
+    const name = (document.getElementById("fcCalcRecipeName")?.value || "").trim();
+    if (!name) {
+      setFcFeedback("fcCalcFeedback", "Give the recipe a name before saving (example: Strawberry jam).", "bad");
+      return null;
+    }
+    const lines = snapshotFcCalcRows().map((row) => ({
+      ...row,
+      mode: getFcCalcMode(),
+    }));
+    const namedLines = lines.filter((l) => String(l.name || "").trim());
+    if (!namedLines.length) {
+      setFcFeedback("fcCalcFeedback", "Add at least one ingredient with a name before saving.", "bad");
+      return null;
+    }
+    const existingId = document.getElementById("fcCalcRecipeId")?.value || "";
+    const existing = existingId && !forceNew ? BHK.getRecipe(existingId) : null;
+    return {
+      id: forceNew || !existing ? undefined : existing.id,
+      createdAt: existing ? existing.createdAt : undefined,
+      name,
+      mode: getFcCalcMode(),
+      lines: namedLines,
+      packaging: document.getElementById("fcCalcPackaging")?.value,
+      yield: document.getElementById("fcCalcYield")?.value,
+      productId: document.getElementById("fcCalcProduct")?.value || "",
+      multiplier: Number(document.getElementById("fcCalcMultiplier")?.value) || 2.5,
+    };
+  }
+
+  function saveRecipeFromCalculator(forceNew) {
+    const payload = collectRecipeFromCalculator(!!forceNew);
+    if (!payload) return null;
+    const saved = BHK.upsertRecipe(payload);
+    document.getElementById("fcCalcRecipeId").value = saved.id;
+    document.getElementById("fcCalcRecipeName").value = saved.name;
+    syncFcRecipeEditingUi();
+    renderSavedRecipes();
+    setFcFeedback(
+      "fcCalcFeedback",
+      (forceNew ? "Saved as new recipe: " : "Saved recipe: ") +
+        saved.name +
+        " (batch " +
+        BHK.money(saved.batchCost) +
+        ", about " +
+        BHK.money(saved.perUnit) +
+        " per unit).",
+      "ok"
+    );
+    return saved;
+  }
+
   function initFoodCostCalculator() {
     const panel = document.getElementById("foodCostCalculatorPanel");
     if (!panel) return;
@@ -973,6 +1144,8 @@
     syncFcCalcModeUi();
     fillFcCalcProducts();
     updateFcCalculator();
+    renderSavedRecipes();
+    syncFcRecipeEditingUi();
 
     document.getElementById("fcCalcAddRow").addEventListener("click", () => addFcCalcRow());
     document.getElementById("fcCalcPackaging").addEventListener("input", updateFcCalculator);
@@ -983,6 +1156,35 @@
         syncFcCalcModeUi();
         rebuildFcCalcRowsForMode();
         updateFcCalculator();
+      });
+    }
+    document.getElementById("fcCalcRecipeName")?.addEventListener("input", syncFcRecipeEditingUi);
+    document.getElementById("fcCalcSaveRecipe")?.addEventListener("click", () => saveRecipeFromCalculator(false));
+    document.getElementById("fcCalcSaveAsNew")?.addEventListener("click", () => saveRecipeFromCalculator(true));
+    document.getElementById("fcCalcNewBlank")?.addEventListener("click", () => clearFcCalculatorBlank());
+
+    const recipesPanel = document.getElementById("savedRecipesPanel");
+    if (recipesPanel) {
+      recipesPanel.addEventListener("click", (e) => {
+        const loadBtn = e.target.closest("[data-recipe-load]");
+        if (loadBtn) {
+          loadRecipeIntoCalculator(loadBtn.getAttribute("data-recipe-load"));
+          return;
+        }
+        const delBtn = e.target.closest("[data-recipe-delete]");
+        if (delBtn) {
+          const id = delBtn.getAttribute("data-recipe-delete");
+          const recipe = BHK.getRecipe(id);
+          if (!recipe) return;
+          if (!confirm('Delete saved recipe "' + recipe.name + '"? This cannot be undone.')) return;
+          BHK.deleteRecipe(id);
+          if (document.getElementById("fcCalcRecipeId")?.value === id) {
+            document.getElementById("fcCalcRecipeId").value = "";
+            syncFcRecipeEditingUi();
+          }
+          renderSavedRecipes();
+          setFcFeedback("fcCalcFeedback", "Deleted “" + recipe.name + "”.", "ok");
+        }
       });
     }
 
@@ -1030,14 +1232,27 @@
       }
       BHK.upsertProduct({ ...product, price });
       BHK.setGoalChecked("fc_priced_one", true);
+      // Keep the open recipe linked to this product if it has a name
+      const recipeName = (document.getElementById("fcCalcRecipeName")?.value || "").trim();
+      if (recipeName) {
+        const linked = collectRecipeFromCalculator(false);
+        if (linked) {
+          linked.productId = productId;
+          const saved = BHK.upsertRecipe(linked);
+          document.getElementById("fcCalcRecipeId").value = saved.id;
+          syncFcRecipeEditingUi();
+        }
+      }
       fillFcCalcProducts();
+      renderSavedRecipes();
       setFcFeedback(
         "fcCalcFeedback",
         "Updated " +
           product.name +
           " to " +
           BHK.money(price) +
-          ". Goals marks “Price one real product with the calculator” done. Repeat for each item you sell.",
+          ". Goals marks “Price one real product with the calculator” done." +
+          (recipeName ? " Recipe saved with this product linked." : ""),
         "ok"
       );
       renderDashboard();
@@ -1065,6 +1280,8 @@
     const banner = document.getElementById("foodCostAllDone");
     if (banner) banner.style.display = allDone ? "block" : "none";
     fillFcCalcProducts();
+    renderSavedRecipes();
+    syncFcRecipeEditingUi();
   }
 
   initFoodCostExercise();
