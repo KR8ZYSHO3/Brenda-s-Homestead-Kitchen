@@ -10,24 +10,6 @@
       .replace(/"/g, "&quot;");
   }
 
-  function showApp() {
-    loginView.style.display = "none";
-    loginView.setAttribute("hidden", "");
-    loginView.style.pointerEvents = "none";
-    adminView.style.display = "grid";
-    adminView.removeAttribute("hidden");
-    adminView.style.pointerEvents = "auto";
-    refreshAll();
-  }
-
-  function showLogin() {
-    adminView.style.display = "none";
-    adminView.setAttribute("hidden", "");
-    loginView.style.display = "grid";
-    loginView.removeAttribute("hidden");
-    loginView.style.pointerEvents = "auto";
-  }
-
   function activateTab(tabId) {
     if (!tabId) return;
     const panel = document.getElementById("tab-" + tabId);
@@ -45,8 +27,76 @@
     }
   }
 
-  if (BHK.isAdminLoggedIn()) showApp();
-  else showLogin();
+  // Bind sidebar tabs BEFORE showApp/refreshAll. If refresh throws while already
+  // logged in, listeners must still be attached or the left nav stays dead.
+  const adminNav = document.getElementById("adminNav");
+  function bindAdminTabs() {
+    if (!adminNav) return;
+    adminNav.querySelectorAll("button[data-tab]").forEach((btn) => {
+      btn.setAttribute("type", "button");
+      btn.setAttribute("role", "tab");
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        activateTab(btn.dataset.tab);
+      });
+    });
+    adminNav.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-tab]");
+      if (!btn || !adminNav.contains(btn)) return;
+      e.preventDefault();
+      activateTab(btn.dataset.tab);
+    });
+  }
+  bindAdminTabs();
+  // Document capture fallback — survives overlay / bubbling quirks
+  document.addEventListener(
+    "click",
+    (e) => {
+      const btn = e.target.closest("#adminNav button[data-tab]");
+      if (!btn) return;
+      e.preventDefault();
+      activateTab(btn.dataset.tab);
+    },
+    true
+  );
+
+  let adminProductFilter = "all";
+
+  function refreshAll() {
+    BHK.ensureSoapSamples();
+    renderDashboard();
+    renderGoals();
+    renderFoodCosts();
+    renderProducts();
+    renderOrders();
+    renderTaxes();
+    fillSettings();
+    fillGoogleFormSettings();
+    fillManualProducts();
+  }
+
+  function showApp() {
+    loginView.style.display = "none";
+    loginView.setAttribute("hidden", "");
+    loginView.style.pointerEvents = "none";
+    adminView.style.display = "grid";
+    adminView.removeAttribute("hidden");
+    adminView.style.pointerEvents = "auto";
+    try {
+      refreshAll();
+    } catch (err) {
+      console.error("Admin refresh failed:", err);
+    }
+  }
+
+  function showLogin() {
+    adminView.style.display = "none";
+    adminView.setAttribute("hidden", "");
+    loginView.style.display = "grid";
+    loginView.removeAttribute("hidden");
+    loginView.style.pointerEvents = "auto";
+  }
 
   document.getElementById("loginForm").addEventListener("submit", (e) => {
     e.preventDefault();
@@ -63,24 +113,6 @@
     showLogin();
   });
 
-  // Tabs — bind each button directly so clicks never miss
-  const adminNav = document.getElementById("adminNav");
-  adminNav.querySelectorAll("button[data-tab]").forEach((btn) => {
-    btn.setAttribute("type", "button");
-    btn.setAttribute("role", "tab");
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      activateTab(btn.dataset.tab);
-    });
-  });
-  adminNav.addEventListener("click", (e) => {
-    const btn = e.target.closest("button[data-tab]");
-    if (!btn) return;
-    e.preventDefault();
-    activateTab(btn.dataset.tab);
-  });
-
   // Modal close
   document.querySelectorAll("[data-close]").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -88,20 +120,8 @@
     });
   });
 
-  let adminProductFilter = "all";
-
-  function refreshAll() {
-    BHK.ensureSoapSamples();
-    renderDashboard();
-    renderGoals();
-    renderFoodCosts();
-    renderProducts();
-    renderOrders();
-    renderTaxes();
-    fillSettings();
-    fillGoogleFormSettings();
-    fillManualProducts();
-  }
+  if (BHK.isAdminLoggedIn()) showApp();
+  else showLogin();
 
   function fillGoogleFormSettings() {
     const s = BHK.getStore().settings;

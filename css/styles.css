@@ -1057,6 +1057,14 @@ th {
     var(--cream);
 }
 
+/* When signed in, login must never sit on top of the sidebar and eat clicks */
+#loginView[hidden],
+.login-wrap[hidden] {
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden;
+}
+
 .login-card {
   width: min(440px, 100%);
   padding: 2rem;
