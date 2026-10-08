@@ -1600,6 +1600,22 @@ a.goal-item-title.launch-link {
   background: var(--cream-deep);
 }
 
+.foodcost-ex-line--weight {
+  grid-template-columns: 1.45fr 7.5rem 6.5rem;
+}
+
+.foodcost-ex-line-cost {
+  display: grid;
+  gap: 0.15rem;
+  align-content: end;
+}
+
+.foodcost-ex-line-cost strong {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--forest);
+}
+
 .foodcost-ex-line .muted {
   font-size: 0.88rem;
   margin: 0.2rem 0 0;
@@ -1644,9 +1660,14 @@ a.goal-item-title.launch-link {
   vertical-align: middle;
 }
 
-.foodcost-calc-table input {
+.foodcost-calc-table input,
+.foodcost-calc-table select {
   width: 100%;
   min-width: 4.5rem;
+}
+
+.foodcost-calc-table .fc-calc-unit {
+  min-width: 4.25rem;
 }
 
 .foodcost-calc-results {
@@ -1674,7 +1695,8 @@ a.goal-item-title.launch-link {
 }
 
 @media (max-width: 900px) {
-  .foodcost-ex-line {
+  .foodcost-ex-line,
+  .foodcost-ex-line--weight {
     grid-template-columns: 1fr;
   }
 

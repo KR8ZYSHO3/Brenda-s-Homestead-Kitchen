@@ -484,6 +484,10 @@
     if (progress) progress.textContent = "Step " + step + " of 4";
   }
 
+  function fcExLineCost(line, usedRaw) {
+    return BHK.lineCostFromWeight(line.packageCost, line.packageSize, usedRaw);
+  }
+
   function buildFcExLines() {
     const ex = BHK.FOOD_COST_EXERCISE;
     const wrap = document.getElementById("fcExLines");
@@ -492,20 +496,34 @@
       .map((line) => {
         const val =
           fcExState.lineAnswers[line.id] != null ? fcExState.lineAnswers[line.id] : "";
-        return `<div class="foodcost-ex-line">
+        const unit = line.unit || "oz";
+        const usedLabel = unit === "each" ? "How many used" : "Used (" + unit + ")";
+        const cost = fcExLineCost(line, val);
+        return `<div class="foodcost-ex-line foodcost-ex-line--weight">
           <div>
             <strong>${escapeHtml(line.label)}</strong>
+            <p class="muted">Package: ${BHK.money(line.packageCost)} for ${escapeHtml(
+              String(line.packageSize)
+            )} ${escapeHtml(unit)}</p>
             <p class="muted" data-fc-hint="${escapeHtml(line.id)}" hidden>${escapeHtml(line.hint)}</p>
           </div>
-          <label>Cost in batch ($)
+          <label>${escapeHtml(usedLabel)}
             <input type="number" min="0" step="0.01" data-fc-line="${escapeHtml(line.id)}" value="${escapeHtml(val)}" />
           </label>
+          <div class="foodcost-ex-line-cost">
+            <span class="muted">Cost in batch</span>
+            <strong data-fc-line-cost="${escapeHtml(line.id)}">${BHK.money(cost)}</strong>
+          </div>
         </div>`;
       })
       .join("");
     wrap.querySelectorAll("[data-fc-line]").forEach((input) => {
       input.addEventListener("input", () => {
-        fcExState.lineAnswers[input.getAttribute("data-fc-line")] = input.value;
+        const id = input.getAttribute("data-fc-line");
+        fcExState.lineAnswers[id] = input.value;
+        const line = ex.lines.find((l) => l.id === id);
+        const costEl = wrap.querySelector('[data-fc-line-cost="' + id + '"]');
+        if (line && costEl) costEl.textContent = BHK.money(fcExLineCost(line, input.value));
         updateFcExBatchLive();
       });
     });
@@ -516,7 +534,7 @@
     const ex = BHK.FOOD_COST_EXERCISE;
     let total = 0;
     ex.lines.forEach((line) => {
-      total += Number(fcExState.lineAnswers[line.id]) || 0;
+      total += fcExLineCost(line, fcExState.lineAnswers[line.id]);
     });
     return Math.round(total * 100) / 100;
   }
@@ -566,20 +584,25 @@
 
     document.getElementById("fcExFill1").addEventListener("click", () => {
       ex.lines.forEach((line) => {
-        fcExState.lineAnswers[line.id] = String(line.answer);
+        fcExState.lineAnswers[line.id] = String(line.usedAnswer);
       });
       buildFcExLines();
       document.querySelectorAll("[data-fc-hint]").forEach((el) => {
         el.hidden = false;
       });
-      setFcFeedback("fcExFeedback1", "Filled with the correct line costs. Click Check step 1.", "ok");
+      setFcFeedback(
+        "fcExFeedback1",
+        "Filled with the correct amounts used. Click Check step 1.",
+        "ok"
+      );
     });
 
     document.getElementById("fcExCheck1").addEventListener("click", () => {
       const misses = [];
+      const amtTol = ex.amountTolerance != null ? ex.amountTolerance : 0.05;
       ex.lines.forEach((line) => {
         const got = Number(fcExState.lineAnswers[line.id]);
-        if (!BHK.moneyClose(got, line.answer, ex.moneyTolerance)) {
+        if (!BHK.moneyClose(got, line.usedAnswer, amtTol)) {
           misses.push(line.label);
         }
       });
@@ -587,20 +610,24 @@
       if (misses.length) {
         setFcFeedback(
           "fcExFeedback1",
-          "Not quite — check: " +
+          "Not quite — check the amount used for: " +
             misses.join(", ") +
-            ". Your total is " +
+            ". Your dollar total is " +
             BHK.money(total) +
             "; it should be about " +
             BHK.money(ex.batchTotal) +
-            ". Use Show hints or Fill correct numbers if stuck.",
+            ". Use Show hints or Fill correct amounts if stuck.",
           "bad"
         );
         return;
       }
       fcExState.batch = Math.round(total * 100) / 100;
       document.getElementById("fcExBatchLocked").textContent = BHK.money(fcExState.batch);
-      setFcFeedback("fcExFeedback1", "Batch cost looks right: " + BHK.money(fcExState.batch) + ".", "ok");
+      setFcFeedback(
+        "fcExFeedback1",
+        "Amounts look right. Batch cost: " + BHK.money(fcExState.batch) + ".",
+        "ok"
+      );
       showFcExStep(2);
       setFcFeedback("fcExFeedback2", "");
       const yieldInput = document.getElementById("fcExYield");
@@ -747,12 +774,45 @@
     });
   }
 
+  function getFcCalcMode() {
+    const el = document.getElementById("fcCalcMode");
+    return el && el.value === "fraction" ? "fraction" : "weight";
+  }
+
+  function syncFcCalcModeUi() {
+    const mode = getFcCalcMode();
+    const headW = document.getElementById("fcCalcHeadWeight");
+    const headF = document.getElementById("fcCalcHeadFraction");
+    const hint = document.getElementById("fcCalcModeHint");
+    if (headW) headW.hidden = mode !== "weight";
+    if (headF) headF.hidden = mode !== "fraction";
+    if (hint) {
+      hint.textContent =
+        mode === "weight"
+          ? "Use the same unit on each row for package size and amount used (usually oz)."
+          : "Fraction is a decimal of the package: 0.25 means one quarter of the bag.";
+    }
+    document.querySelectorAll("#fcCalcRows tr").forEach((tr) => {
+      tr.querySelectorAll(".fc-calc-weight-only").forEach((el) => {
+        el.hidden = mode !== "weight";
+      });
+      tr.querySelectorAll(".fc-calc-fraction-only").forEach((el) => {
+        el.hidden = mode !== "fraction";
+      });
+    });
+  }
+
   function readFcCalcLines() {
+    const mode = getFcCalcMode();
     const rows = [];
     document.querySelectorAll("#fcCalcRows tr").forEach((tr) => {
       rows.push({
+        mode,
         name: tr.querySelector(".fc-calc-name")?.value || "",
         packageCost: tr.querySelector(".fc-calc-package")?.value,
+        packageSize: tr.querySelector(".fc-calc-size")?.value,
+        usedAmount: tr.querySelector(".fc-calc-used")?.value,
+        unit: tr.querySelector(".fc-calc-unit")?.value || "oz",
         fraction: tr.querySelector(".fc-calc-fraction")?.value,
       });
     });
@@ -781,26 +841,61 @@
     return result;
   }
 
+  function fcUnitOptions(selected) {
+    const units = BHK.FOOD_COST_UNITS || [
+      { value: "oz", label: "oz" },
+      { value: "lb", label: "lb" },
+      { value: "g", label: "g" },
+      { value: "each", label: "each" },
+    ];
+    const cur = selected || "oz";
+    return units
+      .map(
+        (u) =>
+          `<option value="${escapeHtml(u.value)}"${u.value === cur ? " selected" : ""}>${escapeHtml(
+            u.label
+          )}</option>`
+      )
+      .join("");
+  }
+
   function addFcCalcRow(preset) {
     const tbody = document.getElementById("fcCalcRows");
     if (!tbody) return;
+    const mode = getFcCalcMode();
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td><input class="fc-calc-name" type="text" placeholder="Flour" value="${escapeHtml(
         (preset && preset.name) || ""
       )}" /></td>
       <td><input class="fc-calc-package" type="number" min="0" step="0.01" value="${escapeHtml(
-        preset && preset.packageCost != null ? preset.packageCost : ""
+        preset && preset.packageCost != null ? String(preset.packageCost) : ""
       )}" /></td>
-      <td><input class="fc-calc-fraction" type="number" min="0" max="1" step="0.01" value="${escapeHtml(
-        preset && preset.fraction != null ? preset.fraction : ""
-      )}" /></td>
+      <td class="fc-calc-weight-only" ${mode !== "weight" ? "hidden" : ""}>
+        <input class="fc-calc-size" type="number" min="0" step="0.01" placeholder="80" value="${escapeHtml(
+          preset && preset.packageSize != null ? String(preset.packageSize) : ""
+        )}" />
+      </td>
+      <td class="fc-calc-weight-only" ${mode !== "weight" ? "hidden" : ""}>
+        <select class="fc-calc-unit">${fcUnitOptions(preset && preset.unit)}</select>
+      </td>
+      <td class="fc-calc-weight-only" ${mode !== "weight" ? "hidden" : ""}>
+        <input class="fc-calc-used" type="number" min="0" step="0.01" placeholder="16" value="${escapeHtml(
+          preset && preset.usedAmount != null ? String(preset.usedAmount) : ""
+        )}" />
+      </td>
+      <td class="fc-calc-fraction-only" ${mode !== "fraction" ? "hidden" : ""}>
+        <input class="fc-calc-fraction" type="number" min="0" max="5" step="0.01" placeholder="0.25" value="${escapeHtml(
+          preset && preset.fraction != null ? String(preset.fraction) : ""
+        )}" />
+      </td>
       <td class="fc-calc-line">$0.00</td>
       <td><button type="button" class="btn btn-ghost btn-small fc-calc-remove">Remove</button></td>
     `;
     tbody.appendChild(tr);
-    tr.querySelectorAll("input").forEach((input) => {
+    tr.querySelectorAll("input, select").forEach((input) => {
       input.addEventListener("input", updateFcCalculator);
+      input.addEventListener("change", updateFcCalculator);
     });
     tr.querySelector(".fc-calc-remove").addEventListener("click", () => {
       if (tbody.children.length <= 1) return;
@@ -808,6 +903,45 @@
       updateFcCalculator();
     });
     updateFcCalculator();
+  }
+
+  function snapshotFcCalcRows() {
+    const rows = [];
+    document.querySelectorAll("#fcCalcRows tr").forEach((tr) => {
+      const packageCost = Number(tr.querySelector(".fc-calc-package")?.value) || 0;
+      const packageSize = Number(tr.querySelector(".fc-calc-size")?.value) || 0;
+      const usedAmount = Number(tr.querySelector(".fc-calc-used")?.value) || 0;
+      let fraction = Number(tr.querySelector(".fc-calc-fraction")?.value) || 0;
+      if (!(fraction > 0) && packageSize > 0 && usedAmount > 0) {
+        fraction = Math.round((usedAmount / packageSize) * 1000) / 1000;
+      }
+      let used = usedAmount;
+      if (!(used > 0) && fraction > 0 && packageSize > 0) {
+        used = Math.round(packageSize * fraction * 100) / 100;
+      }
+      rows.push({
+        name: tr.querySelector(".fc-calc-name")?.value || "",
+        packageCost: tr.querySelector(".fc-calc-package")?.value,
+        packageSize: tr.querySelector(".fc-calc-size")?.value || (packageSize || ""),
+        usedAmount: used || tr.querySelector(".fc-calc-used")?.value || "",
+        unit: tr.querySelector(".fc-calc-unit")?.value || "oz",
+        fraction: fraction || tr.querySelector(".fc-calc-fraction")?.value || "",
+      });
+    });
+    return rows;
+  }
+
+  function rebuildFcCalcRowsForMode() {
+    const tbody = document.getElementById("fcCalcRows");
+    if (!tbody) return;
+    const existing = snapshotFcCalcRows();
+    tbody.innerHTML = "";
+    if (!existing.length) {
+      addFcCalcRow({ name: "Flour", packageCost: 4, packageSize: 80, usedAmount: 16, unit: "oz", fraction: 0.2 });
+      addFcCalcRow({ name: "Butter", packageCost: 4.5, packageSize: 16, usedAmount: 8, unit: "oz", fraction: 0.5 });
+      return;
+    }
+    existing.forEach((row) => addFcCalcRow(row));
   }
 
   function fillFcCalcProducts() {
@@ -833,15 +967,24 @@
     if (!panel) return;
     const tbody = document.getElementById("fcCalcRows");
     if (tbody && !tbody.children.length) {
-      addFcCalcRow({ name: "Main ingredient", packageCost: 4, fraction: 0.25 });
-      addFcCalcRow({ name: "Second ingredient", packageCost: 3, fraction: 0.2 });
+      addFcCalcRow({ name: "Flour", packageCost: 4, packageSize: 80, usedAmount: 16, unit: "oz" });
+      addFcCalcRow({ name: "Butter", packageCost: 4.5, packageSize: 16, usedAmount: 8, unit: "oz" });
     }
+    syncFcCalcModeUi();
     fillFcCalcProducts();
     updateFcCalculator();
 
     document.getElementById("fcCalcAddRow").addEventListener("click", () => addFcCalcRow());
     document.getElementById("fcCalcPackaging").addEventListener("input", updateFcCalculator);
     document.getElementById("fcCalcYield").addEventListener("input", updateFcCalculator);
+    const modeEl = document.getElementById("fcCalcMode");
+    if (modeEl) {
+      modeEl.addEventListener("change", () => {
+        syncFcCalcModeUi();
+        rebuildFcCalcRowsForMode();
+        updateFcCalculator();
+      });
+    }
 
     document.getElementById("fcCalcApply").addEventListener("click", () => {
       const productId = document.getElementById("fcCalcProduct").value;
@@ -856,7 +999,11 @@
       }
       const result = updateFcCalculator();
       if (!(result.perUnit > 0)) {
-        setFcFeedback("fcCalcFeedback", "Enter ingredients and units made so per-unit cost is above zero.", "bad");
+        setFcFeedback(
+          "fcCalcFeedback",
+          "Enter package price, size, and amount used (or a fraction) so per-unit cost is above zero.",
+          "bad"
+        );
         return;
       }
       const mult = Number(document.getElementById("fcCalcMultiplier").value) || 2.5;

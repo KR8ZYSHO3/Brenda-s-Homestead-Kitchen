@@ -79,44 +79,60 @@
   const LIVE_SITE_URL = "https://kr8zysho3.github.io/Brenda-s-Homestead-Kitchen";
 
   /** Bump these when deploying so Brenda can confirm the live site updated */
-  const SITE_VERSION = "1.5.1";
-  const SITE_UPDATED_ISO = "2026-10-08T11:55:00-04:00";
-  const SITE_UPDATED_LABEL = "Oct 8, 2026 · 11:55 AM ET";
+  const SITE_VERSION = "1.6.0";
+  const SITE_UPDATED_ISO = "2026-10-08T12:15:00-04:00";
+  const SITE_UPDATED_LABEL = "Oct 8, 2026 · 12:15 PM ET";
 
   /**
-   * Guided practice exercise — pretend strawberry jam batch.
-   * Brenda fills line costs; answers checked with a small money tolerance.
+   * Guided practice — strawberry jam priced by kitchen scale (ounces).
+   * Brenda enters how many oz (or each) went into the batch; we check against answers.
    */
   const FOOD_COST_EXERCISE = {
-    id: "strawberry_jam_practice",
-    title: "Practice batch — Strawberry jam",
+    id: "strawberry_jam_practice_weight",
+    title: "Practice batch — Strawberry jam (by weight)",
     blurb:
-      "Pretend numbers so the math is easy. Fill each box, then check your work. You can use hints if you get stuck.",
+      "Use a kitchen scale in real life. Here, enter how much of each package went into the batch — mostly in ounces. Hints and Fill correct numbers are there if you get stuck.",
     unitLabel: "jars",
     lines: [
       {
         id: "berries",
         label: "Strawberries",
-        hint: "$6.00 for a 2 lb box · you used 1½ lb (three-quarters of the box)",
-        answer: 4.5,
+        hint: "$6.00 for a 32 oz (2 lb) box · scale said 24 oz went into the pot",
+        packageCost: 6,
+        packageSize: 32,
+        unit: "oz",
+        usedAnswer: 24,
+        // 6 * (24/32) = 4.50
       },
       {
         id: "sugar",
         label: "Sugar",
-        hint: "$3.00 for a 4 lb bag · you used a little under half (about 40%)",
-        answer: 1.2,
+        hint: "$3.00 for a 40 oz bag · scale said 16 oz of sugar went in",
+        packageCost: 3,
+        packageSize: 40,
+        unit: "oz",
+        usedAnswer: 16,
+        // 3 * (16/40) = 1.20
       },
       {
         id: "pectin",
         label: "Pectin + lemon",
-        hint: "This batch used about $0.80 of pectin and lemon juice",
-        answer: 0.8,
+        hint: "$4.00 for a 10 oz pectin tin · you used 2 oz for this batch (lemon folded in)",
+        packageCost: 4,
+        packageSize: 10,
+        unit: "oz",
+        usedAnswer: 2,
+        // 4 * (2/10) = 0.80
       },
       {
         id: "jars",
         label: "Jars + lids",
-        hint: "6 jars at about $0.33 each (packaging for this batch)",
-        answer: 2.0,
+        hint: "$2.00 for a 6-pack · you used all 6 jars (count as “each,” not ounces)",
+        packageCost: 2,
+        packageSize: 6,
+        unit: "each",
+        usedAnswer: 6,
+        // 2 * (6/6) = 2.00
       },
     ],
     batchTotal: 8.5,
@@ -125,18 +141,43 @@
     sellMinOk: 2.85,
     sellMaxOk: 5.5,
     moneyTolerance: 0.03,
+    amountTolerance: 0.05,
   };
 
-  /** Sum ingredient line costs and derive per-unit + suggested sell band. */
+  const FOOD_COST_UNITS = [
+    { value: "oz", label: "oz" },
+    { value: "lb", label: "lb" },
+    { value: "g", label: "g" },
+    { value: "each", label: "each" },
+  ];
+
+  /** Line cost from weight: package$ × (used ÷ package size). Fraction mode kept as a shortcut. */
   function calcFoodCost(lines, yieldCount, packagingCost) {
     const rows = (lines || []).map((row) => {
+      const name = String(row.name || "").trim();
       const packageCost = Math.max(0, Number(row.packageCost) || 0);
-      const fraction = Math.max(0, Number(row.fraction) || 0);
-      const lineCost = Math.round(packageCost * fraction * 100) / 100;
+      const mode = row.mode === "fraction" ? "fraction" : "weight";
+      const unit = String(row.unit || "oz");
+      const packageSize = Math.max(0, Number(row.packageSize) || 0);
+      const usedAmount = Math.max(0, Number(row.usedAmount) || 0);
+      let fraction = Math.max(0, Number(row.fraction) || 0);
+      let lineCost = 0;
+
+      if (mode === "fraction") {
+        lineCost = Math.round(packageCost * fraction * 100) / 100;
+      } else if (packageSize > 0) {
+        fraction = usedAmount / packageSize;
+        lineCost = Math.round(packageCost * fraction * 100) / 100;
+      }
+
       return {
-        name: String(row.name || "").trim(),
+        name,
         packageCost,
+        packageSize,
+        usedAmount,
+        unit,
         fraction,
+        mode,
         lineCost,
       };
     });
@@ -156,6 +197,18 @@
       suggest25x: Math.round(perUnit * 2.5 * 100) / 100,
       suggest3x: Math.round(perUnit * 3 * 100) / 100,
     };
+  }
+
+  function lineCostFromWeight(packageCost, packageSize, usedAmount) {
+    const size = Math.max(0, Number(packageSize) || 0);
+    if (!(size > 0)) return 0;
+    return (
+      Math.round(
+        Math.max(0, Number(packageCost) || 0) *
+          (Math.max(0, Number(usedAmount) || 0) / size) *
+          100
+      ) / 100
+    );
   }
 
   function moneyClose(a, b, tolerance) {
@@ -413,15 +466,15 @@
           auto(
             "food_cost_exercise",
             foodCostExerciseDone,
-            "Complete the food cost practice exercise",
-            "Walk the pretend strawberry-jam batch on Food costs: enter line costs, jars made, and a selling price. Checking your answers marks this done.",
+            "Complete the food cost practice (weigh the jam batch)",
+            "On Food costs, enter how many ounces (or jars) went into the pretend strawberry jam, check jars made, and pick a selling price. Checking your answers marks this done.",
             "foodcosts"
           ),
           auto(
             "food_cost_price_one",
             foodCostPricedOne,
             "Price one real product with the calculator",
-            "Use “Price your own recipe” on Food costs for a real item, then apply a suggested price (or check this off after you set the price yourself). Do this for each item you sell over time.",
+            "Use “Price your own recipe” on Food costs (by weight is best), then apply a suggested price. Do this for each item you sell over time.",
             "foodcosts"
           ),
         ],
@@ -984,7 +1037,9 @@
     setGoalChecked,
     isGoalChecked,
     FOOD_COST_EXERCISE,
+    FOOD_COST_UNITS,
     calcFoodCost,
+    lineCostFromWeight,
     moneyClose,
     LIVE_SITE_URL,
     SITE_VERSION,

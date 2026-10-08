@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../css/styles.css?v=goals-v151" />
+  <link rel="stylesheet" href="../css/styles.css?v=goals-v160" />
 </head>
 <body>
   <div id="loginView" class="login-wrap">
@@ -144,7 +144,7 @@
           <div>
             <span class="eyebrow">Pricing basics</span>
             <h1>Understand your food costs</h1>
-            <p class="muted">Know what a batch costs you before you pick a selling price. Read the example, do the practice exercise, then use the calculator for each real item you sell.</p>
+            <p class="muted">Know what a batch costs you before you pick a selling price. A kitchen scale makes this easy: weigh what went in, divide by what the whole package weighed, multiply by what you paid.</p>
           </div>
         </div>
 
@@ -154,7 +154,7 @@
             <ul>
               <li>If you only guess at prices, you can sell a lot and still lose money.</li>
               <li><strong>Food cost</strong> is what the ingredients (and packaging for that batch) cost <em>you</em>.</li>
-              <li>Your selling price should cover food cost, a little for your time, and a bit of profit.</li>
+              <li>Weighing on a kitchen scale is clearer than guessing “about half the bag.”</li>
               <li>Soap works the same way — oils, lye, fragrance, and the wrapper all count.</li>
             </ul>
           </article>
@@ -162,28 +162,28 @@
           <article class="panel guide-card">
             <h3>Simple 3-step method</h3>
             <ol class="foodcost-steps">
-              <li><strong>Batch cost</strong> — add up what you spent for this bake (or soap batch).</li>
-              <li><strong>Per-unit cost</strong> — divide batch cost by how many cookies, jars, loaves, or bars you got.</li>
+              <li><strong>Weigh &amp; cost</strong> — for each ingredient: package price ÷ package weight × ounces (or grams) you used.</li>
+              <li><strong>Per-unit cost</strong> — add those line costs (+ packaging), then divide by how many cookies, jars, loaves, or bars you got.</li>
               <li><strong>Selling price</strong> — start around 2–3× the per-unit cost (or more if your time is high), then adjust for what neighbors will pay.</li>
             </ol>
-            <p class="muted" style="margin-top:.8rem;">Rule of thumb only — McArthur market prices and your time matter too.</p>
+            <p class="muted" style="margin-top:.8rem;">Default unit is <strong>ounces</strong>. Use <strong>each</strong> for eggs or counted jars. Fraction-of-bag is still available if you don’t weigh.</p>
           </article>
         </div>
 
         <div class="panel cost-example" style="margin-top:1rem;">
-          <h2 style="font-size:1.25rem;">Example: one dozen cinnamon cookies</h2>
-          <p class="muted">Pretend numbers so the math is easy. Use your real receipt amounts when you price your own recipes.</p>
+          <h2 style="font-size:1.25rem;">Example: one dozen cinnamon cookies (by weight)</h2>
+          <p class="muted">Pretend numbers so the math is easy. Put the bowl on a kitchen scale, zero it, and weigh what you add.</p>
           <div class="table-wrap" style="margin-top:.8rem;">
             <table>
               <thead>
-                <tr><th>What you used</th><th>What you paid</th><th>How much went into this batch</th><th>Cost in this batch</th></tr>
+                <tr><th>Ingredient</th><th>Package</th><th>Used (scale)</th><th>Math</th><th>Cost in batch</th></tr>
               </thead>
               <tbody>
-                <tr><td>Flour</td><td>$4.00 for a 5 lb bag</td><td>About 1/5 of the bag</td><td>$0.80</td></tr>
-                <tr><td>Butter</td><td>$4.50 per pound</td><td>Half a pound</td><td>$2.25</td></tr>
-                <tr><td>Sugar + cinnamon + eggs + vanilla</td><td>—</td><td>This batch</td><td>$1.45</td></tr>
-                <tr><td>Bag / twist ties</td><td>—</td><td>One dozen pack</td><td>$0.50</td></tr>
-                <tr><td colspan="3"><strong>Batch cost (12 cookies)</strong></td><td><strong>$5.00</strong></td></tr>
+                <tr><td>Flour</td><td>$4.00 for 80 oz (5 lb)</td><td>16 oz</td><td>$4.00 × (16 ÷ 80)</td><td>$0.80</td></tr>
+                <tr><td>Butter</td><td>$4.50 for 16 oz</td><td>8 oz</td><td>$4.50 × (8 ÷ 16)</td><td>$2.25</td></tr>
+                <tr><td>Sugar + spice + eggs + vanilla</td><td>—</td><td>This batch</td><td>—</td><td>$1.45</td></tr>
+                <tr><td>Bag / twist ties</td><td>—</td><td>1 dozen pack</td><td>—</td><td>$0.50</td></tr>
+                <tr><td colspan="4"><strong>Batch cost (12 cookies)</strong></td><td><strong>$5.00</strong></td></tr>
               </tbody>
             </table>
           </div>
@@ -208,14 +208,14 @@
           </div>
 
           <div class="foodcost-ex-step" data-fc-step="1">
-            <h3>Step 1 — Line costs for this batch</h3>
-            <p class="muted">Read each hint, then type what that ingredient cost <em>in this batch</em> (dollars).</p>
+            <h3>Step 1 — Weigh what went into this batch</h3>
+            <p class="muted">Each row shows the package price and size. Enter how much you used (ounces, or “each” for jars). We’ll turn that into dollars.</p>
             <div id="fcExLines" class="foodcost-ex-lines"></div>
             <p class="foodcost-ex-total">Your batch total so far: <strong id="fcExBatchLive">$0.00</strong></p>
             <div class="actions" style="margin-top:.85rem;flex-wrap:wrap;">
               <button type="button" class="btn btn-primary btn-small" id="fcExCheck1">Check step 1</button>
               <button type="button" class="btn btn-ghost btn-small" id="fcExHint1">Show hints</button>
-              <button type="button" class="btn btn-ghost btn-small" id="fcExFill1">Fill correct numbers</button>
+              <button type="button" class="btn btn-ghost btn-small" id="fcExFill1">Fill correct amounts</button>
             </div>
             <p class="foodcost-ex-feedback" id="fcExFeedback1" hidden></p>
           </div>
@@ -267,14 +267,33 @@
         <div class="panel" style="margin-top:1rem;" id="foodCostCalculatorPanel">
           <span class="eyebrow">Your recipes</span>
           <h2 style="font-size:1.25rem;margin:.2rem 0 0;">Price your own recipe</h2>
-          <p class="muted">Add each ingredient’s package price and how much of that package went into <em>this</em> batch (as a decimal: 0.25 = one quarter). Then set packaging and how many units you made.</p>
+          <p class="muted">Default is <strong>by weight</strong>: package price, how big the package is, and how much the scale said you used. Switch to fraction only if you are estimating without a scale.</p>
+
+          <div class="form-row" style="margin-top:.85rem;align-items:end;">
+            <label>How are you measuring?
+              <select id="fcCalcMode">
+                <option value="weight" selected>By weight / count (recommended)</option>
+                <option value="fraction">By fraction of the package</option>
+              </select>
+            </label>
+            <p class="muted" id="fcCalcModeHint" style="margin:0 0 .35rem;">Use the same unit on each row for package size and amount used (usually oz).</p>
+          </div>
 
           <div class="table-wrap" style="margin-top:.85rem;">
-            <table class="foodcost-calc-table">
+            <table class="foodcost-calc-table" id="fcCalcTable">
               <thead>
-                <tr>
+                <tr id="fcCalcHeadWeight">
                   <th>Ingredient</th>
-                  <th>Package price ($)</th>
+                  <th>Package $</th>
+                  <th>Package size</th>
+                  <th>Unit</th>
+                  <th>Used in batch</th>
+                  <th>Cost in batch</th>
+                  <th></th>
+                </tr>
+                <tr id="fcCalcHeadFraction" hidden>
+                  <th>Ingredient</th>
+                  <th>Package $</th>
                   <th>Fraction used (0–1)</th>
                   <th>Cost in batch</th>
                   <th></th>
@@ -335,7 +354,7 @@
                 <input type="checkbox" data-goal-check="fc_know_batch" />
                 <span>
                   <strong>I understand batch cost</strong>
-                  <span class="muted"> — add up the ingredients (and pack) used for one bake or soap batch.</span>
+                  <span class="muted"> — weigh what went in (or count jars/eggs), turn that into dollars, and add packaging.</span>
                 </span>
               </label>
             </li>
@@ -344,7 +363,7 @@
                 <input type="checkbox" data-goal-check="fc_know_unit" />
                 <span>
                   <strong>I understand per-unit cost</strong>
-                  <span class="muted"> — divide batch cost by how many cookies, jars, loaves, or bars I made.</span>
+                  <span class="muted"> — divide the batch dollar total by how many cookies, jars, loaves, or bars I made.</span>
                 </span>
               </label>
             </li>
@@ -912,7 +931,7 @@
     </div>
   </div>
 
-  <script src="../js/store.js?v=goals-v151"></script>
-  <script src="../js/admin.js?v=goals-v151"></script>
+  <script src="../js/store.js?v=goals-v160"></script>
+  <script src="../js/admin.js?v=goals-v160"></script>
 </body>
 </html>

@@ -189,9 +189,11 @@ async function openTab(page, tabId) {
   });
 
   // ——— Food costs practice ———
-  await check("Food-cost practice: fill + check steps 1–4", async () => {
+  await check("Food-cost practice (by weight): fill + check steps 1–4", async () => {
     await openTab(page, "foodcosts");
     await expectVisible(page, "#foodCostExercisePanel", "exercise panel");
+    const blurb = ((await page.textContent("#fcExBlurb")) || "").toLowerCase();
+    if (!/scale|ounce|weight/.test(blurb)) throw new Error("exercise blurb not weight-focused");
     await page.click("#fcExFill1");
     await page.click("#fcExCheck1");
     await page.waitForSelector('.foodcost-ex-step[data-fc-step="2"]:not([hidden])', { timeout: 8000 });
@@ -206,15 +208,14 @@ async function openTab(page, tabId) {
     return "practice finished";
   });
 
-  await check("Food-cost calculator updates totals", async () => {
+  await check("Food-cost calculator (weight mode) updates totals", async () => {
     await openTab(page, "foodcosts");
     await expectVisible(page, "#foodCostCalculatorPanel", "calculator");
-    // Ensure at least one row; fill first cost inputs if present
-    const nameInput = page.locator("#fcCalcRows input, #fcCalcRows [name='name']").first();
-    const costInput = page.locator("#fcCalcRows input[type='number']").first();
-    if (await costInput.count()) {
-      await costInput.fill("4.50");
+    const mode = page.locator("#fcCalcMode");
+    if (await mode.count()) {
+      await mode.selectOption("weight");
     }
+    // Default sample rows: flour 16/80 of $4 = $0.80, butter 8/16 of $4.50 = $2.25 → $3.05
     if (await page.locator("#fcCalcPackaging").count()) {
       await page.fill("#fcCalcPackaging", "0.50");
     }
@@ -223,7 +224,15 @@ async function openTab(page, tabId) {
     }
     await page.waitForTimeout(200);
     const batch = ((await page.textContent("#fcCalcBatch")) || "").trim();
-    if (!batch) throw new Error("batch total empty");
+    if (!batch || batch === "$0.00") throw new Error("batch total empty");
+    // Switch to fraction mode and confirm UI still calculates
+    if (await mode.count()) {
+      await mode.selectOption("fraction");
+      await page.waitForTimeout(200);
+      const batch2 = ((await page.textContent("#fcCalcBatch")) || "").trim();
+      if (!batch2) throw new Error("fraction mode batch empty");
+      await mode.selectOption("weight");
+    }
     return "batch " + batch;
   });
 
