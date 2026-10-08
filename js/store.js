@@ -21,9 +21,10 @@
     zelle: "",
     pickupNotes:
       "Local pickup in McArthur, Ohio. Payment by Venmo, Cash App, PayPal, Zelle, or cash at pickup. Ohio sales only.",
-    tagline: "Homemade cottage foods and handcrafted soaps from McArthur, Ohio",
+    tagline:
+      "Brenda bakes Ohio cottage foods and pours handmade soap at home. Browse what’s ready, send a quick order, and pick up in town.",
     about:
-      "Hello! I'm Brenda Shoemaker. I bake approved Ohio cottage foods and craft handmade soaps right here at home in McArthur. Every batch is made with care — foods are labeled the Ohio way: This product is home produced.",
+      "Hi — I’m Brenda Shoemaker. Everything here is made in my kitchen in McArthur: labeled cottage foods and simple handmade soap bars, sold for local pickup.",
     adminUsername: "Brenda",
     adminPassword: "HomesteadKitchen",
     // Paste from Google Forms → Send → Embed / link. Editable anytime in Admin.
@@ -79,9 +80,9 @@
   const LIVE_SITE_URL = "https://kr8zysho3.github.io/Brenda-s-Homestead-Kitchen";
 
   /** Bump these when deploying so Brenda can confirm the live site updated */
-  const SITE_VERSION = "1.6.2";
-  const SITE_UPDATED_ISO = "2026-10-08T13:20:00-04:00";
-  const SITE_UPDATED_LABEL = "Oct 8, 2026 · 1:20 PM ET";
+  const SITE_VERSION = "1.6.3";
+  const SITE_UPDATED_ISO = "2026-10-08T14:20:00-04:00";
+  const SITE_UPDATED_LABEL = "Oct 8, 2026 · 2:20 PM ET";
 
   /**
    * Guided practice — strawberry jam priced by kitchen scale (ounces).
@@ -655,6 +656,25 @@
       data.products = (Array.isArray(data.products) ? data.products : []).map(normalizeProduct);
       data.orders = Array.isArray(data.orders) ? data.orders : [];
       data.expenses = Array.isArray(data.expenses) ? data.expenses : [];
+      // Refresh stock marketing copy when Brenda still has the old defaults
+      let marketingDirty = false;
+      const legacyTaglines = [
+        "Homemade cottage foods and handcrafted soaps from McArthur, Ohio",
+        "Homemade cottage foods and handcrafted soaps — baked, jarred, and poured with quiet care in the hills of southeastern Ohio.",
+      ];
+      const legacyAbouts = [
+        "Hello! I'm Brenda Shoemaker. I bake approved Ohio cottage foods and craft handmade soaps right here at home in McArthur.",
+        "Hello! I'm Brenda Shoemaker. I bake approved Ohio cottage foods and craft handmade soaps right here at home in McArthur. Every batch is made with care — foods are labeled the Ohio way: This product is home produced.",
+      ];
+      if (legacyTaglines.indexOf(String(data.settings.tagline || "")) !== -1) {
+        data.settings.tagline = DEFAULT_SETTINGS.tagline;
+        marketingDirty = true;
+      }
+      if (legacyAbouts.indexOf(String(data.settings.about || "")) !== -1) {
+        data.settings.about = DEFAULT_SETTINGS.about;
+        marketingDirty = true;
+      }
+      if (marketingDirty) save(data);
       return data;
     } catch (err) {
       console.error("Store load failed", err);
