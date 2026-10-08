@@ -79,9 +79,89 @@
   const LIVE_SITE_URL = "https://kr8zysho3.github.io/Brenda-s-Homestead-Kitchen";
 
   /** Bump these when deploying so Brenda can confirm the live site updated */
-  const SITE_VERSION = "1.3.3";
-  const SITE_UPDATED_ISO = "2026-10-08T12:00:00-04:00";
-  const SITE_UPDATED_LABEL = "Oct 8, 2026 · 12:00 PM ET";
+  const SITE_VERSION = "1.4.0";
+  const SITE_UPDATED_ISO = "2026-10-08T14:30:00-04:00";
+  const SITE_UPDATED_LABEL = "Oct 8, 2026 · 2:30 PM ET";
+
+  /**
+   * Guided practice exercise — pretend strawberry jam batch.
+   * Brenda fills line costs; answers checked with a small money tolerance.
+   */
+  const FOOD_COST_EXERCISE = {
+    id: "strawberry_jam_practice",
+    title: "Practice batch — Strawberry jam",
+    blurb:
+      "Pretend numbers so the math is easy. Fill each box, then check your work. You can use hints if you get stuck.",
+    unitLabel: "jars",
+    lines: [
+      {
+        id: "berries",
+        label: "Strawberries",
+        hint: "$6.00 for a 2 lb box · you used 1½ lb (three-quarters of the box)",
+        answer: 4.5,
+      },
+      {
+        id: "sugar",
+        label: "Sugar",
+        hint: "$3.00 for a 4 lb bag · you used a little under half (about 40%)",
+        answer: 1.2,
+      },
+      {
+        id: "pectin",
+        label: "Pectin + lemon",
+        hint: "This batch used about $0.80 of pectin and lemon juice",
+        answer: 0.8,
+      },
+      {
+        id: "jars",
+        label: "Jars + lids",
+        hint: "6 jars at about $0.33 each (packaging for this batch)",
+        answer: 2.0,
+      },
+    ],
+    batchTotal: 8.5,
+    yieldAnswer: 6,
+    perUnit: 1.4167,
+    sellMinOk: 2.85,
+    sellMaxOk: 5.5,
+    moneyTolerance: 0.03,
+  };
+
+  /** Sum ingredient line costs and derive per-unit + suggested sell band. */
+  function calcFoodCost(lines, yieldCount, packagingCost) {
+    const rows = (lines || []).map((row) => {
+      const packageCost = Math.max(0, Number(row.packageCost) || 0);
+      const fraction = Math.max(0, Number(row.fraction) || 0);
+      const lineCost = Math.round(packageCost * fraction * 100) / 100;
+      return {
+        name: String(row.name || "").trim(),
+        packageCost,
+        fraction,
+        lineCost,
+      };
+    });
+    const pack = Math.max(0, Number(packagingCost) || 0);
+    const ingredientTotal = rows.reduce((sum, r) => sum + r.lineCost, 0);
+    const batchCost = Math.round((ingredientTotal + pack) * 100) / 100;
+    const yieldSafe = Math.max(0, Number(yieldCount) || 0);
+    const perUnit =
+      yieldSafe > 0 ? Math.round((batchCost / yieldSafe) * 100) / 100 : 0;
+    return {
+      rows,
+      packagingCost: pack,
+      batchCost,
+      yield: yieldSafe,
+      perUnit,
+      suggest2x: Math.round(perUnit * 2 * 100) / 100,
+      suggest25x: Math.round(perUnit * 2.5 * 100) / 100,
+      suggest3x: Math.round(perUnit * 3 * 100) / 100,
+    };
+  }
+
+  function moneyClose(a, b, tolerance) {
+    const tol = tolerance == null ? 0.03 : Number(tolerance);
+    return Math.abs(Number(a) - Number(b)) <= tol;
+  }
 
   const SAMPLE_PRODUCTS = [
     {
@@ -245,6 +325,8 @@
       "fc_know_track",
     ];
     const foodCostUnderstood = foodCostLessonKeys.every((key) => isGoalChecked(key));
+    const foodCostExerciseDone = isGoalChecked("fc_exercise_done");
+    const foodCostPricedOne = isGoalChecked("fc_priced_one");
 
     const phases = [
       {
@@ -325,7 +407,21 @@
             "understand_food_costs",
             foodCostUnderstood,
             "Learn food costs and check that you understand",
-            "Before you set prices, know what a batch costs you. Open Food costs, walk the example, and check each “I understand” box.",
+            "Before you set prices, know what a batch costs you. Open Food costs, read the example, and check each “I understand” box.",
+            "foodcosts"
+          ),
+          auto(
+            "food_cost_exercise",
+            foodCostExerciseDone,
+            "Complete the food cost practice exercise",
+            "Walk the pretend strawberry-jam batch on Food costs: enter line costs, jars made, and a selling price. Checking your answers marks this done.",
+            "foodcosts"
+          ),
+          auto(
+            "food_cost_price_one",
+            foodCostPricedOne,
+            "Price one real product with the calculator",
+            "Use “Price your own recipe” on Food costs for a real item, then apply a suggested price (or check this off after you set the price yourself). Do this for each item you sell over time.",
             "foodcosts"
           ),
         ],
@@ -887,6 +983,9 @@
     isSampleProduct,
     setGoalChecked,
     isGoalChecked,
+    FOOD_COST_EXERCISE,
+    calcFoodCost,
+    moneyClose,
     LIVE_SITE_URL,
     SITE_VERSION,
     SITE_UPDATED_ISO,

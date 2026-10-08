@@ -1342,6 +1342,133 @@ a.goal-item-title.launch-link {
   margin: 0.35rem 0;
 }
 
+.foodcost-ex-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.foodcost-ex-progress {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--forest);
+  background: rgba(196, 163, 90, 0.18);
+  border: 1px solid rgba(196, 163, 90, 0.35);
+  border-radius: 999px;
+  padding: 0.4rem 0.75rem;
+  white-space: nowrap;
+}
+
+.foodcost-ex-step h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+}
+
+.foodcost-ex-lines {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 0.85rem;
+}
+
+.foodcost-ex-line {
+  display: grid;
+  grid-template-columns: 1fr 7.5rem;
+  gap: 0.65rem;
+  align-items: end;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--cream-deep);
+}
+
+.foodcost-ex-line .muted {
+  font-size: 0.88rem;
+  margin: 0.2rem 0 0;
+}
+
+.foodcost-ex-field {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 600;
+  max-width: 16rem;
+  margin-top: 0.75rem;
+}
+
+.foodcost-ex-total {
+  margin: 0.85rem 0 0;
+  font-size: 1rem;
+}
+
+.foodcost-ex-feedback {
+  margin: 0.75rem 0 0;
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-size: 0.95rem;
+}
+
+.foodcost-ex-feedback.ok {
+  border-color: rgba(60, 110, 70, 0.35);
+  background: rgba(60, 110, 70, 0.08);
+  color: var(--forest);
+}
+
+.foodcost-ex-feedback.bad {
+  border-color: rgba(140, 60, 40, 0.3);
+  background: rgba(140, 60, 40, 0.07);
+  color: #6b2e1f;
+}
+
+.foodcost-calc-table th,
+.foodcost-calc-table td {
+  vertical-align: middle;
+}
+
+.foodcost-calc-table input {
+  width: 100%;
+  min-width: 4.5rem;
+}
+
+.foodcost-calc-results {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.foodcost-calc-results > div {
+  padding: 0.75rem 0.8rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--cream-deep);
+}
+
+.foodcost-calc-results .label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
+@media (max-width: 900px) {
+  .foodcost-ex-line {
+    grid-template-columns: 1fr;
+  }
+
+  .foodcost-calc-results {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .understand-list {
   list-style: none;
   padding: 0;

@@ -419,17 +419,478 @@
       .join("");
   }
 
+  let fcExStep = 1;
+  let fcExState = {
+    lineAnswers: {},
+    yield: null,
+    sell: null,
+    batch: null,
+    perUnit: null,
+  };
+
+  function setFcFeedback(id, message, kind) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (!message) {
+      el.hidden = true;
+      el.textContent = "";
+      el.classList.remove("ok", "bad");
+      return;
+    }
+    el.hidden = false;
+    el.textContent = message;
+    el.classList.remove("ok", "bad");
+    if (kind) el.classList.add(kind);
+  }
+
+  function showFcExStep(step) {
+    fcExStep = step;
+    document.querySelectorAll(".foodcost-ex-step").forEach((panel) => {
+      const n = Number(panel.getAttribute("data-fc-step"));
+      panel.hidden = n !== step;
+    });
+    const progress = document.getElementById("fcExProgress");
+    if (progress) progress.textContent = "Step " + step + " of 4";
+  }
+
+  function buildFcExLines() {
+    const ex = BHK.FOOD_COST_EXERCISE;
+    const wrap = document.getElementById("fcExLines");
+    if (!wrap || !ex) return;
+    wrap.innerHTML = ex.lines
+      .map((line) => {
+        const val =
+          fcExState.lineAnswers[line.id] != null ? fcExState.lineAnswers[line.id] : "";
+        return `<div class="foodcost-ex-line">
+          <div>
+            <strong>${escapeHtml(line.label)}</strong>
+            <p class="muted" data-fc-hint="${escapeHtml(line.id)}" hidden>${escapeHtml(line.hint)}</p>
+          </div>
+          <label>Cost in batch ($)
+            <input type="number" min="0" step="0.01" data-fc-line="${escapeHtml(line.id)}" value="${escapeHtml(val)}" />
+          </label>
+        </div>`;
+      })
+      .join("");
+    wrap.querySelectorAll("[data-fc-line]").forEach((input) => {
+      input.addEventListener("input", () => {
+        fcExState.lineAnswers[input.getAttribute("data-fc-line")] = input.value;
+        updateFcExBatchLive();
+      });
+    });
+    updateFcExBatchLive();
+  }
+
+  function readFcExLineTotal() {
+    const ex = BHK.FOOD_COST_EXERCISE;
+    let total = 0;
+    ex.lines.forEach((line) => {
+      total += Number(fcExState.lineAnswers[line.id]) || 0;
+    });
+    return Math.round(total * 100) / 100;
+  }
+
+  function updateFcExBatchLive() {
+    const live = document.getElementById("fcExBatchLive");
+    if (live) live.textContent = BHK.money(readFcExLineTotal());
+  }
+
+  function initFoodCostExercise() {
+    const ex = BHK.FOOD_COST_EXERCISE;
+    const panel = document.getElementById("foodCostExercisePanel");
+    if (!panel || !ex) return;
+
+    const title = document.getElementById("fcExTitle");
+    const blurb = document.getElementById("fcExBlurb");
+    if (title) title.textContent = ex.title;
+    if (blurb) blurb.textContent = ex.blurb;
+
+    if (BHK.isGoalChecked("fc_exercise_done")) {
+      fcExState.batch = ex.batchTotal;
+      fcExState.perUnit = Math.round((ex.batchTotal / ex.yieldAnswer) * 100) / 100;
+      fcExState.yield = ex.yieldAnswer;
+      showFcExStep(4);
+      const summary = document.getElementById("fcExSummary");
+      if (summary) {
+        summary.innerHTML =
+          "<strong>Practice already complete on this device.</strong> Batch cost " +
+          BHK.money(ex.batchTotal) +
+          " ÷ " +
+          ex.yieldAnswer +
+          " jars ≈ " +
+          BHK.money(fcExState.perUnit) +
+          " each. Use the calculator below for real recipes — restart anytime to practice again.";
+      }
+      setFcFeedback("fcExFeedback4", "Goals step “Complete the food cost practice exercise” is checked.", "ok");
+    } else {
+      buildFcExLines();
+      showFcExStep(1);
+    }
+
+    document.getElementById("fcExHint1").addEventListener("click", () => {
+      document.querySelectorAll("[data-fc-hint]").forEach((el) => {
+        el.hidden = false;
+      });
+    });
+
+    document.getElementById("fcExFill1").addEventListener("click", () => {
+      ex.lines.forEach((line) => {
+        fcExState.lineAnswers[line.id] = String(line.answer);
+      });
+      buildFcExLines();
+      document.querySelectorAll("[data-fc-hint]").forEach((el) => {
+        el.hidden = false;
+      });
+      setFcFeedback("fcExFeedback1", "Filled with the correct line costs. Click Check step 1.", "ok");
+    });
+
+    document.getElementById("fcExCheck1").addEventListener("click", () => {
+      const misses = [];
+      ex.lines.forEach((line) => {
+        const got = Number(fcExState.lineAnswers[line.id]);
+        if (!BHK.moneyClose(got, line.answer, ex.moneyTolerance)) {
+          misses.push(line.label);
+        }
+      });
+      const total = readFcExLineTotal();
+      if (misses.length) {
+        setFcFeedback(
+          "fcExFeedback1",
+          "Not quite — check: " +
+            misses.join(", ") +
+            ". Your total is " +
+            BHK.money(total) +
+            "; it should be about " +
+            BHK.money(ex.batchTotal) +
+            ". Use Show hints or Fill correct numbers if stuck.",
+          "bad"
+        );
+        return;
+      }
+      fcExState.batch = Math.round(total * 100) / 100;
+      document.getElementById("fcExBatchLocked").textContent = BHK.money(fcExState.batch);
+      setFcFeedback("fcExFeedback1", "Batch cost looks right: " + BHK.money(fcExState.batch) + ".", "ok");
+      showFcExStep(2);
+      setFcFeedback("fcExFeedback2", "");
+      const yieldInput = document.getElementById("fcExYield");
+      if (yieldInput && fcExState.yield != null) yieldInput.value = fcExState.yield;
+      updateFcExPerLive();
+    });
+
+    document.getElementById("fcExYield").addEventListener("input", updateFcExPerLive);
+
+    function updateFcExPerLive() {
+      const y = Math.max(0, Number(document.getElementById("fcExYield").value) || 0);
+      fcExState.yield = y || null;
+      const perEl = document.getElementById("fcExPerLive");
+      if (!perEl) return;
+      if (!fcExState.batch || !y) {
+        perEl.textContent = "—";
+        return;
+      }
+      const per = Math.round((fcExState.batch / y) * 100) / 100;
+      perEl.textContent = BHK.money(per);
+    }
+
+    document.getElementById("fcExBack2").addEventListener("click", () => {
+      showFcExStep(1);
+    });
+
+    document.getElementById("fcExFill2").addEventListener("click", () => {
+      document.getElementById("fcExYield").value = String(ex.yieldAnswer);
+      updateFcExPerLive();
+      setFcFeedback("fcExFeedback2", "Filled with " + ex.yieldAnswer + " jars. Click Check step 2.", "ok");
+    });
+
+    document.getElementById("fcExCheck2").addEventListener("click", () => {
+      const y = Number(document.getElementById("fcExYield").value);
+      if (!BHK.moneyClose(y, ex.yieldAnswer, 0.01)) {
+        setFcFeedback(
+          "fcExFeedback2",
+          "This practice batch made " + ex.yieldAnswer + " jars. Enter that number (or use Fill correct number).",
+          "bad"
+        );
+        return;
+      }
+      fcExState.yield = ex.yieldAnswer;
+      fcExState.perUnit = Math.round((fcExState.batch / fcExState.yield) * 100) / 100;
+      document.getElementById("fcExPerLocked").textContent = BHK.money(fcExState.perUnit);
+      document.getElementById("fcExSuggestBand").textContent =
+        "Rule-of-thumb band: about " +
+        BHK.money(fcExState.perUnit * 2) +
+        " – " +
+        BHK.money(fcExState.perUnit * 3) +
+        " per jar (2–3× food cost).";
+      setFcFeedback("fcExFeedback2", "Per-jar cost ≈ " + BHK.money(fcExState.perUnit) + ".", "ok");
+      showFcExStep(3);
+      setFcFeedback("fcExFeedback3", "");
+    });
+
+    document.getElementById("fcExBack3").addEventListener("click", () => {
+      showFcExStep(2);
+    });
+
+    document.getElementById("fcExCheck3").addEventListener("click", () => {
+      const sell = Number(document.getElementById("fcExSell").value);
+      if (!(sell > 0)) {
+        setFcFeedback("fcExFeedback3", "Enter a selling price greater than zero.", "bad");
+        return;
+      }
+      fcExState.sell = Math.round(sell * 100) / 100;
+      let note;
+      let kind = "ok";
+      if (sell < ex.sellMinOk) {
+        kind = "bad";
+        note =
+          "That price is under about 2× food cost (" +
+          BHK.money(fcExState.perUnit * 2) +
+          "). You may cover ingredients but leave little for your time. Try a higher price for this practice.";
+      } else if (sell > ex.sellMaxOk) {
+        note =
+          "That’s a generous price (above ~3–4× food cost). Fine if neighbors will pay it — just know it sits high for this practice.";
+      } else {
+        note =
+          "Good range. At " +
+          BHK.money(sell) +
+          " per jar, food cost is about " +
+          BHK.money(fcExState.perUnit) +
+          ", so roughly " +
+          BHK.money(sell - fcExState.perUnit) +
+          " is left for your time and profit.";
+      }
+      if (kind === "bad") {
+        setFcFeedback("fcExFeedback3", note, "bad");
+        return;
+      }
+      setFcFeedback("fcExFeedback3", note, "ok");
+      const summary = document.getElementById("fcExSummary");
+      if (summary) {
+        summary.innerHTML =
+          "<strong>Practice summary</strong><br />Batch cost " +
+          BHK.money(fcExState.batch) +
+          " ÷ " +
+          fcExState.yield +
+          " jars = " +
+          BHK.money(fcExState.perUnit) +
+          " food cost each.<br />Practice sell price: " +
+          BHK.money(fcExState.sell) +
+          ".";
+      }
+      showFcExStep(4);
+      setFcFeedback("fcExFeedback4", "");
+    });
+
+    document.getElementById("fcExFinish").addEventListener("click", () => {
+      BHK.setGoalChecked("fc_exercise_done", true);
+      setFcFeedback(
+        "fcExFeedback4",
+        "Saved. Goals now marks “Complete the food cost practice exercise” done.",
+        "ok"
+      );
+      renderDashboard();
+      renderGoals();
+      renderFoodCosts();
+    });
+
+    document.getElementById("fcExRestart").addEventListener("click", () => {
+      fcExState = { lineAnswers: {}, yield: null, sell: null, batch: null, perUnit: null };
+      BHK.setGoalChecked("fc_exercise_done", false);
+      buildFcExLines();
+      showFcExStep(1);
+      ["fcExFeedback1", "fcExFeedback2", "fcExFeedback3", "fcExFeedback4"].forEach((id) =>
+        setFcFeedback(id, "")
+      );
+      const sell = document.getElementById("fcExSell");
+      const yieldInput = document.getElementById("fcExYield");
+      if (sell) sell.value = "";
+      if (yieldInput) yieldInput.value = "";
+      renderDashboard();
+      renderGoals();
+      renderFoodCosts();
+    });
+
+    panel.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-goto-tab]");
+      if (!btn) return;
+      activateTab(btn.getAttribute("data-goto-tab"));
+    });
+  }
+
+  function readFcCalcLines() {
+    const rows = [];
+    document.querySelectorAll("#fcCalcRows tr").forEach((tr) => {
+      rows.push({
+        name: tr.querySelector(".fc-calc-name")?.value || "",
+        packageCost: tr.querySelector(".fc-calc-package")?.value,
+        fraction: tr.querySelector(".fc-calc-fraction")?.value,
+      });
+    });
+    return rows;
+  }
+
+  function updateFcCalculator() {
+    const result = BHK.calcFoodCost(
+      readFcCalcLines(),
+      document.getElementById("fcCalcYield")?.value,
+      document.getElementById("fcCalcPackaging")?.value
+    );
+    const set = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = BHK.money(val);
+    };
+    set("fcCalcBatch", result.batchCost);
+    set("fcCalcPer", result.perUnit);
+    set("fcCalc2x", result.suggest2x);
+    set("fcCalc25x", result.suggest25x);
+    set("fcCalc3x", result.suggest3x);
+    document.querySelectorAll("#fcCalcRows tr").forEach((tr, idx) => {
+      const cell = tr.querySelector(".fc-calc-line");
+      if (cell && result.rows[idx]) cell.textContent = BHK.money(result.rows[idx].lineCost);
+    });
+    return result;
+  }
+
+  function addFcCalcRow(preset) {
+    const tbody = document.getElementById("fcCalcRows");
+    if (!tbody) return;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><input class="fc-calc-name" type="text" placeholder="Flour" value="${escapeHtml(
+        (preset && preset.name) || ""
+      )}" /></td>
+      <td><input class="fc-calc-package" type="number" min="0" step="0.01" value="${escapeHtml(
+        preset && preset.packageCost != null ? preset.packageCost : ""
+      )}" /></td>
+      <td><input class="fc-calc-fraction" type="number" min="0" max="1" step="0.01" value="${escapeHtml(
+        preset && preset.fraction != null ? preset.fraction : ""
+      )}" /></td>
+      <td class="fc-calc-line">$0.00</td>
+      <td><button type="button" class="btn btn-ghost btn-small fc-calc-remove">Remove</button></td>
+    `;
+    tbody.appendChild(tr);
+    tr.querySelectorAll("input").forEach((input) => {
+      input.addEventListener("input", updateFcCalculator);
+    });
+    tr.querySelector(".fc-calc-remove").addEventListener("click", () => {
+      if (tbody.children.length <= 1) return;
+      tr.remove();
+      updateFcCalculator();
+    });
+    updateFcCalculator();
+  }
+
+  function fillFcCalcProducts() {
+    const select = document.getElementById("fcCalcProduct");
+    if (!select) return;
+    const current = select.value;
+    const products = BHK.listProducts().filter((p) => !BHK.isSampleProduct(p));
+    select.innerHTML =
+      '<option value="">Choose a product…</option>' +
+      products
+        .map(
+          (p) =>
+            `<option value="${escapeHtml(p.id)}">${escapeHtml(p.name)} (now ${BHK.money(
+              p.price
+            )})</option>`
+        )
+        .join("");
+    if (current) select.value = current;
+  }
+
+  function initFoodCostCalculator() {
+    const panel = document.getElementById("foodCostCalculatorPanel");
+    if (!panel) return;
+    const tbody = document.getElementById("fcCalcRows");
+    if (tbody && !tbody.children.length) {
+      addFcCalcRow({ name: "Main ingredient", packageCost: 4, fraction: 0.25 });
+      addFcCalcRow({ name: "Second ingredient", packageCost: 3, fraction: 0.2 });
+    }
+    fillFcCalcProducts();
+    updateFcCalculator();
+
+    document.getElementById("fcCalcAddRow").addEventListener("click", () => addFcCalcRow());
+    document.getElementById("fcCalcPackaging").addEventListener("input", updateFcCalculator);
+    document.getElementById("fcCalcYield").addEventListener("input", updateFcCalculator);
+
+    document.getElementById("fcCalcApply").addEventListener("click", () => {
+      const productId = document.getElementById("fcCalcProduct").value;
+      if (!productId) {
+        setFcFeedback("fcCalcFeedback", "Choose a real product first (add one under Products if the list is empty).", "bad");
+        return;
+      }
+      const product = BHK.getProduct(productId);
+      if (!product || BHK.isSampleProduct(product)) {
+        setFcFeedback("fcCalcFeedback", "Pick one of your real products, not a sample.", "bad");
+        return;
+      }
+      const result = updateFcCalculator();
+      if (!(result.perUnit > 0)) {
+        setFcFeedback("fcCalcFeedback", "Enter ingredients and units made so per-unit cost is above zero.", "bad");
+        return;
+      }
+      const mult = Number(document.getElementById("fcCalcMultiplier").value) || 2.5;
+      const price =
+        mult === 2
+          ? result.suggest2x
+          : mult === 3
+            ? result.suggest3x
+            : result.suggest25x;
+      if (
+        !confirm(
+          "Set “" +
+            product.name +
+            "” price to " +
+            BHK.money(price) +
+            " (" +
+            mult +
+            "× food cost " +
+            BHK.money(result.perUnit) +
+            ")?"
+        )
+      ) {
+        return;
+      }
+      BHK.upsertProduct({ ...product, price });
+      BHK.setGoalChecked("fc_priced_one", true);
+      fillFcCalcProducts();
+      setFcFeedback(
+        "fcCalcFeedback",
+        "Updated " +
+          product.name +
+          " to " +
+          BHK.money(price) +
+          ". Goals marks “Price one real product with the calculator” done. Repeat for each item you sell.",
+        "ok"
+      );
+      renderDashboard();
+      renderGoals();
+      renderProducts();
+      renderFoodCosts();
+    });
+
+    panel.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-goto-tab]");
+      if (!btn) return;
+      activateTab(btn.getAttribute("data-goto-tab"));
+    });
+  }
+
   function renderFoodCosts() {
     const list = document.getElementById("foodCostUnderstandList");
-    if (!list) return;
-    list.querySelectorAll("[data-goal-check]").forEach((input) => {
-      input.checked = BHK.isGoalChecked(input.getAttribute("data-goal-check"));
-    });
+    if (list) {
+      list.querySelectorAll("[data-goal-check]").forEach((input) => {
+        input.checked = BHK.isGoalChecked(input.getAttribute("data-goal-check"));
+      });
+    }
     const keys = ["fc_know_batch", "fc_know_unit", "fc_know_price", "fc_know_track"];
     const allDone = keys.every((k) => BHK.isGoalChecked(k));
     const banner = document.getElementById("foodCostAllDone");
     if (banner) banner.style.display = allDone ? "block" : "none";
+    fillFcCalcProducts();
   }
+
+  initFoodCostExercise();
+  initFoodCostCalculator();
 
   document.getElementById("launchPanel").addEventListener("click", (e) => {
     const btn = e.target.closest("[data-goto-tab]");
