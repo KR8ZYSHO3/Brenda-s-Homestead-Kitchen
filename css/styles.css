@@ -295,7 +295,8 @@ a:hover {
 .product-card,
 .info-card,
 .stat-card {
-  background: var(--paper);
+  background:
+    linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(250, 246, 238, 0.96));
   border: 1px solid var(--line);
   border-radius: var(--radius);
   box-shadow: var(--shadow-soft);
@@ -955,10 +956,83 @@ textarea:focus {
 }
 
 .admin-main {
-  padding: 1.5rem;
+  padding: 1.5rem 1.6rem 2.4rem;
   background:
-    radial-gradient(ellipse at top right, rgba(196, 163, 90, 0.08), transparent 40%),
-    var(--cream);
+    radial-gradient(ellipse at top right, rgba(196, 163, 90, 0.1), transparent 42%),
+    radial-gradient(ellipse at bottom left, rgba(45, 70, 50, 0.06), transparent 45%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, #f7f1e6 0%, var(--cream) 40%, #efe6d6 100%);
+}
+
+.admin-hello {
+  color: #d7e3d4;
+  font-size: 0.9rem;
+  margin: 0.75rem 0 0;
+  line-height: 1.45;
+}
+
+.admin-nav-label {
+  margin: 0.35rem 0 0.15rem 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(224, 194, 120, 0.72);
+}
+
+.admin-nav-more {
+  margin-top: 0.45rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 0.45rem;
+}
+
+.admin-nav-more > summary {
+  list-style: none;
+  cursor: pointer;
+  color: #cfc6b6;
+  font-weight: 600;
+  font-size: 0.92rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 12px;
+  user-select: none;
+}
+
+.admin-nav-more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.admin-nav-more > summary::after {
+  content: " ▾";
+  color: rgba(224, 194, 120, 0.7);
+  font-size: 0.75rem;
+}
+
+.admin-nav-more[open] > summary::after {
+  content: " ▴";
+}
+
+.admin-nav-more > summary:hover {
+  background: rgba(196, 163, 90, 0.12);
+  color: #fff;
+}
+
+.admin-nav-more > button {
+  margin-left: 0.35rem;
+  width: calc(100% - 0.35rem);
+  font-size: 0.92rem;
+  padding: 0.65rem 0.85rem;
+  color: #c8c0b0;
+}
+
+.admin-side-actions {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.admin-side-btn {
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
 }
 
 .admin-top {
@@ -969,10 +1043,76 @@ textarea:focus {
   margin-bottom: 1.2rem;
 }
 
+.panel-title {
+  font-family: var(--font-display);
+  font-size: 1.28rem;
+  margin: 0;
+  color: var(--forest);
+}
+
+.panel--ledger,
+.dash-next-card {
+  position: relative;
+  background:
+    linear-gradient(165deg, #fffdf8 0%, #f7f0e4 55%, #f0e6d4 100%);
+  border: 1px solid rgba(196, 163, 90, 0.45);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    var(--shadow-soft);
+  padding: 1.35rem 1.4rem 1.4rem;
+}
+
+.panel--ledger::before,
+.dash-next-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
+  background: linear-gradient(180deg, var(--brass-bright), var(--brass), var(--terracotta));
+}
+
+.dash-next-card h2 {
+  font-size: 1.55rem;
+  margin: 0.35rem 0 0.45rem;
+  color: var(--forest);
+}
+
+.dash-next-card .eyebrow {
+  background: var(--forest-mid);
+}
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 1rem;
+}
+
+.dash-shortcuts {
+  background:
+    linear-gradient(180deg, rgba(255, 253, 248, 0.95), rgba(244, 238, 227, 0.9));
+}
+
 .stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0.9rem;
+}
+
+.stats--compact {
+  gap: 0.65rem;
+}
+
+.stats--compact .stat-card {
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 253, 248, 0.88);
+}
+
+.stats--compact .stat-card .value {
+  font-size: 1.35rem;
 }
 
 .stat-card {
@@ -1728,8 +1868,13 @@ a.goal-item-title.launch-link {
   .admin-shell,
   .order-layout,
   .steps-grid,
-  .feature-strip {
+  .feature-strip,
+  .dash-grid {
     grid-template-columns: 1fr;
+  }
+
+  .stats--compact {
+    grid-template-columns: 1fr 1fr;
   }
 
   .feature-strip article {

@@ -10,6 +10,8 @@
       .replace(/"/g, "&quot;");
   }
 
+  const MORE_TABS = { learn: true, taxes: true, howto: true };
+
   function activateTab(tabId) {
     if (!tabId) return;
     const panel = document.getElementById("tab-" + tabId);
@@ -20,6 +22,10 @@
     });
     document.querySelectorAll(".tabs-hidden").forEach((t) => t.classList.remove("active"));
     panel.classList.add("active");
+    const more = document.getElementById("adminNavMore");
+    if (more) {
+      if (MORE_TABS[tabId]) more.open = true;
+    }
     try {
       panel.scrollIntoView({ block: "start", behavior: "smooth" });
     } catch (_) {
@@ -266,6 +272,31 @@
       } else {
         nextHint.innerHTML =
           "<strong>All goals checked.</strong> Keep updating stock and the weekly note.";
+      }
+    }
+
+    // Big "Do this next" card — one clear action for Brenda
+    const nextTitle = document.getElementById("dashNextTitle");
+    const nextWhy = document.getElementById("dashNextWhy");
+    const nextActions = document.getElementById("dashNextActions");
+    if (nextTitle && nextWhy && nextActions) {
+      if (next) {
+        nextTitle.textContent = next.label;
+        nextWhy.textContent = next.why || "";
+        const primary = next.href
+          ? `<a class="btn btn-primary" href="${escapeHtml(next.href)}" target="_blank" rel="noopener">Open</a>`
+          : `<button type="button" class="btn btn-primary" data-goto-tab="${escapeHtml(next.tab || "goals")}">Take me there</button>`;
+        nextActions.innerHTML =
+          primary +
+          `<button type="button" class="btn btn-ghost btn-small" data-goto-tab="goals">See all goals</button>`;
+      } else {
+        nextTitle.textContent = "You’re caught up";
+        nextWhy.textContent =
+          "Every walkthrough step is done. Keep stock fresh, update the weekly note, and download a backup after busy weekends.";
+        nextActions.innerHTML = `
+          <button type="button" class="btn btn-primary" data-goto-tab="products">Update products</button>
+          <button type="button" class="btn btn-secondary btn-small" data-goto-tab="settings">Weekly note &amp; backup</button>
+          <button type="button" class="btn btn-ghost btn-small" data-goto-tab="goals">Review goals</button>`;
       }
     }
 

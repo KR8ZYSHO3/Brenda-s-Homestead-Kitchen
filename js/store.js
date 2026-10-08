@@ -79,9 +79,9 @@
   const LIVE_SITE_URL = "https://kr8zysho3.github.io/Brenda-s-Homestead-Kitchen";
 
   /** Bump these when deploying so Brenda can confirm the live site updated */
-  const SITE_VERSION = "1.4.0";
-  const SITE_UPDATED_ISO = "2026-10-08T14:30:00-04:00";
-  const SITE_UPDATED_LABEL = "Oct 8, 2026 · 2:30 PM ET";
+  const SITE_VERSION = "1.5.0";
+  const SITE_UPDATED_ISO = "2026-10-08T11:45:00-04:00";
+  const SITE_UPDATED_LABEL = "Oct 8, 2026 · 11:45 AM ET";
 
   /**
    * Guided practice exercise — pretend strawberry jam batch.
