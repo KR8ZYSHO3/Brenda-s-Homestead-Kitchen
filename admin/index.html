@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../css/styles.css?v=goals-v161" />
+  <link rel="stylesheet" href="../css/styles.css?v=goals-v162" />
 </head>
 <body>
   <div id="loginView" class="login-wrap">
@@ -677,6 +677,7 @@
           <div class="actions" style="margin-top:1rem;flex-wrap:wrap;">
             <button type="button" class="btn btn-primary btn-small" data-goto-tab="orders">Open Orders</button>
             <button type="button" class="btn btn-secondary btn-small" data-goto-tab="settings">Payment handles in Settings</button>
+            <button type="button" class="btn btn-ghost btn-small" data-goto-tab="howto">Full instructions</button>
             <button type="button" class="btn btn-ghost btn-small" data-goto-tab="gform">Google Order Form</button>
           </div>
         </div>
@@ -748,11 +749,11 @@
           </article>
           <article class="panel guide-card">
             <h3>Payments</h3>
-            <p>In <strong>Settings</strong>, enter your Venmo, Cash App, PayPal, and Zelle handles. Customers pay inside those apps (or cash at pickup). When money arrives, mark the order <strong>Paid</strong> in Orders. See <strong>Taxes &amp; expenses</strong> for the weekly revenue habit.</p>
+            <p>In <strong>Settings</strong>, enter your Venmo, Cash App, PayPal, and Zelle handles. Customers pay inside those apps (or cash at pickup). Read the full <strong>Managing kitchen revenue</strong> section below.</p>
           </article>
           <article class="panel guide-card">
             <h3>Taxes</h3>
-            <p>Log expenses when you buy supplies. Match app deposits to Orders each week. At tax time, pick the year, export CSV, and also download yearly statements from Venmo / Cash App / PayPal.</p>
+            <p>Log expenses when you buy supplies. Match app deposits to Orders each week. At tax time, pick the year, export CSV, and also download yearly statements from Venmo / Cash App / PayPal. The Taxes tab has the same revenue checklist.</p>
           </article>
           <article class="panel guide-card">
             <h3>Backup</h3>
@@ -762,6 +763,69 @@
             <h3>Important note about this free version</h3>
             <p>Data is stored in this browser on this computer/phone. Use the same browser for admin work, and download backups. If you later want phone + laptop sharing in the cloud, we can upgrade hosting.</p>
           </article>
+        </div>
+
+        <div class="panel panel--ledger" style="margin-top:1.2rem;" id="howtoPaymentRevenue">
+          <span class="eyebrow">Instructions</span>
+          <h2 class="panel-title" style="margin-top:.35rem;">Managing kitchen revenue (Venmo, Cash App, PayPal, Zelle, cash)</h2>
+          <p class="muted">This website does not move money — those apps do. Use the apps as the cash drawer and this Admin as the ledger so kitchen sales stay easy to find for you and for taxes.</p>
+
+          <div class="table-wrap" style="margin-top:1rem;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Set it up for the kitchen</th>
+                  <th>When money arrives</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Venmo</strong></td>
+                  <td>Business profile if available, or one dedicated kitchen username. Put Homestead Kitchen in the profile name. Prefer Goods &amp; services when the app offers it.</td>
+                  <td>Match to the order → <strong>Orders</strong> → set method Venmo → mark <strong>Paid</strong>.</td>
+                </tr>
+                <tr>
+                  <td><strong>Cash App</strong></td>
+                  <td>One kitchen cashtag (or Cash App for Business). Put Brenda’s Homestead Kitchen in the display name.</td>
+                  <td>Same — mark Paid, method Cash App.</td>
+                </tr>
+                <tr>
+                  <td><strong>PayPal</strong></td>
+                  <td>PayPal Business (or a clear business display name) makes yearly statement downloads easier.</td>
+                  <td>Same — mark Paid, method PayPal.</td>
+                </tr>
+                <tr>
+                  <td><strong>Zelle</strong></td>
+                  <td>Usually tied to a personal bank. Always add a memo like “jam order – Jane.”</td>
+                  <td>Enter a manual Order the same day with that memo in Notes.</td>
+                </tr>
+                <tr>
+                  <td><strong>Cash</strong></td>
+                  <td>Keep a small market envelope or jar. Count it after each market.</td>
+                  <td>Manual Order same day, method Cash.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 style="margin-top:1.25rem;font-size:1.2rem;">Weekly habit (~15 minutes)</h3>
+          <ol class="foodcost-steps">
+            <li>Open Venmo / Cash App / PayPal (and Zelle bank alerts).</li>
+            <li>For each kitchen payment, match it to a Google Form reply, market sale, or phone order.</li>
+            <li>In <strong>Orders</strong>, add anything missing, set the payment method, and mark <strong>Paid</strong>.</li>
+            <li>Log supply buys under <strong>Taxes &amp; expenses</strong> (flour, jars, oils, booth fees).</li>
+            <li>Once a week: <strong>Settings → Download backup</strong>.</li>
+          </ol>
+
+          <div class="notice" style="margin-top:1rem;">
+            <strong>Tax tip:</strong> Year-end = export the Taxes CSV <em>and</em> download yearly statements from each app. Hand both to whoever does Schedule C. App fees can be logged as expenses. This is recordkeeping help — not tax advice.
+          </div>
+          <div class="actions" style="margin-top:1rem;flex-wrap:wrap;">
+            <button type="button" class="btn btn-primary btn-small" data-goto-tab="orders">Open Orders</button>
+            <button type="button" class="btn btn-secondary btn-small" data-goto-tab="taxes">Open Taxes &amp; expenses</button>
+            <button type="button" class="btn btn-ghost btn-small" data-goto-tab="settings">Payment handles in Settings</button>
+          </div>
         </div>
       </section>
 
@@ -968,7 +1032,7 @@
     </div>
   </div>
 
-  <script src="../js/store.js?v=goals-v161"></script>
-  <script src="../js/admin.js?v=goals-v161"></script>
+  <script src="../js/store.js?v=goals-v162"></script>
+  <script src="../js/admin.js?v=goals-v162"></script>
 </body>
 </html>
