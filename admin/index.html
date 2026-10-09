@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../css/styles.css?v=goals-v171" />
+  <link rel="stylesheet" href="../css/styles.css?v=goals-v172" />
 </head>
 <body>
   <div id="loginView" class="login-wrap">
@@ -103,6 +103,17 @@
               <button type="button" class="btn btn-ghost btn-small" data-goto-tab="orders">Open Orders</button>
             </div>
           </div>
+        </div>
+
+        <div class="panel" style="margin-top:1rem;" id="dashTrendsPanel">
+          <div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:end;">
+            <div>
+              <h2 class="panel-title" style="margin:0;">What people order most</h2>
+              <p class="muted" style="margin:.35rem 0 0;">Top items from orders saved on this device — bake more of the winners.</p>
+            </div>
+            <button type="button" class="btn btn-ghost btn-small" data-goto-tab="orders">Full trends on Orders</button>
+          </div>
+          <div id="dashTrends" style="margin-top:.85rem;"></div>
         </div>
 
         <div class="panel dash-shortcuts" style="margin-top:1rem;">
@@ -430,7 +441,31 @@
                 <li><a href="https://www.azurestandard.com/" target="_blank" rel="noopener">Azure Standard</a> — drop-point co-op; big bags of flour, sugar, oats, spices at homestead-friendly prices</li>
                 <li><a href="https://www.costco.com/" target="_blank" rel="noopener">Costco</a> / <a href="https://www.samsclub.com/" target="_blank" rel="noopener">Sam’s Club</a> — butter, sugar, flour, parchment, foil when membership pays for itself</li>
                 <li><a href="https://www.aldi.us/" target="_blank" rel="noopener">Aldi</a> — everyday butter, sugar, baking basics without a warehouse membership</li>
-                <li><a href="https://shop.kingarthurbaking.com/" target="_blank" rel="noopener">King Arthur Baking</a> — specialty flours; watch for bulk / case deals</li>
+                <li>
+                  <a href="https://shop.kingarthurbaking.com/" target="_blank" rel="noopener">King Arthur Baking</a>
+                  — specialty flours; watch for bulk / case deals
+                  <div class="flour-guide">
+                    <p><strong>Which King Arthur flour for what?</strong> Protein % is roughly “how much structure / chew” the flour can make. Higher = chewier bread; lower = tender cakes.</p>
+                    <ul>
+                      <li><strong>All-Purpose (~11.7%)</strong> — everyday workhorse for cookies, muffins, quick breads, pie crusts, most cottage bakes. Start here if you keep one bag.</li>
+                      <li><strong>Bread (~12.7%)</strong> — yeast breads, sandwich loaves, bagels, pretzels, pizza dough. Extra protein = stronger rise and chew.</li>
+                      <li><strong>Cake (~10%)</strong> — soft layer cakes and cupcakes with a fine, tender crumb. Too soft for sturdy yeast bread.</li>
+                      <li><strong>Pastry (soft wheat)</strong> — pie crusts, biscuits, scones, shortbread — tender and flaky, less chew than bread flour.</li>
+                      <li><strong>Self-Rising</strong> — soft flour + baking powder + salt already mixed. Biscuits, shortcakes, some quick breads; don’t use when a recipe already adds its own leavening and salt unless you adjust.</li>
+                      <li><strong>Whole Wheat (~14%)</strong> — full wheat berry (bran + germ). Hearty flavor and fiber; great in breads, muffins, cookies. Often mix with AP at first.</li>
+                      <li><strong>White Whole Wheat / Golden Whole Wheat</strong> — same whole-grain nutrition as regular whole wheat, milder taste and lighter color — easier “everyday” whole wheat.</li>
+                      <li><strong>Whole Wheat Pastry</strong> — whole wheat but from soft wheat; tender cookies, pie crust, quick breads (not for tall yeast loaves).</li>
+                      <li><strong>‘00’ Pizza</strong> — finely milled for Neapolitan-style pizza crusts and some pasta.</li>
+                      <li><strong>Gluten-Free Measure for Measure</strong> — 1:1 swap for all-purpose in many <em>non-yeast</em> recipes (cookies, muffins, quick breads).</li>
+                      <li><strong>Gluten-Free All-Purpose</strong> — for recipes written for a gluten-free blend (often with xanthan listed separately).</li>
+                      <li><strong>Gluten-Free Bread Flour</strong> — yeasted gluten-free breads and bagels that need chew.</li>
+                    </ul>
+                    <p class="muted" style="margin:.55rem 0 0;">
+                      Cottage-kitchen tip: stock <strong>All-Purpose</strong> for pies, cookies, and most jar labels; add <strong>Bread</strong> only if you sell yeast loaves; use <strong>Cake</strong> when you want a softer crumb on celebration cakes.
+                      <a href="https://www.kingarthurbaking.com/learn/flour" target="_blank" rel="noopener">King Arthur Flour 101 →</a>
+                    </p>
+                  </div>
+                </li>
               </ul>
             </article>
             <article class="panel guide-card" style="margin:0;box-shadow:none;">
@@ -610,6 +645,29 @@
             <button class="btn btn-ghost" type="button" id="exportOrdersBtn">Export orders CSV</button>
           </div>
         </div>
+
+        <div class="panel" id="orderTrendsPanel" style="margin-bottom:1rem;">
+          <div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:end;">
+            <div>
+              <span class="eyebrow">Trends</span>
+              <h2 style="font-size:1.3rem;margin:.25rem 0 0;">What sells most</h2>
+              <p class="muted" style="margin:.35rem 0 0;">
+                Ranked by how many units people ordered. Use this to decide what to bake next and what to keep in stock.
+              </p>
+            </div>
+            <label style="min-width:11rem;">Time range
+              <select id="orderTrendsRange">
+                <option value="30">Last 30 days</option>
+                <option value="90">Last 90 days</option>
+                <option value="365">Last 12 months</option>
+                <option value="0" selected>All time</option>
+              </select>
+            </label>
+          </div>
+          <p class="muted" id="orderTrendsSummary" style="margin:.75rem 0 0;"></p>
+          <div id="orderTrendsList" style="margin-top:.85rem;"></div>
+        </div>
+
         <div class="table-wrap">
           <table>
             <thead>
@@ -1153,7 +1211,7 @@
     </div>
   </div>
 
-  <script src="../js/store.js?v=goals-v171"></script>
-  <script src="../js/admin.js?v=goals-v171"></script>
+  <script src="../js/store.js?v=goals-v172"></script>
+  <script src="../js/admin.js?v=goals-v172"></script>
 </body>
 </html>

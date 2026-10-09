@@ -337,6 +337,65 @@
           )
           .join("")}</tbody></table></div>`
       : '<p class="muted">No orders yet. When customers order on the website, they will show here.</p>';
+
+    renderDashTrends();
+  }
+
+  function trendBarRows(rows, limit) {
+    const list = (rows || []).slice(0, limit || 8);
+    if (!list.length) {
+      return '<p class="muted" style="margin:0;">No order items in this range yet. Log market/phone orders here (or use the website form) and favorites will show up.</p>';
+    }
+    const maxQty = Math.max.apply(
+      null,
+      list.map((r) => Number(r.qty) || 0).concat([1])
+    );
+    return (
+      '<ol class="trend-list">' +
+      list
+        .map((r, i) => {
+          const pct = Math.max(8, Math.round((Number(r.qty) / maxQty) * 100));
+          return `<li class="trend-row">
+            <div class="trend-rank">${i + 1}</div>
+            <div class="trend-body">
+              <div class="trend-top">
+                <strong>${escapeHtml(r.name)}</strong>
+                <span class="trend-meta">${Number(r.qty)} sold · ${BHK.money(r.revenue)} · in ${Number(r.orderCount)} order${Number(r.orderCount) === 1 ? "" : "s"}</span>
+              </div>
+              <div class="trend-track" aria-hidden="true"><div class="trend-fill" style="width:${pct}%"></div></div>
+            </div>
+          </li>`;
+        })
+        .join("") +
+      "</ol>"
+    );
+  }
+
+  function renderDashTrends() {
+    const el = document.getElementById("dashTrends");
+    if (!el) return;
+    const trends = BHK.orderProductTrends({ days: 0 });
+    el.innerHTML = trendBarRows(trends.rows, 5);
+  }
+
+  function renderOrderTrends() {
+    const listEl = document.getElementById("orderTrendsList");
+    const summaryEl = document.getElementById("orderTrendsSummary");
+    const rangeEl = document.getElementById("orderTrendsRange");
+    if (!listEl || !summaryEl) return;
+    const days = rangeEl ? Number(rangeEl.value || 0) : 0;
+    const trends = BHK.orderProductTrends({ days: days > 0 ? days : 0 });
+    const rangeLabel =
+      days > 0 ? (days === 365 ? "last 12 months" : "last " + days + " days") : "all time";
+    if (!trends.orderCount) {
+      summaryEl.textContent = "No orders in this range yet.";
+    } else {
+      const top = trends.rows[0];
+      summaryEl.textContent = top
+        ? `${trends.orderCount} order${trends.orderCount === 1 ? "" : "s"} (${rangeLabel}). Leader: ${top.name} (${top.qty} units).`
+        : `${trends.orderCount} order${trends.orderCount === 1 ? "" : "s"} (${rangeLabel}).`;
+    }
+    listEl.innerHTML = trendBarRows(trends.rows, 12);
   }
 
   function renderGoals() {
@@ -1649,6 +1708,7 @@
   });
 
   function renderOrders() {
+    renderOrderTrends();
     const orders = BHK.listOrders();
     const tbody = document.getElementById("ordersTable");
     if (!orders.length) {
@@ -1687,6 +1747,11 @@
         </tr>`;
       })
       .join("");
+  }
+
+  const orderTrendsRange = document.getElementById("orderTrendsRange");
+  if (orderTrendsRange) {
+    orderTrendsRange.addEventListener("change", () => renderOrderTrends());
   }
 
   document.getElementById("ordersTable").addEventListener("change", (e) => {

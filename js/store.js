@@ -725,9 +725,9 @@
   const LIVE_SITE_URL = "https://kr8zysho3.github.io/Brenda-s-Homestead-Kitchen";
 
   /** Bump these when deploying so Brenda can confirm the live site updated */
-  const SITE_VERSION = "1.7.1";
-  const SITE_UPDATED_ISO = "2026-10-09T10:18:00-04:00";
-  const SITE_UPDATED_LABEL = "Oct 9, 2026 · 10:18 AM ET";
+  const SITE_VERSION = "1.7.2";
+  const SITE_UPDATED_ISO = "2026-10-09T10:35:00-04:00";
+  const SITE_UPDATED_LABEL = "Oct 9, 2026 · 10:35 AM ET";
 
   /** Heritage shop IDs kept off the public order list (hard-to-source seasonal fruit) */
   const HERITAGE_OFF_ORDER_IDS = [
@@ -1834,6 +1834,68 @@
     return load().orders.find((o) => o.id === id) || null;
   }
 
+  /**
+   * Rank products by quantity ordered (from Admin / website orders on this device).
+   * opts.days — last N days; omit or 0 for all time. Cancelled orders are skipped.
+   */
+  function orderProductTrends(opts) {
+    opts = opts || {};
+    const days = opts.days == null || opts.days === "" ? null : Number(opts.days);
+    const cutoff =
+      days && days > 0 ? Date.now() - Math.floor(days) * 24 * 60 * 60 * 1000 : null;
+    const map = Object.create(null);
+    let orderTotal = 0;
+
+    listOrders().forEach((order) => {
+      if (String(order.status || "") === "cancelled") return;
+      if (cutoff && (order.createdAt || 0) < cutoff) return;
+      orderTotal += 1;
+      const seenInOrder = Object.create(null);
+      (order.items || []).forEach((item) => {
+        const productId = item.productId || "";
+        const key = productId || "name:" + String(item.name || "Item").toLowerCase();
+        const qty = Math.max(1, Number(item.qty) || 1);
+        const line =
+          Number(item.lineTotal) ||
+          Math.round((Number(item.price) || 0) * qty * 100) / 100;
+        if (!map[key]) {
+          let name = item.name || "Item";
+          if (productId) {
+            const product = getProduct(productId);
+            if (product && product.name) name = product.name;
+          }
+          map[key] = {
+            productId,
+            name,
+            qty: 0,
+            revenue: 0,
+            orderCount: 0,
+          };
+        }
+        map[key].qty += qty;
+        map[key].revenue = Math.round((map[key].revenue + line) * 100) / 100;
+        if (!seenInOrder[key]) {
+          map[key].orderCount += 1;
+          seenInOrder[key] = true;
+        }
+        if (productId) {
+          const product = getProduct(productId);
+          if (product && product.name) map[key].name = product.name;
+        }
+      });
+    });
+
+    const rows = Object.keys(map)
+      .map((k) => map[k])
+      .sort((a, b) => b.qty - a.qty || b.revenue - a.revenue || a.name.localeCompare(b.name));
+
+    return {
+      days: days && days > 0 ? Math.floor(days) : null,
+      orderCount: orderTotal,
+      rows,
+    };
+  }
+
   function createOrder(orderInput) {
     const data = load();
     const items = (orderInput.items || []).map((item) => {
@@ -2113,6 +2175,7 @@
     ensureHeritageProducts,
     listOrders,
     getOrder,
+    orderProductTrends,
     createOrder,
     updateOrder,
     deleteOrder,
