@@ -10,7 +10,7 @@
       .replace(/"/g, "&quot;");
   }
 
-  const MORE_TABS = { learn: true, howto: true };
+  const MORE_TABS = { learn: true, heritage: true, howto: true };
 
   function activateTab(tabId) {
     if (!tabId) return;
@@ -77,6 +77,7 @@
     renderProducts();
     renderOrders();
     renderTaxes();
+    renderHeritageRecipes();
     fillSettings();
     fillGoogleFormSettings();
     fillManualProducts();
@@ -1284,8 +1285,105 @@
     syncFcRecipeEditingUi();
   }
 
+  function renderHeritageRecipes() {
+    const root = document.getElementById("heritageRecipeList");
+    if (!root || !BHK.listHeritageRecipes) return;
+    const filter = document.getElementById("heritageFilter")?.value || "all";
+    const recipes = BHK.listHeritageRecipes()
+      .map((r) => ({ recipe: r, meta: BHK.getHeritageMeta(r.id) }))
+      .filter(({ meta }) => {
+        if (filter === "starred") return meta.starred;
+        if (filter === "considering") return meta.considering;
+        return true;
+      });
+
+    if (!recipes.length) {
+      root.innerHTML =
+        '<div class="notice">No recipes match this filter. Switch to <strong>All recipes</strong> or star a few you like.</div>';
+      return;
+    }
+
+    root.innerHTML = recipes
+      .map(({ recipe: r, meta }) => {
+        const aka = (r.aka || []).length ? `<p class="muted heritage-aka">Also called: ${escapeHtml(r.aka.join(", "))}</p>` : "";
+        return `
+        <article class="panel heritage-card" data-heritage-id="${escapeHtml(r.id)}">
+          <div class="heritage-card-top">
+            <div>
+              <span class="eyebrow">${escapeHtml(r.era)}</span>
+              <h2 class="panel-title" style="margin-top:.35rem;">${escapeHtml(r.name)}</h2>
+              ${aka}
+              <p class="heritage-meta-line"><strong>Where:</strong> ${escapeHtml(r.region)}</p>
+            </div>
+            <div class="heritage-toggles">
+              <label class="heritage-check">
+                <input type="checkbox" data-heritage-star="${escapeHtml(r.id)}"${meta.starred ? " checked" : ""} />
+                Star
+              </label>
+              <label class="heritage-check">
+                <input type="checkbox" data-heritage-consider="${escapeHtml(r.id)}"${meta.considering ? " checked" : ""} />
+                Maybe sell
+              </label>
+            </div>
+          </div>
+          <h3 class="heritage-subhead">History</h3>
+          <p>${escapeHtml(r.history)}</p>
+          <h3 class="heritage-subhead">Why it’s a killer recipe</h3>
+          <p>${escapeHtml(r.whyKiller)}</p>
+          <div class="notice" style="margin-top:.85rem;">
+            <strong>Marketing hook:</strong> ${escapeHtml(r.marketingHook)}
+          </div>
+          <p class="muted" style="margin-top:.75rem;"><strong>Cottage note:</strong> ${escapeHtml(r.cottageNote)}</p>
+          <label style="display:block;margin-top:1rem;">Your notes
+            <textarea data-heritage-note="${escapeHtml(r.id)}" rows="2" placeholder="Ingredients to try, market-board wording, questions…">${escapeHtml(
+              meta.note
+            )}</textarea>
+          </label>
+        </article>`;
+      })
+      .join("");
+  }
+
+  function initHeritageRecipes() {
+    const filter = document.getElementById("heritageFilter");
+    if (filter) {
+      filter.addEventListener("change", () => renderHeritageRecipes());
+    }
+    const root = document.getElementById("heritageRecipeList");
+    if (!root) return;
+    root.addEventListener("change", (e) => {
+      const star = e.target.closest("[data-heritage-star]");
+      if (star) {
+        BHK.setHeritageMeta(star.getAttribute("data-heritage-star"), { starred: star.checked });
+        if ((document.getElementById("heritageFilter")?.value || "all") !== "all") {
+          renderHeritageRecipes();
+        }
+        return;
+      }
+      const consider = e.target.closest("[data-heritage-consider]");
+      if (consider) {
+        BHK.setHeritageMeta(consider.getAttribute("data-heritage-consider"), {
+          considering: consider.checked,
+        });
+        if ((document.getElementById("heritageFilter")?.value || "all") !== "all") {
+          renderHeritageRecipes();
+        }
+      }
+    });
+    let noteTimer = null;
+    root.addEventListener("input", (e) => {
+      const noteEl = e.target.closest("[data-heritage-note]");
+      if (!noteEl) return;
+      clearTimeout(noteTimer);
+      noteTimer = setTimeout(() => {
+        BHK.setHeritageMeta(noteEl.getAttribute("data-heritage-note"), { note: noteEl.value });
+      }, 300);
+    });
+  }
+
   initFoodCostExercise();
   initFoodCostCalculator();
+  initHeritageRecipes();
 
   // One handler for every "go to tab" control (Home shortcuts, next card, Goals, etc.)
   document.addEventListener("click", (e) => {

@@ -37,7 +37,129 @@
     featuredNote: "",
     // Manual goal checkoffs Brenda can tick on the Goals tab (offline / real-world steps)
     goalChecks: {},
+    // Brenda's stars/notes on the built-in old-school heritage recipe library
+    heritageMeta: {},
   };
+
+  /**
+   * Old-school / nearly forgotten recipes with history — marketing inspiration
+   * for a homestead kitchen (Admin library for now; not shown on the public site yet).
+   * Educational storytelling only — verify Ohio cottage-food rules before selling any item.
+   */
+  const HERITAGE_RECIPES = [
+    {
+      id: "vinegar_pie",
+      name: "Vinegar pie",
+      aka: ["Desperation pie", "Farm pie"],
+      era: "Late 1800s–Great Depression",
+      region: "Midwest & Appalachia",
+      history:
+        "When fresh fruit was gone and sugar was precious, farm cooks still wanted pie for Sunday. A spoon of vinegar (or sometimes cider vinegar) stood in for tart fruit, mixed with eggs, sugar, and spice in a custard-style filling. Families across Ohio and neighboring states called it desperation pie — not because it tasted desperate, but because it answered hard seasons with something warm from the oven.",
+      whyKiller:
+        "Bright, almost lemon-like tang without lemons. It surprises people who expect “old” to mean bland — and the story sells as hard as the slice.",
+      cottageNote:
+        "Often works as a shelf-stable baked good when fully baked and cooled; confirm your exact recipe against Ohio cottage-food guidance before selling.",
+      marketingHook: "The pie farm kitchens made when the fruit cellar was empty.",
+    },
+    {
+      id: "apple_stack_cake",
+      name: "Dried-apple stack cake",
+      aka: ["Appalachian stack cake", "Wedding stack cake"],
+      era: "1800s mountain kitchens",
+      region: "Appalachia (including southern Ohio hills)",
+      history:
+        "Thin, sturdy cake layers were baked ahead and stacked with cooked dried apples spiced with cinnamon and ginger. Guests at mountain weddings sometimes each brought a layer; the taller the cake, the bigger the blessing. Dried apples kept through winter when fresh fruit would not — thrift and celebration in the same tin.",
+      whyKiller:
+        "Dense, spice-forward, and deeply local-feeling. A whole cake feels like an heirloom gift; individual wedges still carry the story.",
+      cottageNote:
+        "Baked spice cake layers are usually cottage-friendly; keep fillings shelf-stable and labeled clearly.",
+      marketingHook: "The wedding cake of the hills — stacked with dried apples and patience.",
+    },
+    {
+      id: "shaker_lemon_pie",
+      name: "Shaker lemon pie",
+      aka: ["Ohio lemon pie"],
+      era: "1800s Shaker communities",
+      region: "Ohio Shaker villages & Midwest",
+      history:
+        "Shaker cooks wasted nothing. Whole lemons — peel and all — were sliced paper-thin, macerated overnight with sugar, then baked with eggs between crusts. The bitter peel softened into candy-like ribbons. Ohio’s Shaker heritage makes this a natural story for a McArthur kitchen that values thrift and craft.",
+      whyKiller:
+        "Intense lemon perfume, chewy candied peel, and a clear Ohio history hook. It photographs beautifully and sounds special on a market board.",
+      cottageNote:
+        "Fully baked double-crust pies are commonly treated as cottage baked goods; use your usual safe-handling habits.",
+      marketingHook: "Whole-lemon pie from Ohio’s Shaker tradition — nothing wasted.",
+    },
+    {
+      id: "corncob_jelly",
+      name: "Corncob jelly",
+      aka: ["Corn cob jelly"],
+      era: "Early–mid 1900s thrift kitchens",
+      region: "Rural Midwest & South",
+      history:
+        "After corn was cut for supper or for drying, the bare cobs still held sweetness. Cooks simmered cobs into a pale gold liquid, then jelled it with sugar and pectin. What looked like scraps became a clear, delicate jelly — proof that homestead kitchens could turn almost anything into pantry treasure.",
+      whyKiller:
+        "Conversation-starting jar. Mild corn-silk sweetness that pairs with biscuits and cheese boards. Perfect “only grandma made this” energy.",
+      cottageNote:
+        "Jams and jellies are classic Ohio cottage foods when properly finished and labeled “This product is home produced.”",
+      marketingHook: "Jelly from the cob — thrift that tastes like late-summer corn.",
+    },
+    {
+      id: "sorghum_ginger_cookies",
+      name: "Sorghum ginger cookies",
+      aka: ["Sorghum snaps", "Molasses-style farm cookies"],
+      era: "1800s–mid-century farm kitchens",
+      region: "Appalachia & Ohio River valley",
+      history:
+        "Before refined white sugar was cheap, sorghum syrup — pressed from cane-like stalks and boiled down — sweetened many hill-country kitchens. Ginger and spice cookies made with sorghum kept well in tins and traveled to church socials and market days. The flavor is deeper and less sharp than grocery molasses alone.",
+      whyKiller:
+        "Chewy, fragrant, and nostalgic. Easy to portion for markets, and sorghum itself is a storytelling ingredient (“old sweetener of the hills”).",
+      cottageNote:
+        "Shelf-stable cookies are a cottage-food staple — list allergens and keep ingredient order by weight on the label.",
+      marketingHook: "Farm cookies sweetened the old way — with sorghum and ginger.",
+    },
+    {
+      id: "green_tomato_pie",
+      name: "Green tomato pie",
+      aka: ["End-of-garden pie", "Fried green tomato’s cousin"],
+      era: "Late-season farm tradition",
+      region: "Midwest gardens & Appalachia",
+      history:
+        "When frost threatened, green tomatoes came off the vine by the bucket. Some were fried; others were sliced into pies with sugar, vinegar or lemon, and warm spice — a mock-apple trick that stretched the garden one more week. It tastes like autumn thrift: bright, spiced, and a little mysterious.",
+      whyKiller:
+        "Seasonal limited drop with a built-in story. People who “don’t like green tomatoes” often love this as pie.",
+      cottageNote:
+        "Treat as a baked pie for cottage sales; avoid fridge-only custards if you need shelf-stable market days.",
+      marketingHook: "The frost-week pie — green tomatoes, sugar, and spice.",
+    },
+    {
+      id: "pawpaw_bread",
+      name: "Pawpaw bread",
+      aka: ["Ohio banana bread", "Custard-apple loaf"],
+      era: "Indigenous & settler foodways → today",
+      region: "Ohio woodlands (native pawpaw)",
+      history:
+        "Pawpaw is North America’s largest native fruit — custardy, tropical, and once common along Ohio creeks. Indigenous communities knew it long before settlers packed pawpaw pulp into breads and puddings. Many modern Ohioans have never tasted one. A homestead kitchen that celebrates pawpaw season connects shoppers to the land under their feet.",
+      whyKiller:
+        "Hyper-local bragging rights. Soft, fragrant loaf that feels rare even when the method is as simple as banana bread.",
+      cottageNote:
+        "Quick breads are typically cottage-friendly when fully baked; note pawpaw as an ingredient and any nut allergies from mix-ins.",
+      marketingHook: "Ohio’s native fruit — baked into a soft homestead loaf.",
+    },
+    {
+      id: "friendship_starter_cake",
+      name: "Friendship bread (cinnamon loaf)",
+      aka: ["Amish friendship bread"],
+      era: "Popularized late 20th century from older starter traditions",
+      region: "Midwest Amish country & beyond",
+      history:
+        "A sweet sourdough-like starter is fed on the counter, then shared with neighbors along with the recipe — hence “friendship.” The baked loaf is cinnamon-sugar tender, often with pudding mix in modern versions. Older starter sharing echoes the older habit of passing yeast and culture hand to hand when stores were far away.",
+      whyKiller:
+        "Community story built in. Great for “starter kit + loaf” market bundles later, or simply as a cinnamon loaf with the friendship tale on a card.",
+      cottageNote:
+        "Sell the finished baked loaf under cottage rules; live starters are a separate conversation (handling, labeling, customer instructions).",
+      marketingHook: "The loaf you bake — and the starter story you share.",
+    },
+  ];
 
   /** Suggested starter questions for Brenda's Google Order Form */
   const GOOGLE_FORM_TEMPLATE = {
@@ -80,9 +202,9 @@
   const LIVE_SITE_URL = "https://kr8zysho3.github.io/Brenda-s-Homestead-Kitchen";
 
   /** Bump these when deploying so Brenda can confirm the live site updated */
-  const SITE_VERSION = "1.6.5";
-  const SITE_UPDATED_ISO = "2026-10-08T18:10:00-04:00";
-  const SITE_UPDATED_LABEL = "Oct 8, 2026 · 6:10 PM ET";
+  const SITE_VERSION = "1.6.6";
+  const SITE_UPDATED_ISO = "2026-10-09T09:45:00-04:00";
+  const SITE_UPDATED_LABEL = "Oct 9, 2026 · 9:45 AM ET";
 
   /**
    * Guided practice — strawberry jam priced by kitchen scale (ounces).
@@ -323,6 +445,44 @@
     data.settings.goalChecks = checks;
     save(data);
     return checks;
+  }
+
+  function listHeritageRecipes() {
+    return HERITAGE_RECIPES.slice();
+  }
+
+  function getHeritageRecipe(id) {
+    return HERITAGE_RECIPES.find((r) => r.id === id) || null;
+  }
+
+  function getHeritageMeta(id) {
+    const meta = (load().settings && load().settings.heritageMeta) || {};
+    const row = meta[id] || {};
+    return {
+      starred: !!row.starred,
+      considering: !!row.considering,
+      note: String(row.note || ""),
+    };
+  }
+
+  function setHeritageMeta(id, patch) {
+    if (!getHeritageRecipe(id)) return null;
+    const data = load();
+    const all = { ...(data.settings.heritageMeta || {}) };
+    const prev = all[id] || {};
+    const next = {
+      starred: patch.starred != null ? !!patch.starred : !!prev.starred,
+      considering: patch.considering != null ? !!patch.considering : !!prev.considering,
+      note: patch.note != null ? String(patch.note) : String(prev.note || ""),
+    };
+    if (!next.starred && !next.considering && !String(next.note || "").trim()) {
+      delete all[id];
+    } else {
+      all[id] = next;
+    }
+    data.settings.heritageMeta = all;
+    save(data);
+    return next;
   }
 
   /**
@@ -1135,6 +1295,11 @@
     getRecipe,
     upsertRecipe,
     deleteRecipe,
+    HERITAGE_RECIPES,
+    listHeritageRecipes,
+    getHeritageRecipe,
+    getHeritageMeta,
+    setHeritageMeta,
     moneyClose,
     LIVE_SITE_URL,
     SITE_VERSION,
