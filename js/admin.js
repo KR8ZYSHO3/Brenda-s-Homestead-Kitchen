@@ -1289,23 +1289,70 @@
     const root = document.getElementById("heritageRecipeList");
     if (!root || !BHK.listHeritageRecipes) return;
     const filter = document.getElementById("heritageFilter")?.value || "all";
+    const q = String(document.getElementById("heritageSearch")?.value || "")
+      .trim()
+      .toLowerCase();
     const recipes = BHK.listHeritageRecipes()
       .map((r) => ({ recipe: r, meta: BHK.getHeritageMeta(r.id) }))
-      .filter(({ meta }) => {
+      .filter(({ recipe: r, meta }) => {
         if (filter === "starred") return meta.starred;
         if (filter === "considering") return meta.considering;
         return true;
+      })
+      .filter(({ recipe: r }) => {
+        if (!q) return true;
+        const hay = [r.name, r.era, r.region, r.history, r.marketingHook, ...(r.aka || []), ...(r.ingredients || [])]
+          .join(" ")
+          .toLowerCase();
+        return hay.indexOf(q) !== -1;
       });
+
+    const countEl = document.getElementById("heritageCount");
+    if (countEl) {
+      const total = BHK.listHeritageRecipes().length;
+      countEl.textContent =
+        recipes.length === total
+          ? total + " recipes"
+          : "Showing " + recipes.length + " of " + total;
+    }
 
     if (!recipes.length) {
       root.innerHTML =
-        '<div class="notice">No recipes match this filter. Switch to <strong>All recipes</strong> or star a few you like.</div>';
+        '<div class="notice">No recipes match. Clear the search or switch to <strong>All recipes</strong>.</div>';
       return;
     }
 
     root.innerHTML = recipes
       .map(({ recipe: r, meta }) => {
-        const aka = (r.aka || []).length ? `<p class="muted heritage-aka">Also called: ${escapeHtml(r.aka.join(", "))}</p>` : "";
+        const aka = (r.aka || []).length
+          ? `<p class="muted heritage-aka">Also called: ${escapeHtml(r.aka.join(", "))}</p>`
+          : "";
+        const yieldLine = r.yield
+          ? `<p class="heritage-meta-line"><strong>Makes:</strong> ${escapeHtml(r.yield)}</p>`
+          : "";
+        const ingredients = (r.ingredients || [])
+          .map((item) => `<li>${escapeHtml(item)}</li>`)
+          .join("");
+        const steps = (r.steps || [])
+          .map((step, i) => `<li><span class="heritage-step-num">${i + 1}.</span> ${escapeHtml(step)}</li>`)
+          .join("");
+        const recipeBlock =
+          ingredients || steps
+            ? `
+          <details class="heritage-recipe-details" open>
+            <summary>Actual recipe — ingredients &amp; steps</summary>
+            ${
+              ingredients
+                ? `<h3 class="heritage-subhead">Ingredients</h3><ul class="heritage-ingredients">${ingredients}</ul>`
+                : ""
+            }
+            ${
+              steps
+                ? `<h3 class="heritage-subhead">Steps</h3><ol class="heritage-steps">${steps}</ol>`
+                : ""
+            }
+          </details>`
+            : "";
         return `
         <article class="panel heritage-card" data-heritage-id="${escapeHtml(r.id)}">
           <div class="heritage-card-top">
@@ -1314,6 +1361,7 @@
               <h2 class="panel-title" style="margin-top:.35rem;">${escapeHtml(r.name)}</h2>
               ${aka}
               <p class="heritage-meta-line"><strong>Where:</strong> ${escapeHtml(r.region)}</p>
+              ${yieldLine}
             </div>
             <div class="heritage-toggles">
               <label class="heritage-check">
@@ -1326,6 +1374,7 @@
               </label>
             </div>
           </div>
+          ${recipeBlock}
           <h3 class="heritage-subhead">History</h3>
           <p>${escapeHtml(r.history)}</p>
           <h3 class="heritage-subhead">Why it’s a killer recipe</h3>
@@ -1335,7 +1384,7 @@
           </div>
           <p class="muted" style="margin-top:.75rem;"><strong>Cottage note:</strong> ${escapeHtml(r.cottageNote)}</p>
           <label style="display:block;margin-top:1rem;">Your notes
-            <textarea data-heritage-note="${escapeHtml(r.id)}" rows="2" placeholder="Ingredients to try, market-board wording, questions…">${escapeHtml(
+            <textarea data-heritage-note="${escapeHtml(r.id)}" rows="2" placeholder="Test batch notes, market-board wording, tweaks…">${escapeHtml(
               meta.note
             )}</textarea>
           </label>
@@ -1348,6 +1397,14 @@
     const filter = document.getElementById("heritageFilter");
     if (filter) {
       filter.addEventListener("change", () => renderHeritageRecipes());
+    }
+    const search = document.getElementById("heritageSearch");
+    if (search) {
+      let t = null;
+      search.addEventListener("input", () => {
+        clearTimeout(t);
+        t = setTimeout(() => renderHeritageRecipes(), 150);
+      });
     }
     const root = document.getElementById("heritageRecipeList");
     if (!root) return;

@@ -1743,6 +1743,52 @@ a.goal-item-title.launch-link {
   font-size: 1.05rem;
 }
 
+.heritage-recipe-details {
+  margin: 0.35rem 0 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(196, 163, 90, 0.4);
+  border-radius: calc(var(--radius) - 4px);
+  background: rgba(255, 253, 248, 0.7);
+}
+
+.heritage-recipe-details summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--forest);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+}
+
+.heritage-ingredients,
+.heritage-steps {
+  margin: 0.35rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.heritage-ingredients li,
+.heritage-steps li {
+  margin: 0.35rem 0;
+  line-height: 1.45;
+}
+
+.heritage-steps {
+  list-style: none;
+  padding-left: 0;
+}
+
+.heritage-step-num {
+  font-weight: 700;
+  color: var(--brass);
+  margin-right: 0.25rem;
+}
+
+.heritage-toolbar label input,
+.heritage-toolbar label select {
+  display: block;
+  margin-top: 0.3rem;
+  min-width: 11rem;
+}
+
 .heritage-card textarea {
   width: 100%;
   margin-top: 0.35rem;

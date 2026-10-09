@@ -53,13 +53,33 @@
       aka: ["Desperation pie", "Farm pie"],
       era: "Late 1800s–Great Depression",
       region: "Midwest & Appalachia",
+      yield: "1 nine-inch pie (8 slices)",
       history:
-        "When fresh fruit was gone and sugar was precious, farm cooks still wanted pie for Sunday. A spoon of vinegar (or sometimes cider vinegar) stood in for tart fruit, mixed with eggs, sugar, and spice in a custard-style filling. Families across Ohio and neighboring states called it desperation pie — not because it tasted desperate, but because it answered hard seasons with something warm from the oven.",
+        "When fresh fruit was gone and sugar was precious, farm cooks still wanted pie for Sunday. A spoon of vinegar stood in for tart fruit in a custard-style filling. Families called it desperation pie — not because it tasted desperate, but because it answered hard seasons with something warm from the oven.",
       whyKiller:
-        "Bright, almost lemon-like tang without lemons. It surprises people who expect “old” to mean bland — and the story sells as hard as the slice.",
+        "Bright, almost lemon-like tang without lemons. The story sells as hard as the slice.",
       cottageNote:
-        "Often works as a shelf-stable baked good when fully baked and cooled; confirm your exact recipe against Ohio cottage-food guidance before selling.",
+        "Fully baked pie; confirm your exact recipe against Ohio cottage-food guidance before selling.",
       marketingHook: "The pie farm kitchens made when the fruit cellar was empty.",
+      ingredients: [
+        "1 unbaked 9-inch pie crust",
+        "1 cup sugar",
+        "3 tablespoons all-purpose flour",
+        "1/2 teaspoon ground nutmeg (or cinnamon)",
+        "Pinch of salt",
+        "3 large eggs",
+        "1 cup water",
+        "2 tablespoons cider vinegar (or white vinegar)",
+        "2 tablespoons melted butter",
+        "1 teaspoon vanilla (optional, later farm versions)",
+      ],
+      steps: [
+        "Heat oven to 350°F. Place crust in a 9-inch pie pan; crimp the edge.",
+        "Whisk sugar, flour, nutmeg, and salt in a bowl.",
+        "Beat in eggs, then water, vinegar, melted butter, and vanilla until smooth.",
+        "Pour into the crust. Bake 40–50 minutes until the center is just set (it will firm as it cools).",
+        "Cool completely before slicing. Chill if you want cleaner cuts for market packs.",
+      ],
     },
     {
       id: "apple_stack_cake",
@@ -67,13 +87,35 @@
       aka: ["Appalachian stack cake", "Wedding stack cake"],
       era: "1800s mountain kitchens",
       region: "Appalachia (including southern Ohio hills)",
+      yield: "1 tall cake (8–10 thin layers; serves 12–16)",
       history:
-        "Thin, sturdy cake layers were baked ahead and stacked with cooked dried apples spiced with cinnamon and ginger. Guests at mountain weddings sometimes each brought a layer; the taller the cake, the bigger the blessing. Dried apples kept through winter when fresh fruit would not — thrift and celebration in the same tin.",
+        "Thin cake layers were baked ahead and stacked with cooked dried apples. Wedding guests sometimes each brought a layer; the taller the cake, the bigger the blessing. Dried apples kept through winter when fresh fruit would not.",
       whyKiller:
-        "Dense, spice-forward, and deeply local-feeling. A whole cake feels like an heirloom gift; individual wedges still carry the story.",
+        "Dense, spice-forward, and heirloom-feeling. A whole cake is a gift; wedges still carry the story.",
       cottageNote:
-        "Baked spice cake layers are usually cottage-friendly; keep fillings shelf-stable and labeled clearly.",
+        "Baked layers are usually cottage-friendly; keep the apple filling shelf-stable and labeled clearly.",
       marketingHook: "The wedding cake of the hills — stacked with dried apples and patience.",
+      ingredients: [
+        "Filling: 4 cups firmly packed dried apples",
+        "Filling: 4 cups water (plus more if needed)",
+        "Filling: 1 cup brown sugar (packed)",
+        "Filling: 1 teaspoon cinnamon, 1/2 teaspoon ginger, pinch of cloves",
+        "Cake: 1 cup shortening or butter",
+        "Cake: 1 cup sugar",
+        "Cake: 1 cup sorghum or molasses",
+        "Cake: 3 eggs",
+        "Cake: 4 cups all-purpose flour",
+        "Cake: 1 teaspoon baking soda, 1 teaspoon baking powder, 1 teaspoon salt",
+        "Cake: 1 teaspoon cinnamon, 1/2 teaspoon ginger",
+        "Cake: 1 cup buttermilk",
+      ],
+      steps: [
+        "Filling: simmer dried apples with water until soft (30–45 minutes). Mash slightly; stir in brown sugar and spices. Cook until thick like apple butter. Cool.",
+        "Cake: cream shortening and sugar; beat in sorghum and eggs.",
+        "Whisk dry ingredients. Add to the wet mix alternately with buttermilk to make a stiff dough/batter.",
+        "Divide into 6–8 portions. Pat or roll each into a thin round (about 8–9 inches) on parchment. Bake at 350°F about 10–12 minutes until set and lightly browned. Cool.",
+        "Stack layers with cooled apple filling between each. Wrap and rest overnight so flavors marry before slicing.",
+      ],
     },
     {
       id: "shaker_lemon_pie",
@@ -81,13 +123,29 @@
       aka: ["Ohio lemon pie"],
       era: "1800s Shaker communities",
       region: "Ohio Shaker villages & Midwest",
+      yield: "1 nine-inch double-crust pie",
       history:
-        "Shaker cooks wasted nothing. Whole lemons — peel and all — were sliced paper-thin, macerated overnight with sugar, then baked with eggs between crusts. The bitter peel softened into candy-like ribbons. Ohio’s Shaker heritage makes this a natural story for a McArthur kitchen that values thrift and craft.",
+        "Shaker cooks wasted nothing. Whole lemons — peel and all — were sliced paper-thin, macerated overnight with sugar, then baked with eggs between crusts. The bitter peel softened into candy-like ribbons.",
       whyKiller:
-        "Intense lemon perfume, chewy candied peel, and a clear Ohio history hook. It photographs beautifully and sounds special on a market board.",
+        "Intense lemon perfume, chewy candied peel, and a clear Ohio history hook.",
       cottageNote:
-        "Fully baked double-crust pies are commonly treated as cottage baked goods; use your usual safe-handling habits.",
+        "Fully baked double-crust pie; use usual safe-handling habits.",
       marketingHook: "Whole-lemon pie from Ohio’s Shaker tradition — nothing wasted.",
+      ingredients: [
+        "2 large lemons (thin-skinned if possible)",
+        "2 cups sugar",
+        "4 large eggs, beaten",
+        "Pastry for a 9-inch double-crust pie",
+        "Pinch of salt",
+        "1–2 tablespoons flour or tapioca (optional, if juicy)",
+      ],
+      steps: [
+        "Wash lemons. Slice paper-thin (remove seeds). Toss with sugar in a bowl. Cover and macerate 12–24 hours at cool room temp, stirring once or twice.",
+        "Heat oven to 450°F. Line a pie pan with bottom crust.",
+        "Stir beaten eggs (and salt/flour if using) into the lemon-sugar mixture. Pour into crust; add top crust, seal, and vent.",
+        "Bake 15 minutes at 450°F, then reduce to 350°F and bake 25–35 minutes more until golden and bubbling.",
+        "Cool completely — the filling sets as it cools.",
+      ],
     },
     {
       id: "corncob_jelly",
@@ -95,13 +153,28 @@
       aka: ["Corn cob jelly"],
       era: "Early–mid 1900s thrift kitchens",
       region: "Rural Midwest & South",
+      yield: "About 4–5 half-pint jars",
       history:
-        "After corn was cut for supper or for drying, the bare cobs still held sweetness. Cooks simmered cobs into a pale gold liquid, then jelled it with sugar and pectin. What looked like scraps became a clear, delicate jelly — proof that homestead kitchens could turn almost anything into pantry treasure.",
+        "After corn was cut for supper, bare cobs still held sweetness. Cooks simmered them into a pale gold liquid, then jelled it with sugar and pectin — scraps into pantry treasure.",
       whyKiller:
-        "Conversation-starting jar. Mild corn-silk sweetness that pairs with biscuits and cheese boards. Perfect “only grandma made this” energy.",
+        "Conversation-starting jar with mild corn-silk sweetness.",
       cottageNote:
-        "Jams and jellies are classic Ohio cottage foods when properly finished and labeled “This product is home produced.”",
+        "Jams and jellies are classic Ohio cottage foods when properly finished and labeled.",
       marketingHook: "Jelly from the cob — thrift that tastes like late-summer corn.",
+      ingredients: [
+        "12 fresh sweet-corn cobs (kernels removed for another meal)",
+        "6 cups water (enough to cover cobs)",
+        "1 package powdered pectin (follow box for jelly)",
+        "About 3–4 cups sugar (adjust to pectin instructions / taste)",
+        "Optional: 1 tablespoon lemon juice for brightness",
+      ],
+      steps: [
+        "Break cobs in half. Cover with water in a pot; simmer 30–40 minutes. Strain liquid through a fine cloth; measure 3 cups corn “juice.”",
+        "Return juice to a clean pot. Whisk in powdered pectin; bring to a full rolling boil.",
+        "Add sugar all at once (amount per pectin brand for 3 cups juice). Boil hard 1 minute, stirring. Skim foam. Add lemon juice if using.",
+        "Ladle into hot sterilized half-pint jars, leaving headspace. Wipe rims; apply lids.",
+        "Process in a boiling-water bath per current USDA/jelly guidance for your altitude, or refrigerate if not canning for sale.",
+      ],
     },
     {
       id: "sorghum_ginger_cookies",
@@ -109,27 +182,66 @@
       aka: ["Sorghum snaps", "Molasses-style farm cookies"],
       era: "1800s–mid-century farm kitchens",
       region: "Appalachia & Ohio River valley",
+      yield: "About 3–4 dozen cookies",
       history:
-        "Before refined white sugar was cheap, sorghum syrup — pressed from cane-like stalks and boiled down — sweetened many hill-country kitchens. Ginger and spice cookies made with sorghum kept well in tins and traveled to church socials and market days. The flavor is deeper and less sharp than grocery molasses alone.",
+        "Sorghum syrup sweetened many hill-country kitchens before cheap white sugar. Ginger cookies kept well in tins for church socials and market days.",
       whyKiller:
-        "Chewy, fragrant, and nostalgic. Easy to portion for markets, and sorghum itself is a storytelling ingredient (“old sweetener of the hills”).",
+        "Chewy, fragrant, and easy to portion — sorghum is a storytelling ingredient.",
       cottageNote:
-        "Shelf-stable cookies are a cottage-food staple — list allergens and keep ingredient order by weight on the label.",
+        "Shelf-stable cookies are a cottage staple — list allergens on the label.",
       marketingHook: "Farm cookies sweetened the old way — with sorghum and ginger.",
+      ingredients: [
+        "3/4 cup shortening or butter",
+        "1 cup sugar, plus more for rolling",
+        "1 large egg",
+        "1/4 cup sorghum syrup (or half sorghum + half molasses)",
+        "2 cups all-purpose flour",
+        "2 teaspoons baking soda",
+        "1 teaspoon ground ginger",
+        "1 teaspoon cinnamon",
+        "1/2 teaspoon cloves",
+        "1/2 teaspoon salt",
+      ],
+      steps: [
+        "Cream shortening and sugar; beat in egg and sorghum.",
+        "Whisk flour, baking soda, spices, and salt; mix into the wet ingredients. Chill dough 1 hour.",
+        "Heat oven to 350°F. Roll teaspoonfuls in sugar; place on lined sheets.",
+        "Bake 8–10 minutes until cracked on top and just set. Cool on the sheet 2 minutes, then move to a rack.",
+        "Store airtight — flavor deepens the next day.",
+      ],
     },
     {
       id: "green_tomato_pie",
       name: "Green tomato pie",
-      aka: ["End-of-garden pie", "Fried green tomato’s cousin"],
+      aka: ["End-of-garden pie", "Mock apple pie"],
       era: "Late-season farm tradition",
       region: "Midwest gardens & Appalachia",
+      yield: "1 nine-inch double-crust pie",
       history:
-        "When frost threatened, green tomatoes came off the vine by the bucket. Some were fried; others were sliced into pies with sugar, vinegar or lemon, and warm spice — a mock-apple trick that stretched the garden one more week. It tastes like autumn thrift: bright, spiced, and a little mysterious.",
+        "When frost threatened, green tomatoes came off by the bucket. Sliced into pies with sugar, vinegar or lemon, and spice, they stretched the garden one more week — a mock-apple trick of autumn thrift.",
       whyKiller:
-        "Seasonal limited drop with a built-in story. People who “don’t like green tomatoes” often love this as pie.",
+        "Seasonal limited drop with a built-in story.",
       cottageNote:
-        "Treat as a baked pie for cottage sales; avoid fridge-only custards if you need shelf-stable market days.",
+        "Treat as a baked pie for cottage sales.",
       marketingHook: "The frost-week pie — green tomatoes, sugar, and spice.",
+      ingredients: [
+        "Pastry for a 9-inch double-crust pie",
+        "4 cups thinly sliced green tomatoes (firm, not soft ripe)",
+        "1 1/4 cups sugar",
+        "3 tablespoons flour or quick-cooking tapioca",
+        "1 teaspoon cinnamon",
+        "1/4 teaspoon nutmeg",
+        "Pinch of salt",
+        "2 tablespoons lemon juice or cider vinegar",
+        "2 tablespoons butter, cut in bits",
+      ],
+      steps: [
+        "Heat oven to 425°F. Line pan with bottom crust.",
+        "Toss tomatoes with sugar, flour, spices, salt, and lemon juice/vinegar.",
+        "Pile into crust; dot with butter. Add top crust, seal, vent.",
+        "Bake 15 minutes at 425°F; reduce to 350°F and bake 35–45 minutes more until juices bubble and crust is golden.",
+        "Cool before slicing so the filling thickens.",
+      ],
     },
     {
       id: "pawpaw_bread",
@@ -137,13 +249,33 @@
       aka: ["Ohio banana bread", "Custard-apple loaf"],
       era: "Indigenous & settler foodways → today",
       region: "Ohio woodlands (native pawpaw)",
+      yield: "1 standard loaf",
       history:
-        "Pawpaw is North America’s largest native fruit — custardy, tropical, and once common along Ohio creeks. Indigenous communities knew it long before settlers packed pawpaw pulp into breads and puddings. Many modern Ohioans have never tasted one. A homestead kitchen that celebrates pawpaw season connects shoppers to the land under their feet.",
+        "Pawpaw is North America’s largest native fruit. Indigenous communities knew it long before settlers baked the pulp into breads. Many Ohioans have never tasted one — a homestead loaf connects shoppers to local land.",
       whyKiller:
-        "Hyper-local bragging rights. Soft, fragrant loaf that feels rare even when the method is as simple as banana bread.",
+        "Hyper-local bragging rights with a soft, fragrant crumb.",
       cottageNote:
-        "Quick breads are typically cottage-friendly when fully baked; note pawpaw as an ingredient and any nut allergies from mix-ins.",
+        "Quick breads are typically cottage-friendly when fully baked; note pawpaw and any nuts.",
       marketingHook: "Ohio’s native fruit — baked into a soft homestead loaf.",
+      ingredients: [
+        "1 1/2 cups mashed ripe pawpaw pulp (seeds removed)",
+        "1/2 cup oil or melted butter",
+        "2 eggs",
+        "1 teaspoon vanilla",
+        "1 3/4 cups all-purpose flour",
+        "3/4 cup sugar (or part brown sugar)",
+        "1 teaspoon baking soda",
+        "1/2 teaspoon salt",
+        "1 teaspoon cinnamon (optional)",
+        "Optional: 1/2 cup chopped walnuts or pecans",
+      ],
+      steps: [
+        "Heat oven to 350°F. Grease a 9×5-inch loaf pan.",
+        "Whisk pawpaw, oil, eggs, and vanilla.",
+        "In another bowl whisk flour, sugar, baking soda, salt, and cinnamon. Fold dry into wet; fold in nuts if using.",
+        "Bake 50–60 minutes until a toothpick comes out clean. Cool in pan 10 minutes; finish on a rack.",
+        "Wrap when cool — flavor improves overnight.",
+      ],
     },
     {
       id: "friendship_starter_cake",
@@ -151,13 +283,404 @@
       aka: ["Amish friendship bread"],
       era: "Popularized late 20th century from older starter traditions",
       region: "Midwest Amish country & beyond",
+      yield: "2 loaves (from one bake batch)",
       history:
-        "A sweet sourdough-like starter is fed on the counter, then shared with neighbors along with the recipe — hence “friendship.” The baked loaf is cinnamon-sugar tender, often with pudding mix in modern versions. Older starter sharing echoes the older habit of passing yeast and culture hand to hand when stores were far away.",
+        "A sweet starter is fed on the counter, then shared with neighbors with the recipe — friendship. It echoes older habits of passing yeast hand to hand when stores were far away.",
       whyKiller:
-        "Community story built in. Great for “starter kit + loaf” market bundles later, or simply as a cinnamon loaf with the friendship tale on a card.",
+        "Community story built in; great cinnamon loaf even without sharing starter.",
       cottageNote:
-        "Sell the finished baked loaf under cottage rules; live starters are a separate conversation (handling, labeling, customer instructions).",
+        "Sell the finished baked loaf under cottage rules; live starters need separate handling talk.",
       marketingHook: "The loaf you bake — and the starter story you share.",
+      ingredients: [
+        "1 cup friendship starter (active, room temperature)",
+        "1 cup oil",
+        "1 cup sugar",
+        "3 eggs",
+        "1/2 teaspoon vanilla",
+        "2 cups all-purpose flour",
+        "1 1/2 teaspoons baking powder",
+        "1/2 teaspoon baking soda",
+        "1/2 teaspoon salt",
+        "2 teaspoons cinnamon",
+        "Optional modern touch: 1 small box instant vanilla pudding mix",
+        "Cinnamon-sugar for dusting pans",
+      ],
+      steps: [
+        "Heat oven to 325°F. Grease two loaf pans; dust with cinnamon-sugar.",
+        "Beat starter, oil, sugar, eggs, and vanilla. Mix in dry ingredients (and pudding mix if using) until just combined.",
+        "Divide batter between pans. Sprinkle tops with more cinnamon-sugar.",
+        "Bake 50–60 minutes until a toothpick comes out clean. Cool before turning out.",
+        "To share the tradition: keep feeding starter on the 10-day cycle and pass cups to friends with instructions.",
+      ],
+    },
+    {
+      id: "oatmeal_pie",
+      name: "Oatmeal pie",
+      aka: ["Mock pecan pie", "Poor man’s pecan pie"],
+      era: "Depression & thrift kitchens",
+      region: "Midwest & South",
+      yield: "1 nine-inch pie",
+      history:
+        "When pecans were too dear, cooks used rolled oats in a brown-sugar custard. Baked, the top crisps and the middle stays chewy — close enough to pecan pie that church socials rarely complained.",
+      whyKiller:
+        "Familiar dessert price point with a thrift story shoppers love.",
+      cottageNote:
+        "Fully baked pie; label oats/wheat/egg/dairy allergens.",
+      marketingHook: "Pecan-pie comfort — made with pantry oats.",
+      ingredients: [
+        "1 unbaked 9-inch pie crust",
+        "3 eggs",
+        "1 cup light corn syrup or golden syrup (or half sorghum)",
+        "1 cup brown sugar (packed)",
+        "1/4 cup melted butter",
+        "1 teaspoon vanilla",
+        "Pinch of salt",
+        "1 cup old-fashioned rolled oats",
+      ],
+      steps: [
+        "Heat oven to 350°F.",
+        "Beat eggs; whisk in syrup, brown sugar, butter, vanilla, and salt. Stir in oats.",
+        "Pour into crust. Bake 40–50 minutes until set at the edges and slightly jiggly in the center.",
+        "Cool completely before slicing.",
+      ],
+    },
+    {
+      id: "chess_pie",
+      name: "Chess pie",
+      aka: ["Sugar pie", "Vinegar chess"],
+      era: "1700s–1800s Southern & border-state tables",
+      region: "South & lower Midwest",
+      yield: "1 nine-inch pie",
+      history:
+        "A simple pantry pie: eggs, sugar, butter, and a little cornmeal or flour. Some say the name comes from “chest pie” (pie chest); others from “it’s jes’ pie.” A splash of vinegar or lemon keeps it from being cloying.",
+      whyKiller:
+        "Silky, old-fashioned sweetness that feels fancy with almost no specialty ingredients.",
+      cottageNote:
+        "Baked custard-style pie; cool fully and follow your cottage guidance for egg-rich fillings.",
+      marketingHook: "Pantry sugar pie — the old “jes’ pie.”",
+      ingredients: [
+        "1 unbaked 9-inch pie crust",
+        "1 1/2 cups sugar",
+        "1 tablespoon fine cornmeal (or flour)",
+        "1 tablespoon flour",
+        "Pinch of salt",
+        "1/2 cup melted butter",
+        "3 large eggs",
+        "1/4 cup milk",
+        "1 tablespoon vinegar or lemon juice",
+        "1 teaspoon vanilla",
+      ],
+      steps: [
+        "Heat oven to 350°F.",
+        "Whisk sugar, cornmeal, flour, and salt. Whisk in melted butter, then eggs, milk, vinegar, and vanilla.",
+        "Pour into crust. Bake 40–50 minutes until the top is golden and the center is mostly set.",
+        "Cool before cutting — it slices cleaner cold.",
+      ],
+    },
+    {
+      id: "depression_wacky_cake",
+      name: "Wacky cake (Depression chocolate cake)",
+      aka: ["War cake", "Eggless chocolate cake"],
+      era: "Great Depression / WWII rationing",
+      region: "Nationwide thrift kitchens",
+      history:
+        "No eggs, no butter, no milk — oil and vinegar react with baking soda for lift. Mixed right in the pan in many family versions. It stayed moist and chocolatey when grocery lists were short.",
+      whyKiller:
+        "Allergy-friendly story (egg-free), cheap to bake, nostalgic crumb.",
+      cottageNote:
+        "Excellent cottage cake; label wheat/cocoa and any frosting allergens.",
+      marketingHook: "The chocolate cake that needed no eggs or butter.",
+      yield: "One 8- or 9-inch square cake",
+      ingredients: [
+        "1 1/2 cups all-purpose flour",
+        "1 cup sugar",
+        "3 tablespoons cocoa powder",
+        "1 teaspoon baking soda",
+        "1/2 teaspoon salt",
+        "1 teaspoon vinegar",
+        "1 teaspoon vanilla",
+        "5 tablespoons oil",
+        "1 cup cold water",
+      ],
+      steps: [
+        "Heat oven to 350°F. Grease an 8- or 9-inch square pan (or mix dry ingredients directly in the pan as grandma did).",
+        "Whisk flour, sugar, cocoa, baking soda, and salt.",
+        "Make three wells; pour vinegar, vanilla, and oil into separate wells. Pour water over all; stir until smooth.",
+        "Bake 30–35 minutes until a toothpick comes out clean. Cool; dust with powdered sugar or frost simply.",
+      ],
+    },
+    {
+      id: "apple_butter",
+      name: "Slow apple butter",
+      aka: ["Apple sauce butter", "Open-kettle apple butter"],
+      era: "Colonial–early American farm tradition",
+      region: "Ohio, Pennsylvania, Appalachia",
+      yield: "About 4–6 half-pint jars (varies with apples)",
+      history:
+        "Apple butter was stirred for hours in copper kettles at community “apple butter boilings.” Slow cooking caramelizes the fruit into a dark, spreadable preserve that kept through winter without fancy gear.",
+      whyKiller:
+        "Core Ohio homestead product — biscuits, gifts, and market tables.",
+      cottageNote:
+        "Classic cottage preserve when finished and labeled properly.",
+      marketingHook: "All-day apple butter — dark, spiced, and spoonable.",
+      ingredients: [
+        "6 pounds apples, cored and chopped (peels optional for rustic style)",
+        "2 cups apple cider or water",
+        "2–3 cups sugar (to taste; some batches use less)",
+        "2 teaspoons cinnamon",
+        "1/2 teaspoon cloves",
+        "1/2 teaspoon allspice or nutmeg",
+        "Pinch of salt",
+        "1 tablespoon lemon juice (optional)",
+      ],
+      steps: [
+        "Cook apples with cider until very soft. Mash or blend smooth.",
+        "Stir in sugar, spices, salt, and lemon. Simmer uncovered on low, stirring often, 1–3 hours until thick and dark (or finish in a slow cooker on low with the lid cracked).",
+        "It is ready when a spoonful on a cold plate doesn’t weep liquid around the edges.",
+        "Ladle into hot jars and water-bath process per current guidance for fruit butters, or refrigerate small test batches.",
+      ],
+    },
+    {
+      id: "chow_chow",
+      name: "End-of-garden chow-chow",
+      aka: ["Piccalilli", "Mustard relish"],
+      era: "1800s–early 1900s garden kitchens",
+      region: "Appalachia, South, Midwest",
+      yield: "About 6–8 pints (depends on veg mix)",
+      history:
+        "Whatever was left in the garden — green tomatoes, cabbage, onions, peppers — was chopped and pickled into a tangy relish for beans, greens, and winter plates. Every hollow had its own spice mix.",
+      whyKiller:
+        "Jar product with color, crunch, and a clear “garden thrift” story.",
+      cottageNote:
+        "Acidified pickled relish can fit cottage rules when a tested method is followed — use a trusted canning recipe for sale batches.",
+      marketingHook: "The relish that saved the last of the garden.",
+      ingredients: [
+        "4 cups chopped green tomatoes",
+        "4 cups chopped cabbage",
+        "2 cups chopped onions",
+        "2 cups chopped sweet peppers (mix colors)",
+        "1/4 cup canning/pickling salt (for overnight draw)",
+        "3 cups vinegar (5% acidity)",
+        "2 cups sugar",
+        "2 tablespoons mustard seed",
+        "1 tablespoon celery seed",
+        "1 teaspoon turmeric",
+        "1 teaspoon ground ginger (optional)",
+      ],
+      steps: [
+        "Combine chopped vegetables with salt; cover and refrigerate overnight. Drain and rinse lightly.",
+        "Boil vinegar, sugar, and spices 5 minutes. Add drained vegetables; simmer until hot and slightly translucent (about 10–15 minutes).",
+        "Pack into hot jars with liquid, leaving proper headspace.",
+        "Water-bath process using a tested relish schedule for your jar size and altitude before selling.",
+      ],
+    },
+    {
+      id: "shoofly_pie",
+      name: "Shoofly pie",
+      aka: ["Molasses crumb pie", "Pennsylvania Dutch pie"],
+      era: "1800s Pennsylvania Dutch → Midwest Amish tables",
+      region: "Amish / Mennonite country (incl. Ohio)",
+      yield: "1 nine-inch pie",
+      history:
+        "A molasses crumb pie whose sticky sweetness supposedly drew flies you’d “shoo.” Wet-bottom versions stay gooey under a crumb top — coffee-and-pie comfort from Anabaptist kitchens that settled deep into Ohio.",
+      whyKiller:
+        "Amish-country recognition with a bold molasses flavor shoppers already trust.",
+      cottageNote:
+        "Fully baked pie; label wheat/egg/dairy/molasses.",
+      marketingHook: "Molasses crumb pie from Amish-country tables.",
+      ingredients: [
+        "1 unbaked 9-inch pie crust",
+        "Crumb: 1 1/2 cups flour, 1/2 cup brown sugar, 1/4 cup shortening or butter, pinch salt, 1/2 teaspoon cinnamon",
+        "Wet: 3/4 cup molasses (or sorghum), 3/4 cup hot water, 1 egg (beaten), 1 teaspoon baking soda",
+      ],
+      steps: [
+        "Heat oven to 400°F. Mix crumb ingredients with fingers until sandy; reserve 1/2 cup crumbs for topping.",
+        "Stir molasses with hot water; cool slightly. Mix in baking soda and beaten egg.",
+        "Spread most crumbs in the crust; pour molasses mixture over; sprinkle reserved crumbs on top.",
+        "Bake 10 minutes at 400°F; reduce to 350°F and bake 25–35 minutes more until set at edges.",
+        "Cool before slicing (wet-bottom stays soft in the center).",
+      ],
+    },
+    {
+      id: "dandelion_jelly",
+      name: "Dandelion jelly",
+      aka: ["Dandelion flower jelly", "Yard honey jelly"],
+      era: "Folk foraged preserves",
+      region: "Rural yards nationwide (strong Midwest spring tradition)",
+      yield: "About 4 half-pint jars",
+      history:
+        "Spring foragers pulled yellow petals (not bitter green bases), simmered them into a tea, and jelled it with sugar and lemon. The jar tastes lightly floral — like a cousin to honey — and turns a weed into pantry gold.",
+      whyKiller:
+        "Instagram-and-market story: jelly from the lawn. Bright spring limited drop.",
+      cottageNote:
+        "Flower jellies can be cottage products when processed correctly; only use petals from untreated yards.",
+      marketingHook: "Spring jelly from dandelion blossoms — weeds into gold.",
+      ingredients: [
+        "4 cups packed dandelion petals (green bases removed)",
+        "4 cups water",
+        "2 tablespoons lemon juice",
+        "1 package powdered pectin",
+        "About 4 cups sugar (per pectin instructions for jelly)",
+      ],
+      steps: [
+        "Simmer petals in water 10 minutes; steep off heat 30–60 minutes. Strain for 3 cups clear “tea.”",
+        "Combine tea, lemon juice, and pectin; bring to a rolling boil.",
+        "Add sugar; boil hard 1 minute. Skim; jar hot.",
+        "Water-bath process per jelly guidance, or keep refrigerated test jars.",
+      ],
+    },
+    {
+      id: "persimmon_pudding",
+      name: "Persimmon pudding",
+      aka: ["Indiana pudding", "Wild persimmon cake-pudding"],
+      era: "Settler & Midwestern autumn tradition",
+      region: "Ohio / Indiana / Midwest woodlands",
+      yield: "One 9×13 pan (12–16 squares)",
+      history:
+        "Wild American persimmons ripen soft and sweet after frost. Pulp baked with sugar and spice into a dense pudding-cake was autumn church-supper fare across the Midwest — including southern Ohio.",
+      whyKiller:
+        "Seasonal wild-fruit story with a moist spice crumb that packs well in squares.",
+      cottageNote:
+        "Baked pudding squares can work as cottage baked goods when fully baked and cooled; note wild fruit.",
+      marketingHook: "Frost-sweet persimmon — baked into autumn pudding squares.",
+      ingredients: [
+        "2 cups persimmon pulp (strained, seeds removed)",
+        "2 cups sugar",
+        "2 eggs",
+        "1/2 cup melted butter",
+        "2 cups buttermilk (or milk + 1 Tbsp vinegar)",
+        "2 cups flour",
+        "2 teaspoons baking powder",
+        "1 teaspoon baking soda",
+        "1 teaspoon cinnamon",
+        "1/2 teaspoon nutmeg",
+        "Pinch of salt",
+      ],
+      steps: [
+        "Heat oven to 350°F. Grease a 9×13 pan.",
+        "Beat pulp, sugar, eggs, butter, and buttermilk.",
+        "Whisk dry ingredients; fold into wet until smooth.",
+        "Bake 45–55 minutes until set and a toothpick comes out mostly clean.",
+        "Cool; cut into squares. Optional dusting of powdered sugar for market.",
+      ],
+    },
+    {
+      id: "hot_water_gingerbread",
+      name: "Hot-water gingerbread",
+      aka: ["Soft gingerbread", "Farm gingerbread"],
+      era: "1800s–early 1900s",
+      region: "Appalachia & Midwest farm kitchens",
+      yield: "One 9×9 or 9×13 cake",
+      history:
+        "Boiling water bloomed the spices and made a soft, moist crumb that kept well in lunch pails. Molasses or sorghum did the sweetening. It was everyday cake — not frosted showpiece.",
+      whyKiller:
+        "Warm spice aroma at markets; slices or squares wrap cleanly.",
+      cottageNote:
+        "Straightforward cottage baked good; label molasses/sorghum and wheat.",
+      marketingHook: "Soft farm gingerbread — hot water, spice, and molasses.",
+      ingredients: [
+        "1/2 cup butter or shortening",
+        "1/2 cup sugar",
+        "1 cup molasses or sorghum",
+        "1 large egg (optional in older eggless versions — omit if desired)",
+        "2 1/2 cups flour",
+        "1 1/2 teaspoons baking soda",
+        "1 tablespoon ground ginger",
+        "1 teaspoon cinnamon",
+        "1/2 teaspoon cloves",
+        "1/2 teaspoon salt",
+        "1 cup boiling water",
+      ],
+      steps: [
+        "Heat oven to 350°F. Grease pan.",
+        "Cream fat and sugar; beat in molasses and egg if using.",
+        "Whisk dry ingredients; add to bowl alternately with boiling water (batter will be thin).",
+        "Pour into pan. Bake 35–45 minutes until springy and a toothpick tests clean.",
+        "Serve plain, with whipped cream at home, or powdered sugar for sale squares.",
+      ],
+    },
+    {
+      id: "fruit_leather",
+      name: "Apple (or berry) fruit leather",
+      aka: ["Fruit roll", "Sun leather"],
+      era: "Indigenous drying methods → pioneer kitchens",
+      region: "Nationwide homestead tradition",
+      yield: "2–3 sheet pans of leather (cut into strips)",
+      history:
+        "Fruit pulp dried in thin sheets was portable sweetness long before plastic-wrapped snacks. Pioneer kitchens used the back of the stove or bright sun; today’s ovens make it steady work.",
+      whyKiller:
+        "Kid-friendly SKU, low sugar options possible, strong “old ways / no waste” pitch.",
+      cottageNote:
+        "Dried fruit products can fit cottage sales when moisture is low and labeling is clear — follow your local guidance.",
+      marketingHook: "Homestead fruit leather — the original pocket snack.",
+      ingredients: [
+        "4 cups unsweetened applesauce (or cooked berry puree)",
+        "2–4 tablespoons honey or sugar (optional)",
+        "1 teaspoon lemon juice",
+        "Pinch of cinnamon (optional)",
+      ],
+      steps: [
+        "Blend puree smooth with lemon and optional sweetener/spice.",
+        "Line pans with parchment or silicone. Spread 1/8–1/4 inch thick.",
+        "Dry at 140–170°F (dehydrator or oven with door cracked) 4–8 hours until tacky-leather, not wet.",
+        "Cool; peel up and cut into strips. Store airtight with parchment between layers.",
+      ],
+    },
+    {
+      id: "cornmeal_pone",
+      name: "Skillet corn pone",
+      aka: ["Johnny cake", "Hoe cake cousin"],
+      era: "Colonial–1800s everyday bread",
+      region: "South & Appalachia (Ohio River influence)",
+      yield: "8–10 pone wedges / cakes",
+      history:
+        "Cornmeal, salt, fat, and water or buttermilk — bread when wheat flour was scarce. Baked in a skillet or as individual pones, it rode beside beans and greens for generations.",
+      whyKiller:
+        "Savory side for market baskets; pairs with apple butter and chow-chow stories.",
+      cottageNote:
+        "Fully baked cornmeal breads can be sold as cottage baked goods; label corn/wheat if mixed.",
+      marketingHook: "Skillet corn pone — the everyday bread of the hills.",
+      ingredients: [
+        "2 cups fine cornmeal",
+        "1 teaspoon salt",
+        "1 teaspoon baking powder (later convenience; older versions often omitted)",
+        "2 tablespoons melted bacon drippings, lard, or oil",
+        "1 1/2 cups boiling water or hot buttermilk (approximate)",
+      ],
+      steps: [
+        "Heat oven to 425°F. Heat a greased cast-iron skillet in the oven.",
+        "Stir cornmeal, salt, and baking powder. Stir in fat, then enough hot liquid to make a thick batter that holds a spoon trail.",
+        "Spread in the hot skillet (or shape thick pones on a sheet). Bake 20–25 minutes until browned and set.",
+        "Serve warm with butter or apple butter — or cool for wrapped market wedges the same day.",
+      ],
+    },
+    {
+      id: "tomato_preserves",
+      name: "Old-fashioned tomato preserves",
+      aka: ["Tomato jam", "Sweet tomato preserves"],
+      era: "1800s–early 1900s farm canning",
+      region: "Midwest gardens",
+      yield: "About 4–5 half-pint jars",
+      history:
+        "Red-ripe tomatoes cooked down with sugar and lemon or ginger until glossy. Before ketchup ruled the pantry, sweet tomato preserves went on biscuits like any fruit jam — a surprise that still wins at markets.",
+      whyKiller:
+        "Unexpected flavor people talk about; uses peak tomato glut.",
+      cottageNote:
+        "Fruit-style preserves from tomatoes are often cottage-eligible when acidified and processed correctly.",
+      marketingHook: "Tomato preserves — jam from the garden’s red glut.",
+      ingredients: [
+        "4 cups peeled, chopped ripe tomatoes (drained of excess watery juice)",
+        "3 cups sugar",
+        "2 tablespoons lemon juice",
+        "1–2 teaspoons grated fresh ginger or 1 lemon sliced thin (optional old style)",
+        "Pinch of salt",
+        "1 pouch liquid pectin OR cook long to set without pectin (older method)",
+      ],
+      steps: [
+        "Combine tomatoes, sugar, lemon, ginger/lemon slices, and salt. Boil gently, stirring, until thick and jammy (20–40 minutes) or follow liquid-pectin jam timing.",
+        "Test set on a cold plate. Remove ginger bits or lemon slices if desired.",
+        "Jar hot and water-bath process per jam guidance for your jar size.",
+      ],
     },
   ];
 
@@ -202,9 +725,9 @@
   const LIVE_SITE_URL = "https://kr8zysho3.github.io/Brenda-s-Homestead-Kitchen";
 
   /** Bump these when deploying so Brenda can confirm the live site updated */
-  const SITE_VERSION = "1.6.6";
-  const SITE_UPDATED_ISO = "2026-10-09T09:45:00-04:00";
-  const SITE_UPDATED_LABEL = "Oct 9, 2026 · 9:45 AM ET";
+  const SITE_VERSION = "1.6.7";
+  const SITE_UPDATED_ISO = "2026-10-09T09:55:00-04:00";
+  const SITE_UPDATED_LABEL = "Oct 9, 2026 · 9:55 AM ET";
 
   /**
    * Guided practice — strawberry jam priced by kitchen scale (ounces).

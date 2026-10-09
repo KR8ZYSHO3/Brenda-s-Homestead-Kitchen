@@ -160,7 +160,9 @@ async function openTab(page, tabId) {
     await openTab(page, "heritage");
     await expectVisible(page, "#tab-heritage.active", "heritage tab");
     const cards = await page.locator("#heritageRecipeList .heritage-card").count();
-    if (cards < 4) throw new Error("expected heritage recipe cards, got " + cards);
+    if (cards < 12) throw new Error("expected heritage recipe cards, got " + cards);
+    const hasIngredients = await page.locator(".heritage-ingredients li").count();
+    if (hasIngredients < 3) throw new Error("expected ingredient lists on heritage cards");
     await openTab(page, "howto");
     const moreOpen = await page.locator("#adminNavMore").evaluate((el) => el.open);
     if (!moreOpen) throw new Error("More did not stay open");
