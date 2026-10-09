@@ -22,9 +22,9 @@
     pickupNotes:
       "Local pickup in McArthur, Ohio. Payment by Venmo, Cash App, PayPal, Zelle, or cash at pickup. Ohio sales only.",
     tagline:
-      "Brenda bakes Ohio cottage foods and pours handmade soap at home. Browse what’s ready, send a quick order, and pick up in town.",
+      "Brenda bakes Ohio cottage foods and pours handmade soap at home. Preorder old-school favorites, grab what’s ready on the shelf, and pick up in McArthur.",
     about:
-      "Hi — I’m Brenda Shoemaker. Everything here is made in my kitchen in McArthur: labeled cottage foods and simple handmade soap bars, sold for local pickup.",
+      "Hi — I’m Brenda Shoemaker. Everything here is made in my kitchen in McArthur: labeled cottage foods and simple handmade soap bars. Preorder a batch or pick up what’s on hand — local pickup only.",
     adminUsername: "Brenda",
     adminPassword: "HomesteadKitchen",
     // Paste from Google Forms → Send → Embed / link. Editable anytime in Admin.
@@ -725,9 +725,9 @@
   const LIVE_SITE_URL = "https://kr8zysho3.github.io/Brenda-s-Homestead-Kitchen";
 
   /** Bump these when deploying so Brenda can confirm the live site updated */
-  const SITE_VERSION = "1.6.7";
-  const SITE_UPDATED_ISO = "2026-10-09T09:55:00-04:00";
-  const SITE_UPDATED_LABEL = "Oct 9, 2026 · 9:55 AM ET";
+  const SITE_VERSION = "1.7.0";
+  const SITE_UPDATED_ISO = "2026-10-09T10:05:00-04:00";
+  const SITE_UPDATED_LABEL = "Oct 9, 2026 · 10:05 AM ET";
 
   /**
    * Guided practice — strawberry jam priced by kitchen scale (ounces).
@@ -871,6 +871,7 @@
       price: 8,
       unit: "dozen",
       quantityOnHand: 6,
+      fulfillment: "on_hand",
       available: true,
       ingredients: "Flour, butter, sugar, eggs, cinnamon, vanilla, salt",
       allergens: "Wheat, eggs, milk",
@@ -885,6 +886,7 @@
       price: 7,
       unit: "8 oz jar",
       quantityOnHand: 10,
+      fulfillment: "on_hand",
       available: true,
       ingredients: "Strawberries, sugar, lemon juice, pectin",
       allergens: "None",
@@ -899,6 +901,7 @@
       price: 12,
       unit: "loaf",
       quantityOnHand: 4,
+      fulfillment: "on_hand",
       available: true,
       ingredients: "Bananas, flour, sugar, eggs, butter, chocolate chips, baking soda, salt",
       allergens: "Wheat, eggs, milk, soy",
@@ -913,6 +916,7 @@
       price: 6,
       unit: "bar",
       quantityOnHand: 12,
+      fulfillment: "on_hand",
       available: true,
       ingredients: "Olive oil, coconut oil, palm oil, sodium hydroxide (lye), water, lavender essential oil",
       allergens: "None listed — ask if you have fragrance sensitivities",
@@ -927,6 +931,7 @@
       price: 6.5,
       unit: "bar",
       quantityOnHand: 10,
+      fulfillment: "on_hand",
       available: true,
       ingredients: "Olive oil, coconut oil, shea butter, sodium hydroxide (lye), water, honey, oatmeal",
       allergens: "Contains oatmeal — ask about sensitivities",
@@ -934,6 +939,239 @@
       createdAt: Date.now(),
     },
   ];
+
+  /**
+   * Shop listings for heritage / old-school recipes (descriptions only — no full recipes).
+   * Seeded as preorder products so Brenda can take orders before baking.
+   */
+  const HERITAGE_PRODUCT_DEFS = [
+    {
+      id: "p_heritage_vinegar_pie",
+      name: "Vinegar pie",
+      category: "baked",
+      unit: "whole pie",
+      price: 18,
+      allergens: "Wheat, eggs, milk",
+      description:
+        "A bright, almost lemony custard pie from thrift kitchens — made when the fruit cellar ran empty. Old-fashioned Sunday dessert with a story in every slice. Preorder a whole pie for pickup in McArthur.",
+      image: "assets/heritage/vinegar_pie.jpg",
+    },
+    {
+      id: "p_heritage_apple_stack_cake",
+      name: "Dried-apple stack cake",
+      category: "baked",
+      unit: "whole cake",
+      price: 36,
+      allergens: "Wheat, eggs, milk",
+      description:
+        "Thin spice layers stacked with cooked dried apples — the wedding cake of the Appalachian hills. Dense, fragrant, and meant to rest overnight. Preorder a full cake for gatherings or gifts.",
+      image: "assets/heritage/apple_stack_cake.jpg",
+    },
+    {
+      id: "p_heritage_shaker_lemon_pie",
+      name: "Shaker lemon pie",
+      category: "baked",
+      unit: "whole pie",
+      price: 20,
+      allergens: "Wheat, eggs",
+      description:
+        "Whole lemons, peel and all, baked into a double-crust pie the Ohio Shaker way. Intense citrus and candy-like peel ribbons. Preorder for local pickup.",
+      image: "assets/heritage/shaker_lemon_pie.jpg",
+    },
+    {
+      id: "p_heritage_corncob_jelly",
+      name: "Corncob jelly",
+      category: "baked",
+      unit: "8 oz jar",
+      price: 8,
+      allergens: "None listed",
+      description:
+        "Delicate golden jelly simmered from sweet-corn cobs — thrift that tastes like late summer. A conversation jar for biscuits and cheese boards. Preorder jars for pickup.",
+      image: "assets/heritage/corncob_jelly.jpg",
+    },
+    {
+      id: "p_heritage_sorghum_ginger_cookies",
+      name: "Sorghum ginger cookies",
+      category: "baked",
+      unit: "dozen",
+      price: 11,
+      allergens: "Wheat, eggs",
+      description:
+        "Chewy farm cookies sweetened with sorghum and warm ginger spice — the old hill-country sweetener. Perfect tin candy for markets and care packages. Preorder by the dozen.",
+      image: "assets/heritage/sorghum_ginger_cookies.jpg",
+    },
+    {
+      id: "p_heritage_green_tomato_pie",
+      name: "Green tomato pie",
+      category: "baked",
+      unit: "whole pie",
+      price: 18,
+      allergens: "Wheat",
+      description:
+        "The frost-week pie: firm green tomatoes, sugar, and spice in a flaky crust. A seasonal limited drop that tastes like autumn thrift. Preorder while the garden lasts.",
+      image: "assets/heritage/green_tomato_pie.jpg",
+    },
+    {
+      id: "p_heritage_pawpaw_bread",
+      name: "Pawpaw bread",
+      category: "baked",
+      unit: "loaf",
+      price: 14,
+      allergens: "Wheat, eggs",
+      description:
+        "Soft loaf made with Ohio’s native pawpaw — custardy, fragrant, and rare on most tables. A hyper-local homestead bake. Preorder loaves in season.",
+      image: "assets/heritage/pawpaw_bread.jpg",
+    },
+    {
+      id: "p_heritage_friendship_starter_cake",
+      name: "Friendship cinnamon loaf",
+      category: "baked",
+      unit: "loaf",
+      price: 12,
+      allergens: "Wheat, eggs, milk",
+      description:
+        "Tender cinnamon-sugar loaf from the friendship-bread tradition — the bake you share with neighbors. Preorder a loaf for pickup (finished bread only).",
+      image: "assets/heritage/friendship_starter_cake.jpg",
+    },
+    {
+      id: "p_heritage_oatmeal_pie",
+      name: "Oatmeal pie",
+      category: "baked",
+      unit: "whole pie",
+      price: 16,
+      allergens: "Wheat, eggs, milk, oats",
+      description:
+        "Depression-era “mock pecan” pie with a brown-sugar oat filling — chewy, caramel edges, pantry comfort. Preorder a whole pie.",
+      image: "assets/heritage/oatmeal_pie.jpg",
+    },
+    {
+      id: "p_heritage_chess_pie",
+      name: "Chess pie",
+      category: "baked",
+      unit: "whole pie",
+      price: 16,
+      allergens: "Wheat, eggs, milk",
+      description:
+        "Silky Southern sugar pie with a splash of vinegar — pantry ingredients, old-fashioned sweetness. Preorder for McArthur pickup.",
+      image: "assets/heritage/chess_pie.jpg",
+    },
+    {
+      id: "p_heritage_depression_wacky_cake",
+      name: "Wacky chocolate cake",
+      category: "baked",
+      unit: "square cake",
+      price: 14,
+      allergens: "Wheat",
+      description:
+        "Egg-free, butter-free Depression chocolate cake mixed the thrifty way — moist crumb, deep cocoa. Preorder a square cake for pickup.",
+      image: "assets/heritage/depression_wacky_cake.jpg",
+    },
+    {
+      id: "p_heritage_apple_butter",
+      name: "Slow apple butter",
+      category: "baked",
+      unit: "8 oz jar",
+      price: 9,
+      allergens: "None listed",
+      description:
+        "Dark, spiced apple butter cooked low and slow — biscuit-ready Ohio classic. Preorder jars; limited batches.",
+      image: "assets/heritage/apple_butter.jpg",
+    },
+    {
+      id: "p_heritage_chow_chow",
+      name: "End-of-garden chow-chow",
+      category: "baked",
+      unit: "pint jar",
+      price: 9,
+      allergens: "None listed",
+      description:
+        "Tangy pickled garden relish from green tomatoes, cabbage, and peppers — the jar that saved the last of the harvest. Preorder for pickup.",
+      image: "assets/heritage/chow_chow.jpg",
+    },
+    {
+      id: "p_heritage_shoofly_pie",
+      name: "Shoofly pie",
+      category: "baked",
+      unit: "whole pie",
+      price: 18,
+      allergens: "Wheat, eggs, milk",
+      description:
+        "Molasses crumb pie from Amish-country tables — sticky sweet “wet bottom,” coffee-and-pie comfort. Preorder a whole pie.",
+      image: "assets/heritage/shoofly_pie.jpg",
+    },
+    {
+      id: "p_heritage_dandelion_jelly",
+      name: "Dandelion jelly",
+      category: "baked",
+      unit: "8 oz jar",
+      price: 9,
+      allergens: "None listed",
+      description:
+        "Spring floral jelly from untreated dandelion blossoms — weeds into gold. Bright limited-season jars. Preorder while petals last.",
+      image: "assets/heritage/dandelion_jelly.jpg",
+    },
+    {
+      id: "p_heritage_persimmon_pudding",
+      name: "Persimmon pudding squares",
+      category: "baked",
+      unit: "dozen squares",
+      price: 14,
+      allergens: "Wheat, eggs, milk",
+      description:
+        "Dense autumn pudding-cake from frost-sweet persimmons — Midwest church-supper classic in market-ready squares. Preorder by the dozen.",
+      image: "assets/heritage/persimmon_pudding.jpg",
+    },
+    {
+      id: "p_heritage_hot_water_gingerbread",
+      name: "Hot-water gingerbread",
+      category: "baked",
+      unit: "tray / squares",
+      price: 12,
+      allergens: "Wheat, eggs, milk",
+      description:
+        "Soft farm gingerbread bloomed with boiling water, molasses, and spice — lunch-pail cake, not a frosted showpiece. Preorder a tray or squares.",
+      image: "assets/heritage/hot_water_gingerbread.jpg",
+    },
+    {
+      id: "p_heritage_fruit_leather",
+      name: "Apple fruit leather",
+      category: "baked",
+      unit: "pack of strips",
+      price: 7,
+      allergens: "None listed",
+      description:
+        "Homestead fruit leather — the original pocket snack, dried from applesauce the old way. Preorder packs for pickup.",
+      image: "assets/heritage/fruit_leather.jpg",
+    },
+    {
+      id: "p_heritage_cornmeal_pone",
+      name: "Skillet corn pone",
+      category: "baked",
+      unit: "batch / wedges",
+      price: 8,
+      allergens: "Corn",
+      description:
+        "Everyday skillet corn bread of the hills — simple, sturdy, perfect with apple butter. Preorder a fresh batch for pickup day.",
+      image: "assets/heritage/cornmeal_pone.jpg",
+    },
+    {
+      id: "p_heritage_tomato_preserves",
+      name: "Tomato preserves",
+      category: "baked",
+      unit: "8 oz jar",
+      price: 9,
+      allergens: "None listed",
+      description:
+        "Sweet old-fashioned tomato jam for biscuits — the garden’s red glut turned glossy and spoonable. Preorder jars in season.",
+      image: "assets/heritage/tomato_preserves.jpg",
+    },
+  ].map((def) => ({
+    ...def,
+    fulfillment: "preorder",
+    quantityOnHand: 0,
+    available: true,
+    ingredients: "",
+  }));
 
   function uid(prefix) {
     return prefix + "_" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
@@ -945,10 +1183,63 @@
     return "baked";
   }
 
+  /** How Brenda fills an order: preorder (bake after order), on_hand (stock only), or both */
+  function normalizeFulfillment(value) {
+    const v = String(value || "")
+      .toLowerCase()
+      .replace(/-/g, "_");
+    if (v === "preorder" || v === "both" || v === "on_hand") return v;
+    return "on_hand";
+  }
+
+  function fulfillmentLabel(productOrValue) {
+    const f =
+      productOrValue && typeof productOrValue === "object"
+        ? normalizeFulfillment(productOrValue.fulfillment)
+        : normalizeFulfillment(productOrValue);
+    if (f === "preorder") return "Preorder";
+    if (f === "both") return "Preorder + on hand";
+    return "On hand";
+  }
+
+  /** True when the product can appear in the shop / order form */
+  function isOrderable(product) {
+    if (!product || !product.available) return false;
+    const f = normalizeFulfillment(product.fulfillment);
+    if (f === "preorder" || f === "both") return true;
+    return Number(product.quantityOnHand) > 0;
+  }
+
+  function shouldDecrementStock(product) {
+    const f = normalizeFulfillment(product && product.fulfillment);
+    return f === "on_hand" || f === "both";
+  }
+
+  /** Resolve product image paths from admin (../) vs public pages */
+  function productImageSrc(image) {
+    const src = String(image || "");
+    if (!src) return "";
+    if (/^(data:|https?:|blob:)/i.test(src)) return src;
+    try {
+      const path = String((global.location && global.location.pathname) || "");
+      if (/\/admin(?:\/|$)/i.test(path) && src.indexOf("../") !== 0 && src.charAt(0) !== "/") {
+        return "../" + src.replace(/^\//, "");
+      }
+    } catch (e) {
+      /* ignore */
+    }
+    return src;
+  }
+
   /** Sample / demo products seeded with the site — not counted as Brenda's real catalog */
   function isSampleProduct(product) {
     const id = String((product && product.id) || "");
     return id.indexOf("p_sample_") === 0;
+  }
+
+  function isHeritageProduct(product) {
+    const id = String((product && product.id) || "");
+    return id.indexOf("p_heritage_") === 0;
   }
 
   function realAvailableProducts() {
@@ -1318,6 +1609,9 @@
     return {
       ...product,
       category: normalizeCategory(product && product.category),
+      fulfillment: normalizeFulfillment(product && product.fulfillment),
+      quantityOnHand: Math.max(0, Number((product && product.quantityOnHand) || 0)),
+      available: !!(product && product.available),
     };
   }
 
@@ -1346,10 +1640,12 @@
       const legacyTaglines = [
         "Homemade cottage foods and handcrafted soaps from McArthur, Ohio",
         "Homemade cottage foods and handcrafted soaps — baked, jarred, and poured with quiet care in the hills of southeastern Ohio.",
+        "Brenda bakes Ohio cottage foods and pours handmade soap at home. Browse what’s ready, send a quick order, and pick up in town.",
       ];
       const legacyAbouts = [
         "Hello! I'm Brenda Shoemaker. I bake approved Ohio cottage foods and craft handmade soaps right here at home in McArthur.",
         "Hello! I'm Brenda Shoemaker. I bake approved Ohio cottage foods and craft handmade soaps right here at home in McArthur. Every batch is made with care — foods are labeled the Ohio way: This product is home produced.",
+        "Hi — I’m Brenda Shoemaker. Everything here is made in my kitchen in McArthur: labeled cottage foods and simple handmade soap bars, sold for local pickup.",
       ];
       if (legacyTaglines.indexOf(String(data.settings.tagline || "")) !== -1) {
         data.settings.tagline = DEFAULT_SETTINGS.tagline;
@@ -1439,10 +1735,14 @@
     let list = data.products.slice().sort((a, b) => {
       const cat = categoryShort(a.category).localeCompare(categoryShort(b.category));
       if (cat !== 0) return cat;
+      // Ready-now stock first, then preorders, then name
+      const aReady = Number(a.quantityOnHand) > 0 ? 0 : 1;
+      const bReady = Number(b.quantityOnHand) > 0 ? 0 : 1;
+      if (aReady !== bReady) return aReady - bReady;
       return (a.name || "").localeCompare(b.name || "");
     });
     if (opts && opts.availableOnly) {
-      list = list.filter((p) => p.available && Number(p.quantityOnHand) > 0);
+      list = list.filter((p) => isOrderable(p));
     }
     if (opts && opts.category && opts.category !== "all") {
       list = list.filter((p) => normalizeCategory(p.category) === opts.category);
@@ -1488,6 +1788,22 @@
     return true;
   }
 
+  /** Seed heritage preorder products (idempotent — never overwrites Brenda's edits). */
+  function ensureHeritageProducts() {
+    const data = load();
+    let added = 0;
+    HERITAGE_PRODUCT_DEFS.forEach((def) => {
+      if (data.products.some((p) => p.id === def.id)) return;
+      data.products.push({
+        ...def,
+        createdAt: Date.now(),
+      });
+      added += 1;
+    });
+    if (added) save(data);
+    return added > 0;
+  }
+
   function deleteProduct(id) {
     const data = load();
     data.products = data.products.filter((p) => p.id !== id);
@@ -1522,11 +1838,11 @@
 
     if (!items.length) throw new Error("Add at least one item to the order.");
 
-    // Reduce stock for known products
+    // Reduce on-hand stock only for on_hand / both products (pure preorders keep qty)
     items.forEach((item) => {
       if (!item.productId) return;
       const product = data.products.find((p) => p.id === item.productId);
-      if (product) {
+      if (product && shouldDecrementStock(product)) {
         product.quantityOnHand = Math.max(0, Number(product.quantityOnHand || 0) - item.qty);
       }
     });
@@ -1780,6 +2096,7 @@
     upsertProduct,
     deleteProduct,
     ensureSoapSamples,
+    ensureHeritageProducts,
     listOrders,
     getOrder,
     createOrder,
@@ -1798,6 +2115,11 @@
     exportBackup,
     importBackup,
     normalizeCategory,
+    normalizeFulfillment,
+    fulfillmentLabel,
+    isOrderable,
+    shouldDecrementStock,
+    productImageSrc,
     categoryLabel,
     categoryShort,
     CATEGORIES,
@@ -1808,6 +2130,7 @@
     getLaunchChecklist,
     getBusinessGoals,
     isSampleProduct,
+    isHeritageProduct,
     setGoalChecked,
     isGoalChecked,
     FOOD_COST_EXERCISE,
@@ -1819,6 +2142,7 @@
     upsertRecipe,
     deleteRecipe,
     HERITAGE_RECIPES,
+    HERITAGE_PRODUCT_DEFS,
     listHeritageRecipes,
     getHeritageRecipe,
     getHeritageMeta,

@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../css/styles.css?v=goals-v167" />
+  <link rel="stylesheet" href="../css/styles.css?v=goals-v170" />
 </head>
 <body>
   <div id="loginView" class="login-wrap">
@@ -537,6 +537,7 @@
                 <th>Category</th>
                 <th>Price</th>
                 <th>Qty on hand</th>
+                <th>Fulfillment</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -754,7 +755,7 @@
         <div class="guide-grid">
           <article class="panel guide-card">
             <h3>Products</h3>
-            <p>Go to <strong>Products &amp; photos</strong>. Click Add product. Choose category <strong>Baked goods &amp; foods</strong> or <strong>Soap</strong>. Fill in name, price, quantity on hand, ingredients, allergens/sensitivities, and upload a picture. Turn Available on so shoppers can order it. Edit anytime — soaps work the same way as baked goods.</p>
+            <p>Go to <strong>Products &amp; photos</strong>. Click Add product. Choose category <strong>Baked goods &amp; foods</strong> or <strong>Soap</strong>. Fill in name, price, and how you sell it: <strong>Preorder</strong> (bake after they order — recommended), <strong>On hand only</strong> (needs stock), or <strong>Both</strong>. Add ingredients, allergens/sensitivities, and a picture. Turn Available on so shoppers can order it. Heritage preorder items are seeded for you — edit prices anytime.</p>
           </article>
           <article class="panel guide-card">
             <h3>Food costs &amp; saved recipes</h3>
@@ -1022,16 +1023,24 @@
           </label>
         </div>
         <div class="form-row">
+          <label>How do you sell it?
+            <select name="fulfillment">
+              <option value="preorder">Preorder — bake after they order (recommended)</option>
+              <option value="both">Both — on-hand stock + preorders OK</option>
+              <option value="on_hand">On hand only — need stock to sell</option>
+            </select>
+          </label>
           <label>Quantity on hand
             <input name="quantityOnHand" type="number" min="0" step="1" required />
           </label>
-          <label>Available on website?
-            <select name="available">
-              <option value="true">Yes — show for sale</option>
-              <option value="false">No — hide for now</option>
-            </select>
-          </label>
         </div>
+        <p class="muted" style="margin:0;">Preorder items stay orderable at qty 0. On-hand items need stock. Use Both when you keep a few ready and still take advance orders.</p>
+        <label>Available on website?
+          <select name="available">
+            <option value="true">Yes — show for sale</option>
+            <option value="false">No — hide for now</option>
+          </select>
+        </label>
         <label><span id="ingredientsLabelText">Ingredients (for your labels)</span>
           <textarea name="ingredients" id="productIngredients" placeholder="Flour, sugar, butter..."></textarea>
         </label>
@@ -1093,7 +1102,7 @@
     </div>
   </div>
 
-  <script src="../js/store.js?v=goals-v167"></script>
-  <script src="../js/admin.js?v=goals-v167"></script>
+  <script src="../js/store.js?v=goals-v170"></script>
+  <script src="../js/admin.js?v=goals-v170"></script>
 </body>
 </html>

@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=goals-v167" />
+  <link rel="stylesheet" href="css/styles.css?v=goals-v170" />
 </head>
 <body>
   <header class="site-header">
@@ -34,10 +34,10 @@
         <div>
           <span class="eyebrow">Shop</span>
           <h1 style="font-size:clamp(2.4rem,5vw,3.4rem);margin-top:.4rem;">The pantry &amp; soap shelf</h1>
-          <p class="muted">Cottage foods and handmade soaps. Prices and availability are managed by Brenda.</p>
+          <p class="muted">Preorder old-school favorites, or grab what’s ready on the shelf. Cottage foods and handmade soaps — local pickup in McArthur.</p>
         </div>
       </div>
-      <div class="ornament">Baked · Jarred · Poured</div>
+      <div class="ornament">Preorder · Ready now · Local pickup</div>
       <div class="category-filters" id="categoryFilters">
         <button type="button" class="btn btn-ghost btn-small active" data-cat="all">All</button>
         <button type="button" class="btn btn-ghost btn-small" data-cat="baked">Foods</button>
@@ -72,13 +72,14 @@
     </div>
   </footer>
 
-  <script src="js/store.js?v=goals-v167"></script>
+  <script src="js/store.js?v=goals-v170"></script>
   <script>
     document.getElementById("navToggle").addEventListener("click", () => {
       document.getElementById("navLinks").classList.toggle("open");
     });
 
     BHK.ensureSoapSamples();
+    BHK.ensureHeritageProducts();
 
     function escapeHtml(str) {
       return String(str || "")
@@ -94,12 +95,40 @@
       activeCat = params.get("cat");
     }
 
+    function stockBadges(p) {
+      const f = BHK.normalizeFulfillment(p.fulfillment);
+      const qty = Number(p.quantityOnHand || 0);
+      const bits = [];
+      if (f === "preorder" || f === "both") {
+        bits.push('<span class="badge badge-preorder">Preorder</span>');
+      }
+      if (qty > 0) {
+        bits.push(
+          qty <= 2
+            ? '<span class="badge badge-warn">Only a few left</span>'
+            : '<span class="qty-pill">' + qty + " ready</span>"
+        );
+      } else if (f === "on_hand") {
+        bits.push('<span class="badge badge-danger">Sold out</span>');
+      }
+      return bits.join(" ");
+    }
+
+    function productCta(p) {
+      const f = BHK.normalizeFulfillment(p.fulfillment);
+      const qty = Number(p.quantityOnHand || 0);
+      if (f === "on_hand" && qty <= 0) {
+        return `<a class="btn btn-ghost btn-small" href="order.html?waitlist=${encodeURIComponent(p.id)}">Ask for next batch</a>`;
+      }
+      const label = f === "preorder" || (f === "both" && qty <= 0) ? "Preorder" : "Order";
+      return `<a class="btn btn-secondary btn-small" href="order.html?product=${encodeURIComponent(p.id)}">${label}</a>`;
+    }
+
     function productCard(p) {
-      const low = Number(p.quantityOnHand) <= 2;
-      const out = Number(p.quantityOnHand) <= 0;
+      const imgSrc = BHK.productImageSrc(p.image);
       return `
         <article class="product-card">
-          <div class="product-image">${p.image ? `<img src="${p.image}" alt="${escapeHtml(p.name)}" />` : escapeHtml(BHK.categoryShort(p.category))}</div>
+          <div class="product-image">${imgSrc ? `<img src="${imgSrc}" alt="${escapeHtml(p.name)}" />` : escapeHtml(BHK.categoryShort(p.category))}</div>
           <div class="product-body">
             <div style="display:flex;justify-content:space-between;gap:.5rem;align-items:start;">
               <h2 style="margin:0;font-size:1.25rem;">${escapeHtml(p.name)}</h2>
@@ -111,13 +140,11 @@
             <div style="display:flex;justify-content:space-between;align-items:center;gap:.75rem;margin-top:auto;">
               <div>
                 <div class="price">${BHK.money(p.price)}</div>
-                <div class="muted" style="font-size:.85rem;">
-                  ${out ? '<span class="badge badge-danger">Sold out</span>' : low ? '<span class="badge badge-warn">Only a few left</span>' : '<span class="qty-pill">' + Number(p.quantityOnHand) + ' ready</span>'}
+                <div class="muted" style="font-size:.85rem;display:flex;flex-wrap:wrap;gap:.35rem;">
+                  ${stockBadges(p)}
                 </div>
               </div>
-              ${out
-                ? `<a class="btn btn-ghost btn-small" href="order.html?waitlist=${encodeURIComponent(p.id)}">Ask for next batch</a>`
-                : `<a class="btn btn-secondary btn-small" href="order.html?product=${encodeURIComponent(p.id)}">Order</a>`}
+              ${productCta(p)}
             </div>
           </div>
         </article>

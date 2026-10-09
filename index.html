@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=goals-v167" />
+  <link rel="stylesheet" href="css/styles.css?v=goals-v170" />
 </head>
 <body>
   <header class="site-header">
@@ -50,11 +50,11 @@
           <span class="eyebrow">McArthur, Ohio · Local pickup</span>
           <h1>Homemade from McArthur — foods, soap, and local pickup</h1>
           <p class="lead" id="tagline">
-            Brenda bakes Ohio cottage foods and pours handmade soap at home. Browse what’s ready, send a quick order, and pick up in town.
+            Brenda bakes Ohio cottage foods and pours handmade soap at home. Preorder old-school favorites, grab what’s ready on the shelf, and pick up in McArthur.
           </p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="order.html">Order for pickup</a>
-            <a class="btn btn-secondary" href="products.html">See what’s fresh</a>
+            <a class="btn btn-primary" href="order.html">Preorder for pickup</a>
+            <a class="btn btn-secondary" href="products.html">See the kitchen</a>
             <a class="btn btn-ghost" href="products.html?cat=soap">Shop soap</a>
           </div>
           <p class="hero-trust muted">
@@ -74,9 +74,9 @@
           </div>
           <div class="panel side-card">
             <h3>Easy ordering</h3>
-            <p class="muted">Browse the kitchen, send a simple order form, and pay with Venmo, Cash App, PayPal, Zelle, or cash at pickup.</p>
+            <p class="muted">Preorder a batch or claim what’s ready. Send a simple order form, then pay with Venmo, Cash App, PayPal, Zelle, or cash at pickup.</p>
             <p id="paymentHints" class="muted"></p>
-            <a class="btn btn-ghost btn-small" href="order.html" style="margin-top:.75rem;">Start an order →</a>
+            <a class="btn btn-ghost btn-small" href="order.html" style="margin-top:.75rem;">Start a preorder →</a>
           </div>
         </div>
       </div>
@@ -127,12 +127,12 @@
         <div class="section-head">
           <div>
             <span class="eyebrow">From the kitchen</span>
-            <h2>Ready to order</h2>
-            <p class="muted" style="margin:.4rem 0 0;">A few things that are available right now — more on the products page.</p>
+            <h2>Preorder &amp; ready now</h2>
+            <p class="muted" style="margin:.4rem 0 0;">Old-school favorites you can preorder, plus anything ready on the shelf — more on the products page.</p>
           </div>
           <a href="products.html">View all products →</a>
         </div>
-        <div class="ornament">Homemade · Local · Pickup in McArthur</div>
+        <div class="ornament">Preorder · Ready now · Pickup in McArthur</div>
         <div class="product-grid" id="homeProducts"></div>
       </div>
     </section>
@@ -149,12 +149,12 @@
           <div class="info-card panel">
             <div class="step-num">01</div>
             <h3>Browse the kitchen</h3>
-            <p class="muted">See foods and soaps with prices and what’s in stock this week.</p>
+            <p class="muted">Preorder favorites or grab what’s ready — foods, jars, and soap with clear prices.</p>
           </div>
           <div class="info-card panel">
             <div class="step-num">02</div>
             <h3>Send your order</h3>
-            <p class="muted">Fill out the simple order form. Brenda gets it by email.</p>
+            <p class="muted">Fill out the simple order form. Brenda gets it by email and bakes your batch.</p>
           </div>
           <div class="info-card panel">
             <div class="step-num">03</div>
@@ -165,11 +165,11 @@
         <div class="landing-cta panel" style="margin-top:1.4rem;">
           <div>
             <h3 style="margin:0 0 .35rem;">Ready when you are</h3>
-            <p class="muted" style="margin:0;">Local pickup only — Ohio customers. No shipping, no fuss.</p>
+            <p class="muted" style="margin:0;">Preorders welcome · Local pickup only — Ohio customers. No shipping, no fuss.</p>
           </div>
           <div class="hero-actions" style="margin-top:0;">
-            <a class="btn btn-primary" href="order.html">Order for pickup</a>
-            <a class="btn btn-ghost" href="products.html">See what’s fresh</a>
+            <a class="btn btn-primary" href="order.html">Preorder for pickup</a>
+            <a class="btn btn-ghost" href="products.html">See the kitchen</a>
           </div>
         </div>
       </div>
@@ -199,10 +199,11 @@
     </div>
   </footer>
 
-  <script src="js/store.js?v=goals-v167"></script>
+  <script src="js/store.js?v=goals-v170"></script>
   <script>
     (function () {
       BHK.ensureSoapSamples();
+      BHK.ensureHeritageProducts();
       const navToggle = document.getElementById("navToggle");
       const navLinks = document.getElementById("navLinks");
       navToggle.addEventListener("click", () => navLinks.classList.toggle("open"));
@@ -240,22 +241,37 @@
         grid.innerHTML = '<div class="empty-state panel">Products will show here after Brenda adds them in the admin page.</div>';
         return;
       }
-      grid.innerHTML = products.map((p) => `
+      grid.innerHTML = products.map((p) => {
+        const imgSrc = BHK.productImageSrc(p.image);
+        const f = BHK.normalizeFulfillment(p.fulfillment);
+        const qty = Number(p.quantityOnHand || 0);
+        const cta = f === "preorder" || (f === "both" && qty <= 0) ? "Preorder" : "Order";
+        const badge =
+          f === "preorder" || f === "both"
+            ? '<span class="badge badge-preorder">Preorder</span>'
+            : qty > 0
+              ? '<span class="qty-pill">' + qty + " ready</span>"
+              : "";
+        return `
         <article class="product-card">
-          <div class="product-image">${p.image ? `<img src="${p.image}" alt="${escapeHtml(p.name)}" />` : escapeHtml(BHK.categoryShort(p.category))}</div>
+          <div class="product-image">${imgSrc ? `<img src="${imgSrc}" alt="${escapeHtml(p.name)}" />` : escapeHtml(BHK.categoryShort(p.category))}</div>
           <div class="product-body">
             <div style="display:flex;justify-content:space-between;gap:.5rem;align-items:start;">
               <h3 style="margin:0;font-size:1.45rem;">${escapeHtml(p.name)}</h3>
               <span class="badge">${escapeHtml(BHK.categoryShort(p.category))}</span>
             </div>
             <p class="muted" style="margin:0;flex:1;">${escapeHtml(p.description || "")}</p>
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:.75rem;margin-top:.4rem;">
-              <div class="price">${BHK.money(p.price)}</div>
-              <a class="btn btn-secondary btn-small" href="order.html?product=${encodeURIComponent(p.id)}">Order</a>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:.75rem;margin-top:.4rem;flex-wrap:wrap;">
+              <div>
+                <div class="price">${BHK.money(p.price)}</div>
+                <div style="margin-top:.25rem;">${badge}</div>
+              </div>
+              <a class="btn btn-secondary btn-small" href="order.html?product=${encodeURIComponent(p.id)}">${cta}</a>
             </div>
           </div>
         </article>
-      `).join("");
+      `;
+      }).join("");
 
       function escapeHtml(str) {
         return String(str || "")

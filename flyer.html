@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Great+Vibes&family=Outfit:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=goals-v167" />
+  <link rel="stylesheet" href="css/styles.css?v=goals-v170" />
   <style>
     .flyer {
       max-width: 8.5in;
@@ -140,9 +140,11 @@
     </div>
   </main>
 
-  <script src="js/store.js?v=goals-v167"></script>
+  <script src="js/store.js?v=goals-v170"></script>
   <script>
     (function () {
+      BHK.ensureSoapSamples();
+      BHK.ensureHeritageProducts();
       const s = BHK.getStore().settings;
       const url = BHK.LIVE_SITE_URL;
       document.getElementById("flyerName").textContent = s.businessName || "Brenda's Homestead Kitchen";

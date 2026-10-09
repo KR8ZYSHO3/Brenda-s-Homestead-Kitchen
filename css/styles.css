@@ -669,6 +669,12 @@ h3 {
   color: #8f3b2e;
 }
 
+.badge-preorder {
+  background: #e4ecdf;
+  color: #2f4a34;
+  border: 1px solid rgba(61, 90, 64, 0.25);
+}
+
 /* ——— Steps / info ——— */
 .steps-grid {
   display: grid;

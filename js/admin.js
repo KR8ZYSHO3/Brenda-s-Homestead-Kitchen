@@ -71,6 +71,7 @@
 
   function refreshAll() {
     BHK.ensureSoapSamples();
+    BHK.ensureHeritageProducts();
     renderDashboard();
     renderGoals();
     renderFoodCosts();
@@ -1500,14 +1501,22 @@
     const tbody = document.getElementById("productsTable");
     if (!rows.length) {
       tbody.innerHTML =
-        '<tr><td colspan="7">No products in this view yet. Click “Add product” and choose Foods or Soap.</td></tr>';
+        '<tr><td colspan="8">No products in this view yet. Click “Add product” and choose Foods or Soap.</td></tr>';
       return;
     }
     tbody.innerHTML = rows
       .map((p) => {
-        const thumb = p.image
-          ? `<img class="thumb" src="${p.image}" alt="" />`
+        const imgSrc = BHK.productImageSrc(p.image);
+        const thumb = imgSrc
+          ? `<img class="thumb" src="${imgSrc}" alt="" />`
           : '<div class="thumb"></div>';
+        const f = BHK.normalizeFulfillment(p.fulfillment);
+        const fBadge =
+          f === "preorder"
+            ? '<span class="badge badge-preorder">Preorder</span>'
+            : f === "both"
+              ? '<span class="badge">Both</span>'
+              : '<span class="badge badge-warn">On hand</span>';
         return `<tr>
           <td>${thumb}</td>
           <td><strong>${escapeHtml(p.name)}</strong><br /><span class="muted">${escapeHtml(p.unit || "")}</span></td>
@@ -1520,6 +1529,7 @@
               <button type="button" class="btn btn-ghost btn-small" data-qty-delta="1" data-qty-id="${p.id}" aria-label="Increase stock">+</button>
             </div>
           </td>
+          <td>${fBadge}</td>
           <td>${p.available ? '<span class="badge">For sale</span>' : '<span class="badge badge-warn">Hidden</span>'}</td>
           <td class="actions">
             <button class="btn btn-ghost btn-small" data-edit-product="${p.id}">Edit</button>
@@ -1571,6 +1581,9 @@
     form.description.value = product ? product.description || "" : "";
     form.price.value = product ? product.price : "";
     form.unit.value = product ? product.unit || "" : "";
+    form.fulfillment.value = product
+      ? BHK.normalizeFulfillment(product.fulfillment)
+      : "preorder";
     form.quantityOnHand.value = product ? product.quantityOnHand : 0;
     form.available.value = product ? String(!!product.available) : "true";
     form.ingredients.value = product ? product.ingredients || "" : "";
@@ -1579,7 +1592,7 @@
     syncProductFieldHints(form.category.value);
     const preview = document.getElementById("productImagePreview");
     if (product && product.image) {
-      preview.src = product.image;
+      preview.src = BHK.productImageSrc(product.image);
       preview.style.display = "block";
     } else {
       preview.removeAttribute("src");
@@ -1624,6 +1637,7 @@
       description: form.description.value.trim(),
       price: Number(form.price.value),
       unit: form.unit.value.trim(),
+      fulfillment: form.fulfillment.value,
       quantityOnHand: Number(form.quantityOnHand.value),
       available: form.available.value === "true",
       ingredients: form.ingredients.value.trim(),
@@ -1719,7 +1733,7 @@
     select.innerHTML = products
       .map(
         (p) =>
-          `<option value="${p.id}">[${escapeHtml(BHK.categoryShort(p.category))}] ${escapeHtml(p.name)} (${BHK.money(p.price)}) — qty ${p.quantityOnHand}</option>`
+          `<option value="${p.id}">[${escapeHtml(BHK.categoryShort(p.category))}] ${escapeHtml(p.name)} (${BHK.money(p.price)}) — ${escapeHtml(BHK.fulfillmentLabel(p))} · qty ${p.quantityOnHand}</option>`
       )
       .join("");
   }
