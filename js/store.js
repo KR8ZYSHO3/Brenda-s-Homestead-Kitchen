@@ -725,9 +725,15 @@
   const LIVE_SITE_URL = "https://kr8zysho3.github.io/Brenda-s-Homestead-Kitchen";
 
   /** Bump these when deploying so Brenda can confirm the live site updated */
-  const SITE_VERSION = "1.7.0";
-  const SITE_UPDATED_ISO = "2026-10-09T10:05:00-04:00";
-  const SITE_UPDATED_LABEL = "Oct 9, 2026 · 10:05 AM ET";
+  const SITE_VERSION = "1.7.1";
+  const SITE_UPDATED_ISO = "2026-10-09T10:18:00-04:00";
+  const SITE_UPDATED_LABEL = "Oct 9, 2026 · 10:18 AM ET";
+
+  /** Heritage shop IDs kept off the public order list (hard-to-source seasonal fruit) */
+  const HERITAGE_OFF_ORDER_IDS = [
+    "p_heritage_pawpaw_bread",
+    "p_heritage_persimmon_pudding",
+  ];
 
   /**
    * Guided practice — strawberry jam priced by kitchen scale (ounces).
@@ -1169,7 +1175,7 @@
     ...def,
     fulfillment: "preorder",
     quantityOnHand: 0,
-    available: true,
+    available: HERITAGE_OFF_ORDER_IDS.indexOf(def.id) === -1,
     ingredients: "",
   }));
 
@@ -1791,17 +1797,25 @@
   /** Seed heritage preorder products (idempotent — never overwrites Brenda's edits). */
   function ensureHeritageProducts() {
     const data = load();
-    let added = 0;
+    let dirty = false;
     HERITAGE_PRODUCT_DEFS.forEach((def) => {
       if (data.products.some((p) => p.id === def.id)) return;
       data.products.push({
         ...def,
         createdAt: Date.now(),
       });
-      added += 1;
+      dirty = true;
     });
-    if (added) save(data);
-    return added > 0;
+    // Keep hard-to-source seasonal items off the public order list
+    HERITAGE_OFF_ORDER_IDS.forEach((id) => {
+      const product = data.products.find((p) => p.id === id);
+      if (product && product.available) {
+        product.available = false;
+        dirty = true;
+      }
+    });
+    if (dirty) save(data);
+    return dirty;
   }
 
   function deleteProduct(id) {
@@ -2143,6 +2157,7 @@
     deleteRecipe,
     HERITAGE_RECIPES,
     HERITAGE_PRODUCT_DEFS,
+    HERITAGE_OFF_ORDER_IDS,
     listHeritageRecipes,
     getHeritageRecipe,
     getHeritageMeta,
