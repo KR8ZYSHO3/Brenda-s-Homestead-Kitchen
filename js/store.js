@@ -80,9 +80,9 @@
   const LIVE_SITE_URL = "https://kr8zysho3.github.io/Brenda-s-Homestead-Kitchen";
 
   /** Bump these when deploying so Brenda can confirm the live site updated */
-  const SITE_VERSION = "1.6.4";
-  const SITE_UPDATED_ISO = "2026-10-08T17:55:00-04:00";
-  const SITE_UPDATED_LABEL = "Oct 8, 2026 · 5:55 PM ET";
+  const SITE_VERSION = "1.6.5";
+  const SITE_UPDATED_ISO = "2026-10-08T18:10:00-04:00";
+  const SITE_UPDATED_LABEL = "Oct 8, 2026 · 6:10 PM ET";
 
   /**
    * Guided practice — strawberry jam priced by kitchen scale (ounces).

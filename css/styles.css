@@ -299,7 +299,7 @@ a:hover {
   display: grid;
   grid-template-columns: 1.35fr 0.85fr;
   gap: 1.4rem;
-  align-items: stretch;
+  align-items: start;
 }
 
 .hero-card,
