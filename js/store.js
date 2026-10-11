@@ -1779,17 +1779,22 @@
     return next;
   }
 
-  /** Seed sample soaps into an existing store that only has food samples. */
+  /** Seed sample soaps into an existing store that only has food samples (one-time migration). */
   function ensureSoapSamples() {
     const data = load();
+    if (data.settings.soapSamplesSeeded) return false;
     const hasSoap = data.products.some((p) => normalizeCategory(p.category) === "soap");
-    if (hasSoap) return false;
+    if (hasSoap) {
+      data.settings.soapSamplesSeeded = true;
+      save(data);
+      return false;
+    }
     const soapSamples = SAMPLE_PRODUCTS.filter((p) => p.category === "soap").map((p) => ({
       ...p,
-      id: uid("p"),
       createdAt: Date.now(),
     }));
     data.products = data.products.concat(soapSamples);
+    data.settings.soapSamplesSeeded = true;
     save(data);
     return true;
   }
@@ -1820,7 +1825,11 @@
 
   function deleteProduct(id) {
     const data = load();
+    const removed = data.products.find((p) => p.id === id);
     data.products = data.products.filter((p) => p.id !== id);
+    if (removed && normalizeCategory(removed.category) === "soap") {
+      data.settings.soapSamplesSeeded = true;
+    }
     save(data);
   }
 
