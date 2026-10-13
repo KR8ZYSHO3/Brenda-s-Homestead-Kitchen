@@ -71,7 +71,6 @@
 
   function refreshAll() {
     BHK.ensureSoapSamples();
-    BHK.ensureHeritageProducts();
     renderDashboard();
     renderGoals();
     renderFoodCosts();
