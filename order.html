@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=goals-v174" />
+  <link rel="stylesheet" href="css/styles.css?v=goals-v175" />
 </head>
 <body>
   <header class="site-header">
@@ -31,10 +31,10 @@
     <div class="container order-layout">
       <div class="panel stack">
         <div>
-          <span class="eyebrow">Pickup order</span>
+          <span class="eyebrow">Meetup order</span>
           <h1 class="page-title">Place your order</h1>
           <div class="ornament" style="justify-content:flex-start;margin:.35rem 0 1rem;">Preorder · Ready now · McArthur</div>
-          <p class="muted" id="orderIntro">Preorder a batch or claim what’s ready. Brenda will confirm pickup in McArthur, Ohio.</p>
+          <p class="muted" id="orderIntro">Preorder a batch or claim what’s ready. Choose a public meeting spot in McArthur — not at Brenda’s home.</p>
         </div>
 
         <!-- Google Form embed (preferred when configured in Admin) -->
@@ -71,6 +71,7 @@
             <input type="text" name="customerPhone" />
             <input type="email" name="customerEmail" />
             <input type="text" name="paymentMethod" />
+            <input type="text" name="pickupSpot" />
             <input type="text" name="items" />
             <input type="text" name="total" />
             <textarea name="notes"></textarea>
@@ -100,20 +101,25 @@
               <span id="orderTotal">$0.00</span>
             </div>
 
+            <label>Meeting spot (public meetup — not home)
+              <select name="pickupSpotId" id="pickupSpotId" required></select>
+            </label>
+            <p class="muted" id="pickupSpotDetail" style="margin:.35rem 0 0;font-size:.92rem;"></p>
+
             <label>How will you pay?
               <select name="paymentMethod" id="paymentMethod">
                 <option value="venmo">Venmo</option>
                 <option value="cashapp">Cash App</option>
                 <option value="paypal">PayPal</option>
                 <option value="zelle">Zelle</option>
-                <option value="cash">Cash at pickup</option>
+                <option value="cash">Cash at meetup</option>
               </select>
             </label>
 
             <div class="notice" id="payHint">Brenda will share payment details when she confirms your order.</div>
 
             <label>Notes for Brenda
-              <textarea name="notes" placeholder="Preferred pickup day, allergies to double-check, etc."></textarea>
+              <textarea name="notes" placeholder="Preferred day/time, allergies to double-check, etc."></textarea>
             </label>
 
             <button class="btn btn-primary" type="submit">Send Order</button>
@@ -126,17 +132,18 @@
 
       <aside class="stack">
         <div class="panel">
-          <h2 style="font-size:1.3rem;">Pickup &amp; payment</h2>
+          <h2 style="font-size:1.3rem;">Meetup &amp; payment</h2>
           <p class="muted" id="pickupNotes"></p>
+          <div id="meetingSpotsPublic" class="stack" style="margin-top:.8rem;"></div>
           <div id="payDetails" class="stack" style="margin-top:.8rem;"></div>
         </div>
         <div class="panel">
           <h2 style="font-size:1.3rem;">What happens next?</h2>
           <ol style="margin:0;padding-left:1.2rem;color:var(--ink-soft);">
-            <li>Send your order on the form.</li>
-            <li>Brenda confirms quantity and pickup time.</li>
+            <li>Send your order and choose a public meeting spot.</li>
+            <li>Brenda confirms quantity and meetup time by text.</li>
             <li>You pay with your chosen method.</li>
-            <li>Pick up your homemade treats in McArthur.</li>
+            <li>Meet in McArthur — not at Brenda’s home.</li>
           </ol>
           <p style="margin-top:1rem;"><a href="products.html">Browse products first →</a></p>
         </div>
@@ -153,7 +160,7 @@
       </div>
       <div>
         <h3>Visit</h3>
-        <p>Local pickup in McArthur, OH</p>
+        <p>Public meetup in McArthur, OH</p>
       </div>
       <div>
         <h3>Quick links</h3>
@@ -167,7 +174,7 @@
     </div>
   </footer>
 
-  <script src="js/store.js?v=goals-v174"></script>
+  <script src="js/store.js?v=goals-v175"></script>
   <script>
     document.getElementById("navToggle").addEventListener("click", () => {
       document.getElementById("navLinks").classList.toggle("open");
@@ -178,7 +185,32 @@
     const settings = BHK.getStore().settings;
 
     document.getElementById("pickupNotes").textContent =
-      settings.pickupNotes || "Local pickup in McArthur, Ohio.";
+      settings.pickupNotes ||
+      "Public meetup pickup in McArthur only — not at Brenda’s home.";
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    const meetingSpots = BHK.listMeetingSpots({ enabledOnly: true });
+    const meetingSpotsPublic = document.getElementById("meetingSpotsPublic");
+    if (meetingSpotsPublic) {
+      meetingSpotsPublic.innerHTML = meetingSpots.length
+        ? "<strong>Meeting spots</strong>" +
+          meetingSpots
+            .map(
+              (s) =>
+                `<div class="meeting-spot-public"><strong>${escapeHtml(s.name)}</strong>${
+                  s.detail ? `<br /><span class="muted">${escapeHtml(s.detail)}</span>` : ""
+                }</div>`
+            )
+            .join("")
+        : '<p class="muted">Brenda is setting public meeting spots in Admin → Settings.</p>';
+    }
 
     const payDetails = [];
     if (settings.venmo) payDetails.push(["Venmo", settings.venmo]);
@@ -188,14 +220,6 @@
     document.getElementById("payDetails").innerHTML = payDetails.length
       ? payDetails.map(([k, v]) => `<div><strong>${k}:</strong> ${escapeHtml(v)}</div>`).join("")
       : '<p class="muted">Payment handles will show here after Brenda adds them in Admin → Settings.</p>';
-
-    function escapeHtml(str) {
-      return String(str || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
-    }
 
     const embedUrl = BHK.toGoogleFormEmbedUrl(settings.googleFormEmbedUrl);
     const useGoogle = settings.useGoogleForm !== false && !!embedUrl && !/\/forms\/d\/[^/]+\/edit/i.test(embedUrl);
@@ -292,6 +316,26 @@
       document.getElementById("addItemBtn").addEventListener("click", () => addItemRow());
       addItemRow(preselect || (products[0] && products[0].id));
 
+      const spotSelect = document.getElementById("pickupSpotId");
+      const spotDetail = document.getElementById("pickupSpotDetail");
+      function syncSpotDetail() {
+        if (!spotDetail || !spotSelect) return;
+        const spot = meetingSpots.find((s) => s.id === spotSelect.value);
+        spotDetail.textContent = spot && spot.detail ? spot.detail : "";
+      }
+      if (spotSelect) {
+        spotSelect.innerHTML = meetingSpots.length
+          ? meetingSpots
+              .map(
+                (s) =>
+                  `<option value="${escapeHtml(s.id)}">${escapeHtml(s.name)}</option>`
+              )
+              .join("")
+          : '<option value="">No meeting spots available yet</option>';
+        spotSelect.addEventListener("change", syncSpotDetail);
+        syncSpotDetail();
+      }
+
       document.getElementById("orderForm").addEventListener("submit", (e) => {
         e.preventDefault();
         if (!products.length) {
@@ -299,6 +343,10 @@
           return;
         }
         const form = e.target;
+        if (!form.pickupSpotId.value) {
+          alert("Please choose a public meeting spot.");
+          return;
+        }
         const items = [];
         let stockOk = true;
         itemsBox.querySelectorAll(".order-item-row").forEach((row) => {
@@ -324,6 +372,7 @@
             customerEmail: form.customerEmail.value,
             notes: form.notes.value,
             paymentMethod: form.paymentMethod.value,
+            pickupSpotId: form.pickupSpotId.value,
             items,
             status: "new",
             paymentReceived: false,
@@ -333,12 +382,14 @@
           const itemSummary = order.items
             .map((i) => `${i.name} x${i.qty} (${BHK.money(i.lineTotal)})`)
             .join("; ");
+          const meetupLabel = order.pickupSpotName || BHK.meetingSpotLabel(order) || "";
           const body = new URLSearchParams({
             "form-name": "cottage-order",
             customerName: order.customerName,
             customerPhone: order.customerPhone || "",
             customerEmail: order.customerEmail || "",
             paymentMethod: order.paymentMethod || "",
+            pickupSpot: meetupLabel,
             items: itemSummary,
             total: BHK.money(order.total),
             notes: order.notes || "",
@@ -358,7 +409,8 @@
             <strong>Order received!</strong>
             <p>Thanks, ${escapeHtml(order.customerName)}. Your order total is <strong>${BHK.money(order.total)}</strong>.</p>
             <p>Order ID: <code>${escapeHtml(order.id)}</code></p>
-            <p>Brenda will confirm pickup. Preferred payment: <strong>${escapeHtml(order.paymentMethod)}</strong>.</p>
+            <p>Meetup: <strong>${escapeHtml(meetupLabel || "Brenda will confirm")}</strong>. Preferred payment: <strong>${escapeHtml(order.paymentMethod)}</strong>.</p>
+            <p>Brenda will text to confirm time. Handoff is at a public spot — not at her home.</p>
             <p><a href="products.html">Back to products</a> · <a href="order.html">Place another order</a></p>
           `;
         } catch (err) {

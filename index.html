@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Brenda's Homestead Kitchen | Homemade Foods & Soap · McArthur, Ohio</title>
-  <meta name="description" content="Homemade Ohio cottage foods and handmade soap from Brenda Shoemaker in McArthur. Browse what's ready, order online, and pick up in town." />
+  <meta name="description" content="Homemade Ohio cottage foods and handmade soap from Brenda Shoemaker in McArthur. Order online and meet at a public spot in town — not at her home." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=goals-v174" />
+  <link rel="stylesheet" href="css/styles.css?v=goals-v175" />
 </head>
 <body>
   <header class="site-header">
@@ -47,10 +47,10 @@
     <section class="hero">
       <div class="container hero-grid">
         <div class="hero-card">
-          <span class="eyebrow">McArthur, Ohio · Local pickup</span>
-          <h1>Homemade from McArthur — foods, soap, and local pickup</h1>
+          <span class="eyebrow">McArthur, Ohio · Public meetup</span>
+          <h1>Homemade from McArthur — foods, soap, and public meetup</h1>
           <p class="lead" id="tagline">
-            Brenda bakes Ohio cottage foods and pours handmade soap at home. Preorder old-school favorites, grab what’s ready on the shelf, and pick up in McArthur.
+            Brenda bakes Ohio cottage foods and pours handmade soap at home. Preorder old-school favorites, grab what’s ready on the shelf, and meet up in McArthur (not at her house).
           </p>
           <div class="hero-actions">
             <a class="btn btn-primary" href="order.html">Preorder for pickup</a>
@@ -59,7 +59,7 @@
           </div>
           <p class="hero-trust muted">
             Cottage foods are labeled: <strong>“This product is home produced.”</strong>
-            Ohio sales · McArthur pickup
+            Ohio sales · Public meetup (not home)
           </p>
         </div>
         <div class="hero-side">
@@ -92,8 +92,8 @@
             <span class="muted">Bars poured at home — ingredients listed on every scent.</span>
           </article>
           <article>
-            <strong>Local pickup</strong>
-            <span class="muted">McArthur only · Venmo, Cash App, PayPal, Zelle, or cash.</span>
+            <strong>Public meetup</strong>
+            <span class="muted">McArthur spots (not home) · Venmo, Cash App, PayPal, Zelle, or cash.</span>
           </article>
         </div>
       </div>
@@ -132,7 +132,7 @@
           </div>
           <a href="products.html">View all products →</a>
         </div>
-        <div class="ornament">Preorder · Ready now · Pickup in McArthur</div>
+        <div class="ornament">Preorder · Ready now · Public meetup in McArthur</div>
         <div class="product-grid" id="homeProducts"></div>
       </div>
     </section>
@@ -159,13 +159,13 @@
           <div class="info-card panel">
             <div class="step-num">03</div>
             <h3>Pay &amp; pick up</h3>
-            <p class="muted">Pay your way, then pick up fresh in McArthur.</p>
+            <p class="muted">Pay your way, then meet at a public spot in McArthur.</p>
           </div>
         </div>
         <div class="landing-cta panel" style="margin-top:1.4rem;">
           <div>
             <h3 style="margin:0 0 .35rem;">Ready when you are</h3>
-            <p class="muted" style="margin:0;">Preorders welcome · Local pickup only — Ohio customers. No shipping, no fuss.</p>
+            <p class="muted" style="margin:0;">Preorders welcome · Public meetup only — Ohio customers. No home visits, no shipping.</p>
           </div>
           <div class="hero-actions" style="margin-top:0;">
             <a class="btn btn-primary" href="order.html">Preorder for pickup</a>
@@ -185,7 +185,7 @@
       </div>
       <div>
         <h3>Visit</h3>
-        <p id="footerContact">Local pickup in McArthur, OH</p>
+        <p id="footerContact">Public meetup in McArthur, OH</p>
       </div>
       <div>
         <h3>Quick links</h3>
@@ -199,7 +199,7 @@
     </div>
   </footer>
 
-  <script src="js/store.js?v=goals-v174"></script>
+  <script src="js/store.js?v=goals-v175"></script>
   <script>
     (function () {
       BHK.ensureSoapSamples();
@@ -232,7 +232,7 @@
       if (settings.phone) contactBits.push(settings.phone);
       if (settings.email) contactBits.push(settings.email);
       document.getElementById("footerContact").textContent =
-        (contactBits.join(" · ") || "Local pickup in McArthur, OH") +
+        (contactBits.join(" · ") || "Public meetup in McArthur, OH") +
         (settings.pickupNotes ? " — " + settings.pickupNotes : "");
 
       const products = BHK.listProducts({ availableOnly: true }).slice(0, 3);

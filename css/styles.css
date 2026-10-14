@@ -1558,6 +1558,28 @@ th {
   background: rgba(255, 252, 245, 0.7);
 }
 
+.meeting-spot-card {
+  padding: 0.85rem 0.95rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid rgba(45, 74, 52, 0.14);
+  border-radius: 12px;
+  background: rgba(255, 252, 245, 0.75);
+}
+
+.meeting-spot-card:last-child {
+  margin-bottom: 0;
+}
+
+.meeting-spot-public {
+  padding: 0.55rem 0;
+  border-bottom: 1px solid rgba(45, 74, 52, 0.1);
+}
+
+.meeting-spot-public:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
 .box-done {
   background: var(--forest) !important;
   color: #fff;

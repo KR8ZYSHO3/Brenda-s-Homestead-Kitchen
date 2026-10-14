@@ -20,11 +20,11 @@
     paypal: "",
     zelle: "",
     pickupNotes:
-      "Local pickup in McArthur, Ohio. Payment by Venmo, Cash App, PayPal, Zelle, or cash at pickup. Ohio sales only.",
+      "Public meetup pickup in McArthur only — not at Brenda’s home. Choose a meeting spot when you order. Brenda confirms the time by text. Payment by Venmo, Cash App, PayPal, Zelle, or cash at meetup. Ohio sales only.",
     tagline:
-      "Brenda bakes Ohio cottage foods and pours handmade soap at home. Preorder old-school favorites, grab what’s ready on the shelf, and pick up in McArthur.",
+      "Brenda bakes Ohio cottage foods and pours handmade soap at home. Preorder old-school favorites, grab what’s ready on the shelf, and meet up in McArthur (not at her house).",
     about:
-      "Hi — I’m Brenda Shoemaker. Everything here is made in my kitchen in McArthur: labeled cottage foods and simple handmade soap bars. Preorder a batch or pick up what’s on hand — local pickup only.",
+      "Hi — I’m Brenda Shoemaker. Everything here is made in my kitchen in McArthur: labeled cottage foods and simple handmade soap bars. Preorder a batch or claim what’s ready — then meet at a public spot in town (not home drop-off).",
     adminUsername: "Brenda",
     adminPassword: "HomesteadKitchen",
     // Paste from Google Forms → Send → Embed / link. Editable anytime in Admin.
@@ -43,7 +43,23 @@
     soapSamplesSeeded: false,
     // Product IDs Brenda deleted — never auto-seed these again on this device
     removedProductIds: [],
+    /**
+     * Public meetup spots for handoff (never Brenda’s house).
+     * Customers pick one on the order form; Brenda edits these in Settings.
+     */
+    meetingSpots: [
+      {
+        id: "meet_marathon_93",
+        name: "Marathon gas station (OH-93 / S Market St)",
+        detail: "301 S Market St, McArthur, OH — public meetup in the parking lot. Brenda texts to confirm time.",
+        enabled: true,
+      },
+    ],
   };
+
+  const LEGACY_PICKUP_NOTES = [
+    "Local pickup in McArthur, Ohio. Payment by Venmo, Cash App, PayPal, Zelle, or cash at pickup. Ohio sales only.",
+  ];
 
   /**
    * Old-school / nearly forgotten recipes with history — marketing inspiration
@@ -692,7 +708,7 @@
   const GOOGLE_FORM_TEMPLATE = {
     title: "Brenda's Homestead Kitchen — Order Form",
     description:
-      "Thanks for ordering! Local pickup in McArthur, Ohio. Cottage foods are labeled “This product is home produced.” Payment by Venmo, Cash App, PayPal, Zelle, or cash at pickup.",
+      "Thanks for ordering! Public meetup pickup in McArthur only — not at Brenda’s home. Cottage foods are labeled “This product is home produced.” Payment by Venmo, Cash App, PayPal, Zelle, or cash at meetup.",
     questions: [
       { type: "Short answer", title: "Your full name", required: true },
       { type: "Short answer", title: "Phone number", required: true },
@@ -705,13 +721,22 @@
       },
       {
         type: "Multiple choice",
-        title: "Preferred payment method",
-        options: ["Venmo", "Cash App", "PayPal", "Zelle", "Cash at pickup"],
+        title: "Preferred meeting spot (public meetup — not home)",
+        options: [
+          "Marathon gas station (OH-93 / S Market St, McArthur)",
+          "Other public spot — Brenda will text me",
+        ],
         required: true,
       },
       {
         type: "Multiple choice",
-        title: "Preferred pickup timing",
+        title: "Preferred payment method",
+        options: ["Venmo", "Cash App", "PayPal", "Zelle", "Cash at meetup"],
+        required: true,
+      },
+      {
+        type: "Multiple choice",
+        title: "Preferred meetup timing",
         options: ["This week", "Next week", "Flexible — Brenda will text me"],
         required: true,
       },
@@ -729,9 +754,9 @@
   const LIVE_SITE_URL = "https://kr8zysho3.github.io/Brenda-s-Homestead-Kitchen";
 
   /** Bump these when deploying so Brenda can confirm the live site updated */
-  const SITE_VERSION = "1.7.4";
-  const SITE_UPDATED_ISO = "2026-10-14T10:10:00-04:00";
-  const SITE_UPDATED_LABEL = "Oct 14, 2026 · 10:10 AM ET";
+  const SITE_VERSION = "1.7.5";
+  const SITE_UPDATED_ISO = "2026-10-14T14:15:00-04:00";
+  const SITE_UPDATED_LABEL = "Oct 14, 2026 · 2:15 PM ET";
 
   /** Heritage shop IDs kept off the public order list (hard-to-source seasonal fruit) */
   const HERITAGE_OFF_ORDER_IDS = [
@@ -1202,6 +1227,48 @@
     return "on_hand";
   }
 
+  function normalizeMeetingSpot(spot) {
+    const s = spot || {};
+    return {
+      id: String(s.id || "").trim() || uid("meet"),
+      name: String(s.name || "").trim() || "Meeting spot",
+      detail: String(s.detail || "").trim(),
+      enabled: s.enabled !== false,
+    };
+  }
+
+  function listMeetingSpots(opts) {
+    opts = opts || {};
+    const raw = (load().settings && load().settings.meetingSpots) || [];
+    let list = (Array.isArray(raw) ? raw : []).map(normalizeMeetingSpot);
+    if (opts.enabledOnly) list = list.filter((s) => s.enabled);
+    return list;
+  }
+
+  function getMeetingSpot(id) {
+    const key = String(id || "");
+    return listMeetingSpots().find((s) => s.id === key) || null;
+  }
+
+  /** Replace the full meeting-spot list (Admin Settings). */
+  function saveMeetingSpots(spots) {
+    const data = load();
+    const next = (Array.isArray(spots) ? spots : []).map(normalizeMeetingSpot);
+    data.settings.meetingSpots = next;
+    save(data);
+    return next;
+  }
+
+  function meetingSpotLabel(orderOrId) {
+    if (orderOrId && typeof orderOrId === "object") {
+      if (orderOrId.pickupSpotName) return String(orderOrId.pickupSpotName);
+      const spot = getMeetingSpot(orderOrId.pickupSpotId);
+      return spot ? spot.name : "";
+    }
+    const spot = getMeetingSpot(orderOrId);
+    return spot ? spot.name : "";
+  }
+
   function fulfillmentLabel(productOrValue) {
     const f =
       productOrValue && typeof productOrValue === "object"
@@ -1645,21 +1712,29 @@
         ? data.settings.removedProductIds.map(String)
         : [];
       data.settings.soapSamplesSeeded = !!data.settings.soapSamplesSeeded;
+      let marketingDirty = false;
+      if (!Array.isArray(data.settings.meetingSpots) || !data.settings.meetingSpots.length) {
+        data.settings.meetingSpots = DEFAULT_SETTINGS.meetingSpots.map((s) => ({ ...s }));
+        marketingDirty = true;
+      } else {
+        data.settings.meetingSpots = data.settings.meetingSpots.map(normalizeMeetingSpot);
+      }
       data.products = (Array.isArray(data.products) ? data.products : []).map(normalizeProduct);
       data.orders = Array.isArray(data.orders) ? data.orders : [];
       data.expenses = Array.isArray(data.expenses) ? data.expenses : [];
       data.recipes = (Array.isArray(data.recipes) ? data.recipes : []).map(normalizeRecipe);
       // Refresh stock marketing copy when Brenda still has the old defaults
-      let marketingDirty = false;
       const legacyTaglines = [
         "Homemade cottage foods and handcrafted soaps from McArthur, Ohio",
         "Homemade cottage foods and handcrafted soaps — baked, jarred, and poured with quiet care in the hills of southeastern Ohio.",
         "Brenda bakes Ohio cottage foods and pours handmade soap at home. Browse what’s ready, send a quick order, and pick up in town.",
+        "Brenda bakes Ohio cottage foods and pours handmade soap at home. Preorder old-school favorites, grab what’s ready on the shelf, and pick up in McArthur.",
       ];
       const legacyAbouts = [
         "Hello! I'm Brenda Shoemaker. I bake approved Ohio cottage foods and craft handmade soaps right here at home in McArthur.",
         "Hello! I'm Brenda Shoemaker. I bake approved Ohio cottage foods and craft handmade soaps right here at home in McArthur. Every batch is made with care — foods are labeled the Ohio way: This product is home produced.",
         "Hi — I’m Brenda Shoemaker. Everything here is made in my kitchen in McArthur: labeled cottage foods and simple handmade soap bars, sold for local pickup.",
+        "Hi — I’m Brenda Shoemaker. Everything here is made in my kitchen in McArthur: labeled cottage foods and simple handmade soap bars. Preorder a batch or pick up what’s on hand — local pickup only.",
       ];
       if (legacyTaglines.indexOf(String(data.settings.tagline || "")) !== -1) {
         data.settings.tagline = DEFAULT_SETTINGS.tagline;
@@ -1667,6 +1742,10 @@
       }
       if (legacyAbouts.indexOf(String(data.settings.about || "")) !== -1) {
         data.settings.about = DEFAULT_SETTINGS.about;
+        marketingDirty = true;
+      }
+      if (LEGACY_PICKUP_NOTES.indexOf(String(data.settings.pickupNotes || "")) !== -1) {
+        data.settings.pickupNotes = DEFAULT_SETTINGS.pickupNotes;
         marketingDirty = true;
       }
       if (marketingDirty) save(data);
@@ -2027,6 +2106,11 @@
     });
 
     const total = Math.round(items.reduce((sum, i) => sum + i.lineTotal, 0) * 100) / 100;
+    const spotId = String(orderInput.pickupSpotId || "").trim();
+    const spot = spotId ? getMeetingSpot(spotId) : null;
+    const pickupSpotName = spot
+      ? spot.name
+      : String(orderInput.pickupSpotName || "").trim();
     const order = {
       id: uid("o"),
       createdAt: Date.now(),
@@ -2037,6 +2121,8 @@
       paymentMethod: orderInput.paymentMethod || "venmo",
       paymentReceived: !!orderInput.paymentReceived,
       status: orderInput.status || "new",
+      pickupSpotId: spot ? spot.id : spotId,
+      pickupSpotName,
       items,
       total,
       source: orderInput.source || "website",
@@ -2270,6 +2356,10 @@
   global.BHK = {
     getStore,
     updateSettings,
+    listMeetingSpots,
+    getMeetingSpot,
+    saveMeetingSpots,
+    meetingSpotLabel,
     listProducts,
     getProduct,
     upsertProduct,

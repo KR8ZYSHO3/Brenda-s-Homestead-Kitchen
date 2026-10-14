@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../css/styles.css?v=goals-v174" />
+  <link rel="stylesheet" href="../css/styles.css?v=goals-v175" />
 </head>
 <body>
   <div id="loginView" class="login-wrap">
@@ -691,6 +691,7 @@
                 <th>Date</th>
                 <th>Customer</th>
                 <th>Items</th>
+                <th>Meetup</th>
                 <th>Total</th>
                 <th>Payment</th>
                 <th>Status</th>
@@ -1033,13 +1034,16 @@
             </label>
           </div>
           <div class="form-row">
-            <label>Street address (for labels)
-              <input name="address" placeholder="123 Main St" />
+            <label>Street address (for cottage-food labels only)
+              <input name="address" placeholder="Used on printed labels — never shown on the public website" />
             </label>
             <label>City
               <input name="city" />
             </label>
           </div>
+          <p class="notice notice-warn" style="margin:0;">
+            Keep home drop-offs off. Customers meet at the public spots below — your street address stays on labels only.
+          </p>
           <div class="form-row">
             <label>State
               <input name="state" />
@@ -1078,7 +1082,7 @@
           <label>About text on homepage
             <textarea name="about"></textarea>
           </label>
-          <label>Pickup / payment notes shown to customers
+          <label>Meetup / payment notes shown to customers
             <textarea name="pickupNotes"></textarea>
           </label>
           <div class="form-row">
@@ -1086,7 +1090,7 @@
               <input name="featuredTitle" placeholder="This week from the kitchen" />
             </label>
             <label>Homepage feature note
-              <input name="featuredNote" placeholder="Saturday: fresh jam + lavender soap ready for pickup" />
+              <input name="featuredNote" placeholder="Saturday: fresh jam + lavender soap — Marathon meetup" />
             </label>
           </div>
           <div class="form-row">
@@ -1102,6 +1106,21 @@
           </p>
           <button class="btn btn-primary" type="submit">Save settings</button>
         </form>
+
+        <div class="panel" id="meetingSpotsPanel" style="margin-top:1rem;">
+          <span class="eyebrow">Public handoff</span>
+          <h2 style="font-size:1.25rem;margin:.25rem 0 0;">Meeting spots (not home)</h2>
+          <p class="muted" style="margin:.4rem 0 0;">
+            Customers choose one of these on the order form. Turn spots on/off, edit the wording, or add another public place (gas station, parking lot, etc.).
+          </p>
+          <div id="meetingSpotsEditor" style="margin-top:.85rem;"></div>
+          <div class="actions" style="margin-top:.85rem;flex-wrap:wrap;">
+            <button type="button" class="btn btn-secondary btn-small" id="addMeetingSpotBtn">+ Add meeting spot</button>
+            <button type="button" class="btn btn-primary btn-small" id="saveMeetingSpotsBtn">Save meeting spots</button>
+            <span class="muted" id="meetingSpotsSaveMsg" style="font-size:.9rem;"></span>
+          </div>
+        </div>
+
         <div class="panel stack" style="margin-top:1rem;">
           <h2 style="font-size:1.2rem;">Backup &amp; restore</h2>
           <div class="actions">
@@ -1218,6 +1237,9 @@
             </select>
           </label>
         </div>
+        <label>Meeting spot
+          <select name="pickupSpotId" id="manualPickupSpot" required></select>
+        </label>
         <label><span style="display:flex;gap:.5rem;align-items:center;font-weight:650;"><input type="checkbox" name="paymentReceived" style="width:auto;" /> Already paid</span></label>
         <label>Notes
           <textarea name="notes"></textarea>
@@ -1227,7 +1249,7 @@
     </div>
   </div>
 
-  <script src="../js/store.js?v=goals-v174"></script>
-  <script src="../js/admin.js?v=goals-v174"></script>
+  <script src="../js/store.js?v=goals-v175"></script>
+  <script src="../js/admin.js?v=goals-v175"></script>
 </body>
 </html>

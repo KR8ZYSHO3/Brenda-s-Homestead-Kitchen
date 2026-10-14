@@ -80,8 +80,10 @@
     renderTaxes();
     renderHeritageRecipes();
     fillSettings();
+    renderMeetingSpotsEditor();
     fillGoogleFormSettings();
     fillManualProducts();
+    fillManualPickupSpots();
   }
 
   function showApp() {
@@ -1834,7 +1836,7 @@
     const orders = BHK.listOrders();
     const tbody = document.getElementById("ordersTable");
     if (!orders.length) {
-      tbody.innerHTML = '<tr><td colspan="7">No orders yet.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8">No orders yet.</td></tr>';
       return;
     }
     tbody.innerHTML = orders
@@ -1842,6 +1844,7 @@
         const items = (o.items || [])
           .map((i) => `${escapeHtml(i.name)} × ${i.qty}`)
           .join("<br />");
+        const meetup = BHK.meetingSpotLabel(o) || "—";
         return `<tr>
           <td>${BHK.formatDate(o.createdAt)}</td>
           <td>
@@ -1850,6 +1853,7 @@
             ${o.notes ? `<br /><span class="muted">${escapeHtml(o.notes)}</span>` : ""}
           </td>
           <td>${items}</td>
+          <td>${escapeHtml(meetup)}</td>
           <td>${BHK.money(o.total)}</td>
           <td>
             ${escapeHtml(o.paymentMethod || "")}<br />
@@ -1925,9 +1929,26 @@
       .join("");
   }
 
+  function fillManualPickupSpots() {
+    const sel = document.getElementById("manualPickupSpot");
+    if (!sel) return;
+    const spots = BHK.listMeetingSpots({ enabledOnly: true });
+    const all = spots.length ? spots : BHK.listMeetingSpots();
+    sel.innerHTML = all.length
+      ? all
+          .map(
+            (s) =>
+              `<option value="${escapeHtml(s.id)}">${escapeHtml(s.name)}</option>`
+          )
+          .join("")
+      : '<option value="">No meeting spots yet — add some in Settings</option>';
+  }
+
   document.getElementById("manualOrderBtn").addEventListener("click", () => {
     fillManualProducts();
+    fillManualPickupSpots();
     document.getElementById("manualOrderForm").reset();
+    fillManualPickupSpots();
     document.getElementById("orderModal").classList.add("open");
   });
 
@@ -1941,6 +1962,7 @@
         notes: form.notes.value,
         paymentMethod: form.paymentMethod.value,
         paymentReceived: form.paymentReceived.checked,
+        pickupSpotId: form.pickupSpotId.value,
         status: form.paymentReceived.checked ? "completed" : "confirmed",
         source: "manual",
         items: [{ productId: form.productId.value, qty: Number(form.qty.value) }],
@@ -2039,12 +2061,117 @@
     const s = BHK.getStore().settings;
     const form = document.getElementById("settingsForm");
     Object.keys(s).forEach((key) => {
+      if (key === "meetingSpots" || key === "goalChecks" || key === "heritageMeta" || key === "removedProductIds") {
+        return;
+      }
       if (form[key] != null) form[key].value = s[key];
     });
     const warn = document.getElementById("defaultPasswordWarn");
     if (warn) {
       warn.style.display = s.adminPassword === "HomesteadKitchen" ? "block" : "none";
     }
+  }
+
+  function renderMeetingSpotsEditor() {
+    const wrap = document.getElementById("meetingSpotsEditor");
+    if (!wrap) return;
+    const spots = BHK.listMeetingSpots();
+    if (!spots.length) {
+      wrap.innerHTML =
+        '<p class="muted" style="margin:0;">No meeting spots yet. Click “Add meeting spot” to create one customers can choose.</p>';
+      return;
+    }
+    wrap.innerHTML = spots
+      .map((s, idx) => {
+        return `<div class="meeting-spot-card" data-spot-index="${idx}">
+          <div class="form-row">
+            <label>Name customers see
+              <input data-spot-field="name" value="${escapeHtml(s.name)}" required />
+            </label>
+            <label class="meeting-spot-enabled">
+              <span style="display:flex;gap:.5rem;align-items:center;font-weight:650;margin-top:1.6rem;">
+                <input type="checkbox" data-spot-field="enabled" ${s.enabled ? "checked" : ""} style="width:auto;" />
+                Offer this spot
+              </span>
+            </label>
+          </div>
+          <label>Details / landmark notes
+            <textarea data-spot-field="detail" rows="2">${escapeHtml(s.detail || "")}</textarea>
+          </label>
+          <input type="hidden" data-spot-field="id" value="${escapeHtml(s.id)}" />
+          <div class="actions" style="margin-top:.35rem;">
+            <button type="button" class="btn btn-danger btn-small" data-remove-spot="${idx}">Remove</button>
+          </div>
+        </div>`;
+      })
+      .join("");
+  }
+
+  function readMeetingSpotsFromEditor() {
+    return Array.from(document.querySelectorAll("#meetingSpotsEditor .meeting-spot-card")).map((card) => {
+      const get = (field) => {
+        const el = card.querySelector('[data-spot-field="' + field + '"]');
+        return el;
+      };
+      const enabledEl = get("enabled");
+      return {
+        id: (get("id") && get("id").value) || "",
+        name: (get("name") && get("name").value) || "",
+        detail: (get("detail") && get("detail").value) || "",
+        enabled: !!(enabledEl && enabledEl.checked),
+      };
+    });
+  }
+
+  const meetingSpotsEditor = document.getElementById("meetingSpotsEditor");
+  if (meetingSpotsEditor) {
+    meetingSpotsEditor.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-remove-spot]");
+      if (!btn) return;
+      const spots = readMeetingSpotsFromEditor();
+      const idx = Number(btn.getAttribute("data-remove-spot"));
+      if (!Number.isFinite(idx)) return;
+      spots.splice(idx, 1);
+      BHK.saveMeetingSpots(spots);
+      renderMeetingSpotsEditor();
+      fillManualPickupSpots();
+    });
+  }
+
+  const addMeetingSpotBtn = document.getElementById("addMeetingSpotBtn");
+  if (addMeetingSpotBtn) {
+    addMeetingSpotBtn.addEventListener("click", () => {
+      const spots = readMeetingSpotsFromEditor();
+      spots.push({
+        id: "",
+        name: "New public meeting spot",
+        detail: "Landmark + parking note. Brenda confirms time by text.",
+        enabled: true,
+      });
+      BHK.saveMeetingSpots(spots);
+      renderMeetingSpotsEditor();
+    });
+  }
+
+  const saveMeetingSpotsBtn = document.getElementById("saveMeetingSpotsBtn");
+  if (saveMeetingSpotsBtn) {
+    saveMeetingSpotsBtn.addEventListener("click", () => {
+      const spots = readMeetingSpotsFromEditor().filter((s) => String(s.name || "").trim());
+      if (!spots.length) {
+        alert("Add at least one meeting spot with a name.");
+        return;
+      }
+      BHK.saveMeetingSpots(spots);
+      const msg = document.getElementById("meetingSpotsSaveMsg");
+      if (msg) {
+        msg.textContent = "Meeting spots saved.";
+        setTimeout(() => {
+          msg.textContent = "";
+        }, 2500);
+      }
+      renderMeetingSpotsEditor();
+      fillManualPickupSpots();
+    });
   }
 
   document.getElementById("settingsForm").addEventListener("submit", (e) => {
