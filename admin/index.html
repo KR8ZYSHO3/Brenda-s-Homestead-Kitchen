@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../css/styles.css?v=goals-v173" />
+  <link rel="stylesheet" href="../css/styles.css?v=goals-v174" />
 </head>
 <body>
   <div id="loginView" class="login-wrap">
@@ -607,17 +607,23 @@
           </div>
           <button class="btn btn-primary" type="button" id="addProductBtn">+ Add product</button>
         </div>
-        <div class="actions" style="margin-bottom:1rem;">
+        <div class="actions" style="margin-bottom:1rem;flex-wrap:wrap;align-items:center;gap:.5rem;">
           <button type="button" class="btn btn-ghost btn-small category-filter active" data-admin-cat="all">All</button>
           <button type="button" class="btn btn-ghost btn-small category-filter" data-admin-cat="baked">Foods</button>
           <button type="button" class="btn btn-ghost btn-small category-filter" data-admin-cat="soap">Soap</button>
           <button type="button" class="btn btn-ghost btn-small category-filter" data-admin-cat="bundle">Bundles</button>
           <button type="button" class="btn btn-ghost btn-small category-filter" data-admin-cat="other">Other</button>
+          <span class="muted" style="margin-left:.25rem;">|</span>
+          <button type="button" class="btn btn-danger btn-small" id="deleteSelectedProductsBtn" disabled>Delete selected</button>
+          <span class="muted" id="productsSelectedCount" style="font-size:.9rem;"></span>
         </div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
+                <th class="col-check">
+                  <input type="checkbox" id="productsSelectAll" title="Select all in this view" aria-label="Select all products in this view" />
+                </th>
                 <th>Photo</th>
                 <th>Product</th>
                 <th>Category</th>
@@ -630,6 +636,16 @@
             </thead>
             <tbody id="productsTable"></tbody>
           </table>
+        </div>
+
+        <div class="panel" id="heritageRestorePanel" style="margin-top:1.2rem;">
+          <span class="eyebrow">Old-school catalog</span>
+          <h2 style="font-size:1.25rem;margin:.25rem 0 0;">Add heritage items back to the shop</h2>
+          <p class="muted" style="margin:.4rem 0 0;">
+            Items you deleted from Products stay here so you can restore them later.
+            This is separate from <strong>Food costs → Saved recipes</strong> (those are batch cost sheets).
+          </p>
+          <div id="heritageRestoreList" style="margin-top:.85rem;"></div>
         </div>
       </section>
 
@@ -1211,7 +1227,7 @@
     </div>
   </div>
 
-  <script src="../js/store.js?v=goals-v173"></script>
-  <script src="../js/admin.js?v=goals-v173"></script>
+  <script src="../js/store.js?v=goals-v174"></script>
+  <script src="../js/admin.js?v=goals-v174"></script>
 </body>
 </html>

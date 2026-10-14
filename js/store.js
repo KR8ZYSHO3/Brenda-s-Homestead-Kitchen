@@ -729,9 +729,9 @@
   const LIVE_SITE_URL = "https://kr8zysho3.github.io/Brenda-s-Homestead-Kitchen";
 
   /** Bump these when deploying so Brenda can confirm the live site updated */
-  const SITE_VERSION = "1.7.3";
-  const SITE_UPDATED_ISO = "2026-10-14T08:50:00-04:00";
-  const SITE_UPDATED_LABEL = "Oct 14, 2026 · 8:50 AM ET";
+  const SITE_VERSION = "1.7.4";
+  const SITE_UPDATED_ISO = "2026-10-14T10:10:00-04:00";
+  const SITE_UPDATED_LABEL = "Oct 14, 2026 · 10:10 AM ET";
 
   /** Heritage shop IDs kept off the public order list (hard-to-source seasonal fruit) */
   const HERITAGE_OFF_ORDER_IDS = [
@@ -1867,15 +1867,64 @@
   }
 
   function deleteProduct(id) {
+    deleteProducts([id]);
+  }
+
+  /** Remove one or more products and tombstone their IDs so auto-seed does not bring them back. */
+  function deleteProducts(ids) {
+    const keys = (ids || []).map(String).filter(Boolean);
+    if (!keys.length) return;
     const data = load();
+    const keySet = Object.create(null);
+    keys.forEach((k) => {
+      keySet[k] = true;
+    });
+    let touchedSoap = false;
+    data.products.forEach((p) => {
+      if (!keySet[p.id]) return;
+      markProductRemoved(data, p.id);
+      if (normalizeCategory(p.category) === "soap") touchedSoap = true;
+    });
+    // Also tombstone ids that were already gone (e.g. heritage restore targets)
+    keys.forEach((k) => markProductRemoved(data, k));
+    data.products = data.products.filter((p) => !keySet[p.id]);
+    if (touchedSoap) data.settings.soapSamplesSeeded = true;
+    save(data);
+  }
+
+  /** Heritage catalog items Brenda deleted — available to add back to the shop. */
+  function listRemovedHeritageProducts() {
+    const removed = getRemovedProductIds(load());
+    if (!removed.length) return [];
+    const set = Object.create(null);
+    removed.forEach((id) => {
+      set[id] = true;
+    });
+    return HERITAGE_PRODUCT_DEFS.filter((def) => set[def.id]).map((def) => ({ ...def }));
+  }
+
+  /**
+   * Put a deleted heritage shop item back on the catalog.
+   * Clears its tombstone and re-seeds from HERITAGE_PRODUCT_DEFS.
+   */
+  function restoreHeritageProduct(id) {
     const key = String(id || "");
-    const removed = data.products.find((p) => p.id === key);
-    data.products = data.products.filter((p) => p.id !== key);
-    markProductRemoved(data, key);
-    if (removed && normalizeCategory(removed.category) === "soap") {
-      data.settings.soapSamplesSeeded = true;
+    const def = HERITAGE_PRODUCT_DEFS.find((d) => d.id === key);
+    if (!def) return null;
+    const data = load();
+    clearProductRemoved(data, key);
+    if (!data.products.some((p) => p.id === key)) {
+      data.products.push({
+        ...def,
+        createdAt: Date.now(),
+      });
+    }
+    if (HERITAGE_OFF_ORDER_IDS.indexOf(key) !== -1) {
+      const product = data.products.find((p) => p.id === key);
+      if (product) product.available = false;
     }
     save(data);
+    return getProduct(key);
   }
 
   function listOrders() {
@@ -2225,6 +2274,9 @@
     getProduct,
     upsertProduct,
     deleteProduct,
+    deleteProducts,
+    listRemovedHeritageProducts,
+    restoreHeritageProduct,
     ensureSoapSamples,
     ensureHeritageProducts,
     listOrders,

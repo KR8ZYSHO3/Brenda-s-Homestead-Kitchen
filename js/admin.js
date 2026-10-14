@@ -1553,6 +1553,64 @@
     });
   }
 
+  function selectedProductIds() {
+    return Array.from(
+      document.querySelectorAll('#productsTable input[type="checkbox"][data-select-product]:checked')
+    )
+      .map((el) => el.getAttribute("data-select-product"))
+      .filter(Boolean);
+  }
+
+  function updateProductsSelectionUi() {
+    const ids = selectedProductIds();
+    const btn = document.getElementById("deleteSelectedProductsBtn");
+    const countEl = document.getElementById("productsSelectedCount");
+    const selectAll = document.getElementById("productsSelectAll");
+    const boxes = document.querySelectorAll('#productsTable input[type="checkbox"][data-select-product]');
+    if (btn) btn.disabled = ids.length === 0;
+    if (countEl) {
+      countEl.textContent = ids.length ? ids.length + " selected" : "";
+    }
+    if (selectAll && boxes.length) {
+      selectAll.checked = ids.length === boxes.length;
+      selectAll.indeterminate = ids.length > 0 && ids.length < boxes.length;
+    } else if (selectAll) {
+      selectAll.checked = false;
+      selectAll.indeterminate = false;
+    }
+  }
+
+  function renderHeritageRestore() {
+    const listEl = document.getElementById("heritageRestoreList");
+    const panel = document.getElementById("heritageRestorePanel");
+    if (!listEl) return;
+    const removed = BHK.listRemovedHeritageProducts();
+    if (panel) panel.hidden = false;
+    if (!removed.length) {
+      listEl.innerHTML =
+        '<p class="muted" style="margin:0;">No removed heritage items. When you delete an old-school shop product, it will show up here so you can add it back.</p>';
+      return;
+    }
+    listEl.innerHTML =
+      '<ul class="heritage-restore-list">' +
+      removed
+        .map((p) => {
+          const offOrder = (BHK.HERITAGE_OFF_ORDER_IDS || []).indexOf(p.id) !== -1;
+          const note = offOrder
+            ? '<span class="muted"> — restores as Hidden (hard to source)</span>'
+            : "";
+          return `<li class="heritage-restore-row">
+            <div>
+              <strong>${escapeHtml(p.name)}</strong>
+              <span class="muted"> · ${escapeHtml(p.unit || "")} · ${BHK.money(p.price)}</span>${note}
+            </div>
+            <button type="button" class="btn btn-secondary btn-small" data-restore-heritage="${escapeHtml(p.id)}">Add back to shop</button>
+          </li>`;
+        })
+        .join("") +
+      "</ul>";
+  }
+
   function renderProducts() {
     const rows = BHK.listProducts({
       category: adminProductFilter === "all" ? undefined : adminProductFilter,
@@ -1560,7 +1618,9 @@
     const tbody = document.getElementById("productsTable");
     if (!rows.length) {
       tbody.innerHTML =
-        '<tr><td colspan="8">No products in this view yet. Click “Add product” and choose Foods or Soap.</td></tr>';
+        '<tr><td colspan="9">No products in this view yet. Click “Add product” and choose Foods or Soap.</td></tr>';
+      updateProductsSelectionUi();
+      renderHeritageRestore();
       return;
     }
     tbody.innerHTML = rows
@@ -1577,6 +1637,9 @@
               ? '<span class="badge">Both</span>'
               : '<span class="badge badge-warn">On hand</span>';
         return `<tr>
+          <td class="col-check">
+            <input type="checkbox" data-select-product="${escapeHtml(p.id)}" aria-label="Select ${escapeHtml(p.name)}" />
+          </td>
           <td>${thumb}</td>
           <td><strong>${escapeHtml(p.name)}</strong><br /><span class="muted">${escapeHtml(p.unit || "")}</span></td>
           <td><span class="badge">${escapeHtml(BHK.categoryShort(p.category))}</span></td>
@@ -1597,6 +1660,8 @@
         </tr>`;
       })
       .join("");
+    updateProductsSelectionUi();
+    renderHeritageRestore();
   }
 
   document.querySelectorAll("[data-admin-cat]").forEach((btn) => {
@@ -1628,7 +1693,7 @@
     if (delId) {
       if (
         confirm(
-          "Remove this product from your shop? It will stay removed on this device (including after refresh)."
+          "Remove this product from your shop? Heritage items can be added back later from the panel below."
         )
       ) {
         BHK.deleteProduct(delId);
@@ -1636,6 +1701,57 @@
       }
     }
   });
+
+  document.getElementById("productsTable").addEventListener("change", (e) => {
+    if (e.target && e.target.matches('input[type="checkbox"][data-select-product]')) {
+      updateProductsSelectionUi();
+    }
+  });
+
+  const productsSelectAll = document.getElementById("productsSelectAll");
+  if (productsSelectAll) {
+    productsSelectAll.addEventListener("change", () => {
+      const on = productsSelectAll.checked;
+      document
+        .querySelectorAll('#productsTable input[type="checkbox"][data-select-product]')
+        .forEach((box) => {
+          box.checked = on;
+        });
+      updateProductsSelectionUi();
+    });
+  }
+
+  const deleteSelectedProductsBtn = document.getElementById("deleteSelectedProductsBtn");
+  if (deleteSelectedProductsBtn) {
+    deleteSelectedProductsBtn.addEventListener("click", () => {
+      const ids = selectedProductIds();
+      if (!ids.length) return;
+      const label = ids.length === 1 ? "1 product" : ids.length + " products";
+      if (
+        !confirm(
+          "Remove " +
+            label +
+            " from your shop? Heritage items can be added back later from the panel below."
+        )
+      ) {
+        return;
+      }
+      BHK.deleteProducts(ids);
+      refreshAll();
+    });
+  }
+
+  const heritageRestoreList = document.getElementById("heritageRestoreList");
+  if (heritageRestoreList) {
+    heritageRestoreList.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-restore-heritage]");
+      if (!btn) return;
+      const id = btn.getAttribute("data-restore-heritage");
+      if (!id) return;
+      BHK.restoreHeritageProduct(id);
+      refreshAll();
+    });
+  }
 
   function openProductModal(product) {
     const form = document.getElementById("productForm");
