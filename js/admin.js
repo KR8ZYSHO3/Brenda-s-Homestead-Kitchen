@@ -71,6 +71,7 @@
 
   function refreshAll() {
     BHK.ensureSoapSamples();
+    BHK.ensureHeritageProducts();
     renderDashboard();
     renderGoals();
     renderFoodCosts();
@@ -1619,11 +1620,17 @@
       refreshAll();
       return;
     }
-    const editId = e.target.getAttribute("data-edit-product");
-    const delId = e.target.getAttribute("data-del-product");
+    const editBtn = e.target.closest("[data-edit-product]");
+    const delBtn = e.target.closest("[data-del-product]");
+    const editId = editBtn ? editBtn.getAttribute("data-edit-product") : null;
+    const delId = delBtn ? delBtn.getAttribute("data-del-product") : null;
     if (editId) openProductModal(BHK.getProduct(editId));
     if (delId) {
-      if (confirm("Delete this product?")) {
+      if (
+        confirm(
+          "Remove this product from your shop? It will stay removed on this device (including after refresh)."
+        )
+      ) {
         BHK.deleteProduct(delId);
         refreshAll();
       }

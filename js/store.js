@@ -39,6 +39,10 @@
     goalChecks: {},
     // Brenda's stars/notes on the built-in old-school heritage recipe library
     heritageMeta: {},
+    // One-time: sample soaps were offered (or Brenda already removed soap) — do not re-seed
+    soapSamplesSeeded: false,
+    // Product IDs Brenda deleted — never auto-seed these again on this device
+    removedProductIds: [],
   };
 
   /**
@@ -725,9 +729,9 @@
   const LIVE_SITE_URL = "https://kr8zysho3.github.io/Brenda-s-Homestead-Kitchen";
 
   /** Bump these when deploying so Brenda can confirm the live site updated */
-  const SITE_VERSION = "1.7.2";
-  const SITE_UPDATED_ISO = "2026-10-09T10:35:00-04:00";
-  const SITE_UPDATED_LABEL = "Oct 9, 2026 · 10:35 AM ET";
+  const SITE_VERSION = "1.7.3";
+  const SITE_UPDATED_ISO = "2026-10-14T08:50:00-04:00";
+  const SITE_UPDATED_LABEL = "Oct 14, 2026 · 8:50 AM ET";
 
   /** Heritage shop IDs kept off the public order list (hard-to-source seasonal fruit) */
   const HERITAGE_OFF_ORDER_IDS = [
@@ -1637,6 +1641,10 @@
       }
       const data = JSON.parse(raw);
       data.settings = { ...DEFAULT_SETTINGS, ...(data.settings || {}) };
+      data.settings.removedProductIds = Array.isArray(data.settings.removedProductIds)
+        ? data.settings.removedProductIds.map(String)
+        : [];
+      data.settings.soapSamplesSeeded = !!data.settings.soapSamplesSeeded;
       data.products = (Array.isArray(data.products) ? data.products : []).map(normalizeProduct);
       data.orders = Array.isArray(data.orders) ? data.orders : [];
       data.expenses = Array.isArray(data.expenses) ? data.expenses : [];
@@ -1760,6 +1768,25 @@
     return load().products.find((p) => p.id === id) || null;
   }
 
+  function getRemovedProductIds(data) {
+    const raw = (data && data.settings && data.settings.removedProductIds) || [];
+    return Array.isArray(raw) ? raw.map(String) : [];
+  }
+
+  function markProductRemoved(data, id) {
+    const key = String(id || "");
+    if (!key) return;
+    const list = getRemovedProductIds(data);
+    if (list.indexOf(key) === -1) list.push(key);
+    data.settings.removedProductIds = list;
+  }
+
+  function clearProductRemoved(data, id) {
+    const key = String(id || "");
+    if (!key) return;
+    data.settings.removedProductIds = getRemovedProductIds(data).filter((x) => x !== key);
+  }
+
   function upsertProduct(product) {
     const data = load();
     const next = normalizeProduct({
@@ -1774,6 +1801,8 @@
       const idx = data.products.findIndex((p) => p.id === next.id);
       if (idx >= 0) data.products[idx] = { ...data.products[idx], ...next };
       else data.products.push(next);
+      // Re-adding / editing a previously deleted id restores it to the catalog
+      clearProductRemoved(data, next.id);
     }
     save(data);
     return next;
@@ -1789,21 +1818,34 @@
       save(data);
       return false;
     }
-    const soapSamples = SAMPLE_PRODUCTS.filter((p) => p.category === "soap").map((p) => ({
+    const removed = getRemovedProductIds(data);
+    const soapSamples = SAMPLE_PRODUCTS.filter(
+      (p) => p.category === "soap" && removed.indexOf(p.id) === -1
+    ).map((p) => ({
       ...p,
       createdAt: Date.now(),
     }));
+    if (!soapSamples.length) {
+      data.settings.soapSamplesSeeded = true;
+      save(data);
+      return false;
+    }
     data.products = data.products.concat(soapSamples);
     data.settings.soapSamplesSeeded = true;
     save(data);
     return true;
   }
 
-  /** Seed heritage preorder products (idempotent — never overwrites Brenda's edits). */
+  /**
+   * Seed heritage preorder products (idempotent — never overwrites Brenda's edits).
+   * Skips IDs she deleted so Admin Delete stays sticky across public page loads too.
+   */
   function ensureHeritageProducts() {
     const data = load();
     let dirty = false;
+    const removed = getRemovedProductIds(data);
     HERITAGE_PRODUCT_DEFS.forEach((def) => {
+      if (removed.indexOf(def.id) !== -1) return;
       if (data.products.some((p) => p.id === def.id)) return;
       data.products.push({
         ...def,
@@ -1813,6 +1855,7 @@
     });
     // Keep hard-to-source seasonal items off the public order list
     HERITAGE_OFF_ORDER_IDS.forEach((id) => {
+      if (removed.indexOf(id) !== -1) return;
       const product = data.products.find((p) => p.id === id);
       if (product && product.available) {
         product.available = false;
@@ -1825,8 +1868,10 @@
 
   function deleteProduct(id) {
     const data = load();
-    const removed = data.products.find((p) => p.id === id);
-    data.products = data.products.filter((p) => p.id !== id);
+    const key = String(id || "");
+    const removed = data.products.find((p) => p.id === key);
+    data.products = data.products.filter((p) => p.id !== key);
+    markProductRemoved(data, key);
     if (removed && normalizeCategory(removed.category) === "soap") {
       data.settings.soapSamplesSeeded = true;
     }
